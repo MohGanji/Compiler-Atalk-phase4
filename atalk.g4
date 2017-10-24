@@ -20,7 +20,7 @@ receiver : 'as' {print("receiver");};
 
 ACTOR : 'actor' {print("ACTOR");};
 TYPE : ( 'int' | 'char' ) {print("TYPE");}; // should support arrays
-VALUE : ( '"' STRING_CHAR* '"' | NUMBER | '\'' CHAR '\'' ) {print("VALUE");};
+VALUE : ( '"' STRING_CHAR* '"' | NUMBER | '\'' CHAR '\'' ) {print("VALUE");}; 
 
 
 COMMENT : '#'(ANY_CHAR)* {print("COMMENT");} -> skip;
