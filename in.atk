@@ -1,0 +1,3 @@
+actor vahid<2>
+        int v
+end
