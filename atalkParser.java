@@ -16,9 +16,8 @@ public class atalkParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, ACTOR=8, TYPE=9, 
-		VALUE=10, COMMENT=11, ID=12, CHAR=13, STRING_CHAR=14, NUMBER=15, ANY_CHAR=16, 
-		NEWLINE=17, Space=18;
+		T__0=1, T__1=2, T__2=3, T__3=4, COMMENT=5, SPACE=6, ACTOR=7, ACTOR_SIZE=8, 
+		TYPE=9, STRING=10, CHAR=11, NUMBER=12, VALUE=13, ID=14, ANY_CHAR=15, NEWLINE=16;
 	public static final int
 		RULE_program = 0, RULE_actor = 1, RULE_actor_content = 2, RULE_state = 3, 
 		RULE_var = 4, RULE_global_vardef = 5, RULE_vardef = 6, RULE_receiver = 7;
@@ -28,12 +27,11 @@ public class atalkParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "' '", "'<'", "'>'", "'end'", "','", "'='", "'as'", "'actor'"
+		null, "'end'", "','", "'='", "'as'", null, null, "'actor'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, null, null, null, "ACTOR", "TYPE", "VALUE", 
-		"COMMENT", "ID", "CHAR", "STRING_CHAR", "NUMBER", "ANY_CHAR", "NEWLINE", 
-		"Space"
+		null, null, null, null, null, "COMMENT", "SPACE", "ACTOR", "ACTOR_SIZE", 
+		"TYPE", "STRING", "CHAR", "NUMBER", "VALUE", "ID", "ANY_CHAR", "NEWLINE"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -167,7 +165,7 @@ public class atalkParser extends Parser {
 	public static class ActorContext extends ParserRuleContext {
 		public TerminalNode ACTOR() { return getToken(atalkParser.ACTOR, 0); }
 		public TerminalNode ID() { return getToken(atalkParser.ID, 0); }
-		public TerminalNode NUMBER() { return getToken(atalkParser.NUMBER, 0); }
+		public TerminalNode ACTOR_SIZE() { return getToken(atalkParser.ACTOR_SIZE, 0); }
 		public List<TerminalNode> NEWLINE() { return getTokens(atalkParser.NEWLINE); }
 		public TerminalNode NEWLINE(int i) {
 			return getToken(atalkParser.NEWLINE, i);
@@ -198,22 +196,16 @@ public class atalkParser extends Parser {
 			setState(23);
 			match(ACTOR);
 			setState(24);
-			match(T__0);
-			setState(25);
 			match(ID);
+			setState(25);
+			match(ACTOR_SIZE);
 			setState(26);
-			match(T__1);
-			setState(27);
-			match(NUMBER);
-			setState(28);
-			match(T__2);
-			setState(29);
 			match(NEWLINE);
-			setState(30);
+			setState(27);
 			actor_content();
-			setState(31);
-			match(T__3);
-			setState(32);
+			setState(28);
+			match(T__0);
+			setState(29);
 			match(NEWLINE);
 			print("actor");
 			}
@@ -263,23 +255,23 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(39);
+			setState(36);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__6 || _la==TYPE) {
+			while (_la==T__3 || _la==TYPE) {
 				{
-				setState(37);
+				setState(34);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case TYPE:
 					{
-					setState(35);
+					setState(32);
 					state();
 					}
 					break;
-				case T__6:
+				case T__3:
 					{
-					setState(36);
+					setState(33);
 					receiver();
 					}
 					break;
@@ -287,7 +279,7 @@ public class atalkParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(41);
+				setState(38);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -335,27 +327,27 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
+			setState(41);
 			match(TYPE);
-			setState(45);
+			setState(42);
 			global_vardef();
-			setState(50);
+			setState(47);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__4) {
+			while (_la==T__1) {
 				{
 				{
-				setState(46);
-				match(T__4);
-				setState(47);
+				setState(43);
+				match(T__1);
+				setState(44);
 				global_vardef();
 				}
 				}
-				setState(52);
+				setState(49);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(53);
+			setState(50);
 			match(NEWLINE);
 			print("state");
 			}
@@ -401,27 +393,27 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(56);
+			setState(53);
 			match(TYPE);
-			setState(57);
+			setState(54);
 			vardef();
-			setState(62);
+			setState(59);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__4) {
+			while (_la==T__1) {
 				{
 				{
-				setState(58);
-				match(T__4);
-				setState(59);
+				setState(55);
+				match(T__1);
+				setState(56);
 				vardef();
 				}
 				}
-				setState(64);
+				setState(61);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(65);
+			setState(62);
 			match(NEWLINE);
 			print("var");
 			}
@@ -459,7 +451,7 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
+			setState(65);
 			match(ID);
 			print("global vardef");
 			}
@@ -498,11 +490,11 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(71);
+			setState(68);
 			match(ID);
-			setState(72);
-			match(T__5);
-			setState(73);
+			setState(69);
+			match(T__2);
+			setState(70);
 			match(VALUE);
 			print("vardef");
 			}
@@ -539,8 +531,8 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(76);
-			match(T__6);
+			setState(73);
+			match(T__3);
 			print("receiver");
 			}
 		}
@@ -556,26 +548,25 @@ public class atalkParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\24R\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22O\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\7\2\25\n\2"+
-		"\f\2\16\2\30\13\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4"+
-		"\3\4\7\4(\n\4\f\4\16\4+\13\4\3\4\3\4\3\5\3\5\3\5\3\5\7\5\63\n\5\f\5\16"+
-		"\5\66\13\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\7\6?\n\6\f\6\16\6B\13\6\3\6\3\6"+
-		"\3\6\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f"+
-		"\16\20\2\2\2O\2\26\3\2\2\2\4\31\3\2\2\2\6)\3\2\2\2\b.\3\2\2\2\n:\3\2\2"+
-		"\2\fF\3\2\2\2\16I\3\2\2\2\20N\3\2\2\2\22\25\5\4\3\2\23\25\5\n\6\2\24\22"+
-		"\3\2\2\2\24\23\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\3"+
-		"\3\2\2\2\30\26\3\2\2\2\31\32\7\n\2\2\32\33\7\3\2\2\33\34\7\16\2\2\34\35"+
-		"\7\4\2\2\35\36\7\21\2\2\36\37\7\5\2\2\37 \7\23\2\2 !\5\6\4\2!\"\7\6\2"+
-		"\2\"#\7\23\2\2#$\b\3\1\2$\5\3\2\2\2%(\5\b\5\2&(\5\20\t\2\'%\3\2\2\2\'"+
-		"&\3\2\2\2(+\3\2\2\2)\'\3\2\2\2)*\3\2\2\2*,\3\2\2\2+)\3\2\2\2,-\b\4\1\2"+
-		"-\7\3\2\2\2./\7\13\2\2/\64\5\f\7\2\60\61\7\7\2\2\61\63\5\f\7\2\62\60\3"+
-		"\2\2\2\63\66\3\2\2\2\64\62\3\2\2\2\64\65\3\2\2\2\65\67\3\2\2\2\66\64\3"+
-		"\2\2\2\678\7\23\2\289\b\5\1\29\t\3\2\2\2:;\7\13\2\2;@\5\16\b\2<=\7\7\2"+
-		"\2=?\5\16\b\2><\3\2\2\2?B\3\2\2\2@>\3\2\2\2@A\3\2\2\2AC\3\2\2\2B@\3\2"+
-		"\2\2CD\7\23\2\2DE\b\6\1\2E\13\3\2\2\2FG\7\16\2\2GH\b\7\1\2H\r\3\2\2\2"+
-		"IJ\7\16\2\2JK\7\b\2\2KL\7\f\2\2LM\b\b\1\2M\17\3\2\2\2NO\7\t\2\2OP\b\t"+
-		"\1\2P\21\3\2\2\2\b\24\26\')\64@";
+		"\f\2\16\2\30\13\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\7\4%\n\4"+
+		"\f\4\16\4(\13\4\3\4\3\4\3\5\3\5\3\5\3\5\7\5\60\n\5\f\5\16\5\63\13\5\3"+
+		"\5\3\5\3\5\3\6\3\6\3\6\3\6\7\6<\n\6\f\6\16\6?\13\6\3\6\3\6\3\6\3\7\3\7"+
+		"\3\7\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2"+
+		"L\2\26\3\2\2\2\4\31\3\2\2\2\6&\3\2\2\2\b+\3\2\2\2\n\67\3\2\2\2\fC\3\2"+
+		"\2\2\16F\3\2\2\2\20K\3\2\2\2\22\25\5\4\3\2\23\25\5\n\6\2\24\22\3\2\2\2"+
+		"\24\23\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\3\3\2\2\2"+
+		"\30\26\3\2\2\2\31\32\7\t\2\2\32\33\7\20\2\2\33\34\7\n\2\2\34\35\7\22\2"+
+		"\2\35\36\5\6\4\2\36\37\7\3\2\2\37 \7\22\2\2 !\b\3\1\2!\5\3\2\2\2\"%\5"+
+		"\b\5\2#%\5\20\t\2$\"\3\2\2\2$#\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2"+
+		"\')\3\2\2\2(&\3\2\2\2)*\b\4\1\2*\7\3\2\2\2+,\7\13\2\2,\61\5\f\7\2-.\7"+
+		"\4\2\2.\60\5\f\7\2/-\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\61\62\3\2\2\2\62"+
+		"\64\3\2\2\2\63\61\3\2\2\2\64\65\7\22\2\2\65\66\b\5\1\2\66\t\3\2\2\2\67"+
+		"8\7\13\2\28=\5\16\b\29:\7\4\2\2:<\5\16\b\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2"+
+		"\2=>\3\2\2\2>@\3\2\2\2?=\3\2\2\2@A\7\22\2\2AB\b\6\1\2B\13\3\2\2\2CD\7"+
+		"\20\2\2DE\b\7\1\2E\r\3\2\2\2FG\7\20\2\2GH\7\5\2\2HI\7\17\2\2IJ\b\b\1\2"+
+		"J\17\3\2\2\2KL\7\6\2\2LM\b\t\1\2M\21\3\2\2\2\b\24\26$&\61=";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
