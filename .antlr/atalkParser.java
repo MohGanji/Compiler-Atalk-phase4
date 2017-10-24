@@ -16,22 +16,26 @@ public class atalkParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, COMMENT=5, SPACE=6, ACTOR=7, ACTOR_SIZE=8, 
-		TYPE=9, STRING=10, CHAR=11, NUMBER=12, VALUE=13, ID=14, ANY_CHAR=15, NEWLINE=16;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, COMMENT=7, NEWLINE=8, 
+		SPACE=9, ACTOR=10, RECEIVER=11, TYPE=12, END=13, STRING=14, CHAR=15, NUMBER=16, 
+		VALUE=17, ID=18, ANY_CHAR=19;
 	public static final int
-		RULE_program = 0, RULE_actor = 1, RULE_actor_content = 2, RULE_state = 3, 
-		RULE_var = 4, RULE_global_vardef = 5, RULE_vardef = 6, RULE_receiver = 7;
+		RULE_program = 0, RULE_actor = 1, RULE_actor_content = 2, RULE_actor_size = 3, 
+		RULE_state = 4, RULE_global_vardef = 5, RULE_vardef = 6, RULE_receiver = 7, 
+		RULE_arguments = 8, RULE_arg_var = 9, RULE_receiver_content = 10, RULE_var = 11;
 	public static final String[] ruleNames = {
-		"program", "actor", "actor_content", "state", "var", "global_vardef", 
-		"vardef", "receiver"
+		"program", "actor", "actor_content", "actor_size", "state", "global_vardef", 
+		"vardef", "receiver", "arguments", "arg_var", "receiver_content", "var"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'end'", "','", "'='", "'as'", null, null, "'actor'"
+		null, "'<'", "'>'", "','", "'='", "'('", "')'", null, null, null, "'actor'", 
+		"'receiver'", null, "'end'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, null, "COMMENT", "SPACE", "ACTOR", "ACTOR_SIZE", 
-		"TYPE", "STRING", "CHAR", "NUMBER", "VALUE", "ID", "ANY_CHAR", "NEWLINE"
+		null, null, null, null, null, null, null, "COMMENT", "NEWLINE", "SPACE", 
+		"ACTOR", "RECEIVER", "TYPE", "END", "STRING", "CHAR", "NUMBER", "VALUE", 
+		"ID", "ANY_CHAR"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -94,11 +98,9 @@ public class atalkParser extends Parser {
 		public ActorContext actor(int i) {
 			return getRuleContext(ActorContext.class,i);
 		}
-		public List<VarContext> var() {
-			return getRuleContexts(VarContext.class);
-		}
-		public VarContext var(int i) {
-			return getRuleContext(VarContext.class,i);
+		public List<TerminalNode> NEWLINE() { return getTokens(atalkParser.NEWLINE); }
+		public TerminalNode NEWLINE(int i) {
+			return getToken(atalkParser.NEWLINE, i);
 		}
 		public ProgramContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -113,31 +115,31 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(20);
+			setState(28);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==ACTOR || _la==TYPE) {
+			while (_la==NEWLINE || _la==ACTOR) {
 				{
-				setState(18);
+				setState(26);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case ACTOR:
 					{
-					setState(16);
+					setState(24);
 					actor();
 					}
 					break;
-				case TYPE:
+				case NEWLINE:
 					{
-					setState(17);
-					var();
+					setState(25);
+					match(NEWLINE);
 					}
 					break;
 				default:
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(22);
+				setState(30);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -157,14 +159,14 @@ public class atalkParser extends Parser {
 	public static class ActorContext extends ParserRuleContext {
 		public TerminalNode ACTOR() { return getToken(atalkParser.ACTOR, 0); }
 		public TerminalNode ID() { return getToken(atalkParser.ID, 0); }
-		public TerminalNode ACTOR_SIZE() { return getToken(atalkParser.ACTOR_SIZE, 0); }
-		public List<TerminalNode> NEWLINE() { return getTokens(atalkParser.NEWLINE); }
-		public TerminalNode NEWLINE(int i) {
-			return getToken(atalkParser.NEWLINE, i);
+		public Actor_sizeContext actor_size() {
+			return getRuleContext(Actor_sizeContext.class,0);
 		}
 		public Actor_contentContext actor_content() {
 			return getRuleContext(Actor_contentContext.class,0);
 		}
+		public TerminalNode END() { return getToken(atalkParser.END, 0); }
+		public TerminalNode NEWLINE() { return getToken(atalkParser.NEWLINE, 0); }
 		public ActorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -177,19 +179,17 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(23);
+			setState(31);
 			match(ACTOR);
-			setState(24);
+			setState(32);
 			match(ID);
-			setState(25);
-			match(ACTOR_SIZE);
-			setState(26);
-			match(NEWLINE);
-			setState(27);
+			setState(33);
+			actor_size();
+			setState(34);
 			actor_content();
-			setState(28);
-			match(T__0);
-			setState(29);
+			setState(35);
+			match(END);
+			setState(36);
 			match(NEWLINE);
 			print("actor");
 			}
@@ -231,23 +231,23 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(36);
+			setState(41); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__3 || _la==TYPE) {
+			do {
 				{
-				setState(34);
+				setState(41);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case TYPE:
 					{
-					setState(32);
+					setState(39);
 					state();
 					}
 					break;
-				case T__3:
+				case RECEIVER:
 					{
-					setState(33);
+					setState(40);
 					receiver();
 					}
 					break;
@@ -255,11 +255,48 @@ public class atalkParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(38);
+				setState(43); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			}
+			} while ( _la==RECEIVER || _la==TYPE );
 			print("actor content");
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Actor_sizeContext extends ParserRuleContext {
+		public TerminalNode NUMBER() { return getToken(atalkParser.NUMBER, 0); }
+		public TerminalNode NEWLINE() { return getToken(atalkParser.NEWLINE, 0); }
+		public Actor_sizeContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_actor_size; }
+	}
+
+	public final Actor_sizeContext actor_size() throws RecognitionException {
+		Actor_sizeContext _localctx = new Actor_sizeContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_actor_size);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(47);
+			match(T__0);
+			setState(48);
+			match(NUMBER);
+			setState(49);
+			match(T__1);
+			setState(50);
+			match(NEWLINE);
+			print("actor size");
 			}
 		}
 		catch (RecognitionException re) {
@@ -290,92 +327,35 @@ public class atalkParser extends Parser {
 
 	public final StateContext state() throws RecognitionException {
 		StateContext _localctx = new StateContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_state);
+		enterRule(_localctx, 8, RULE_state);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(41);
+			print("state start");
+			setState(54);
 			match(TYPE);
-			setState(42);
+			setState(55);
 			global_vardef();
-			setState(47);
+			setState(60);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__1) {
+			while (_la==T__2) {
 				{
 				{
-				setState(43);
-				match(T__1);
-				setState(44);
+				setState(56);
+				match(T__2);
+				setState(57);
 				global_vardef();
 				}
 				}
-				setState(49);
+				setState(62);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(50);
+			setState(63);
 			match(NEWLINE);
 			print("state");
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
-		}
-		return _localctx;
-	}
-
-	public static class VarContext extends ParserRuleContext {
-		public TerminalNode TYPE() { return getToken(atalkParser.TYPE, 0); }
-		public List<VardefContext> vardef() {
-			return getRuleContexts(VardefContext.class);
-		}
-		public VardefContext vardef(int i) {
-			return getRuleContext(VardefContext.class,i);
-		}
-		public TerminalNode NEWLINE() { return getToken(atalkParser.NEWLINE, 0); }
-		public VarContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_var; }
-	}
-
-	public final VarContext var() throws RecognitionException {
-		VarContext _localctx = new VarContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_var);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(53);
-			match(TYPE);
-			setState(54);
-			vardef();
-			setState(59);
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			while (_la==T__1) {
-				{
-				{
-				setState(55);
-				match(T__1);
-				setState(56);
-				vardef();
-				}
-				}
-				setState(61);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-			}
-			setState(62);
-			match(NEWLINE);
-			print("var");
 			}
 		}
 		catch (RecognitionException re) {
@@ -403,7 +383,7 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(65);
+			setState(66);
 			match(ID);
 			print("global vardef");
 			}
@@ -434,11 +414,11 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(68);
-			match(ID);
 			setState(69);
-			match(T__2);
+			match(ID);
 			setState(70);
+			match(T__3);
+			setState(71);
 			match(VALUE);
 			print("vardef");
 			}
@@ -455,6 +435,16 @@ public class atalkParser extends Parser {
 	}
 
 	public static class ReceiverContext extends ParserRuleContext {
+		public TerminalNode RECEIVER() { return getToken(atalkParser.RECEIVER, 0); }
+		public TerminalNode ID() { return getToken(atalkParser.ID, 0); }
+		public ArgumentsContext arguments() {
+			return getRuleContext(ArgumentsContext.class,0);
+		}
+		public Receiver_contentContext receiver_content() {
+			return getRuleContext(Receiver_contentContext.class,0);
+		}
+		public TerminalNode END() { return getToken(atalkParser.END, 0); }
+		public TerminalNode NEWLINE() { return getToken(atalkParser.NEWLINE, 0); }
 		public ReceiverContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -467,8 +457,18 @@ public class atalkParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(73);
-			match(T__3);
+			setState(74);
+			match(RECEIVER);
+			setState(75);
+			match(ID);
+			setState(76);
+			arguments();
+			setState(77);
+			receiver_content();
+			setState(78);
+			match(END);
+			setState(79);
+			match(NEWLINE);
 			print("receiver");
 			}
 		}
@@ -483,26 +483,206 @@ public class atalkParser extends Parser {
 		return _localctx;
 	}
 
+	public static class ArgumentsContext extends ParserRuleContext {
+		public TerminalNode NEWLINE() { return getToken(atalkParser.NEWLINE, 0); }
+		public List<Arg_varContext> arg_var() {
+			return getRuleContexts(Arg_varContext.class);
+		}
+		public Arg_varContext arg_var(int i) {
+			return getRuleContext(Arg_varContext.class,i);
+		}
+		public ArgumentsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_arguments; }
+	}
+
+	public final ArgumentsContext arguments() throws RecognitionException {
+		ArgumentsContext _localctx = new ArgumentsContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_arguments);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(82);
+			match(T__4);
+			setState(86);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==TYPE) {
+				{
+				{
+				setState(83);
+				arg_var();
+				}
+				}
+				setState(88);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(89);
+			match(T__5);
+			setState(90);
+			match(NEWLINE);
+			print("arguments");
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Arg_varContext extends ParserRuleContext {
+		public TerminalNode TYPE() { return getToken(atalkParser.TYPE, 0); }
+		public Global_vardefContext global_vardef() {
+			return getRuleContext(Global_vardefContext.class,0);
+		}
+		public Arg_varContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_arg_var; }
+	}
+
+	public final Arg_varContext arg_var() throws RecognitionException {
+		Arg_varContext _localctx = new Arg_varContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_arg_var);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(93);
+			match(TYPE);
+			setState(94);
+			global_vardef();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Receiver_contentContext extends ParserRuleContext {
+		public Receiver_contentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_receiver_content; }
+	}
+
+	public final Receiver_contentContext receiver_content() throws RecognitionException {
+		Receiver_contentContext _localctx = new Receiver_contentContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_receiver_content);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class VarContext extends ParserRuleContext {
+		public TerminalNode TYPE() { return getToken(atalkParser.TYPE, 0); }
+		public List<VardefContext> vardef() {
+			return getRuleContexts(VardefContext.class);
+		}
+		public VardefContext vardef(int i) {
+			return getRuleContext(VardefContext.class,i);
+		}
+		public TerminalNode NEWLINE() { return getToken(atalkParser.NEWLINE, 0); }
+		public VarContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_var; }
+	}
+
+	public final VarContext var() throws RecognitionException {
+		VarContext _localctx = new VarContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_var);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(98);
+			match(TYPE);
+			setState(99);
+			vardef();
+			setState(104);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==T__2) {
+				{
+				{
+				setState(100);
+				match(T__2);
+				setState(101);
+				vardef();
+				}
+				}
+				setState(106);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			setState(107);
+			match(NEWLINE);
+			print("var");
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22O\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\7\2\25\n\2"+
-		"\f\2\16\2\30\13\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\7\4%\n\4"+
-		"\f\4\16\4(\13\4\3\4\3\4\3\5\3\5\3\5\3\5\7\5\60\n\5\f\5\16\5\63\13\5\3"+
-		"\5\3\5\3\5\3\6\3\6\3\6\3\6\7\6<\n\6\f\6\16\6?\13\6\3\6\3\6\3\6\3\7\3\7"+
-		"\3\7\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2"+
-		"L\2\26\3\2\2\2\4\31\3\2\2\2\6&\3\2\2\2\b+\3\2\2\2\n\67\3\2\2\2\fC\3\2"+
-		"\2\2\16F\3\2\2\2\20K\3\2\2\2\22\25\5\4\3\2\23\25\5\n\6\2\24\22\3\2\2\2"+
-		"\24\23\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\3\3\2\2\2"+
-		"\30\26\3\2\2\2\31\32\7\t\2\2\32\33\7\20\2\2\33\34\7\n\2\2\34\35\7\22\2"+
-		"\2\35\36\5\6\4\2\36\37\7\3\2\2\37 \7\22\2\2 !\b\3\1\2!\5\3\2\2\2\"%\5"+
-		"\b\5\2#%\5\20\t\2$\"\3\2\2\2$#\3\2\2\2%(\3\2\2\2&$\3\2\2\2&\'\3\2\2\2"+
-		"\')\3\2\2\2(&\3\2\2\2)*\b\4\1\2*\7\3\2\2\2+,\7\13\2\2,\61\5\f\7\2-.\7"+
-		"\4\2\2.\60\5\f\7\2/-\3\2\2\2\60\63\3\2\2\2\61/\3\2\2\2\61\62\3\2\2\2\62"+
-		"\64\3\2\2\2\63\61\3\2\2\2\64\65\7\22\2\2\65\66\b\5\1\2\66\t\3\2\2\2\67"+
-		"8\7\13\2\28=\5\16\b\29:\7\4\2\2:<\5\16\b\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2"+
-		"\2=>\3\2\2\2>@\3\2\2\2?=\3\2\2\2@A\7\22\2\2AB\b\6\1\2B\13\3\2\2\2CD\7"+
-		"\20\2\2DE\b\7\1\2E\r\3\2\2\2FG\7\20\2\2GH\7\5\2\2HI\7\17\2\2IJ\b\b\1\2"+
-		"J\17\3\2\2\2KL\7\6\2\2LM\b\t\1\2M\21\3\2\2\2\b\24\26$&\61=";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25q\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\4\r\t\r\3\2\3\2\7\2\35\n\2\f\2\16\2 \13\2\3\3\3\3\3\3\3\3\3\3\3"+
+		"\3\3\3\3\3\3\4\3\4\6\4,\n\4\r\4\16\4-\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5"+
+		"\3\6\3\6\3\6\3\6\3\6\7\6=\n\6\f\6\16\6@\13\6\3\6\3\6\3\6\3\7\3\7\3\7\3"+
+		"\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\n\3\n\7\nW\n\n\f"+
+		"\n\16\nZ\13\n\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3\f\3\f\3\r\3\r\3\r\3\r\7"+
+		"\ri\n\r\f\r\16\rl\13\r\3\r\3\r\3\r\3\r\2\2\16\2\4\6\b\n\f\16\20\22\24"+
+		"\26\30\2\2\2k\2\36\3\2\2\2\4!\3\2\2\2\6+\3\2\2\2\b\61\3\2\2\2\n\67\3\2"+
+		"\2\2\fD\3\2\2\2\16G\3\2\2\2\20L\3\2\2\2\22T\3\2\2\2\24_\3\2\2\2\26b\3"+
+		"\2\2\2\30d\3\2\2\2\32\35\5\4\3\2\33\35\7\n\2\2\34\32\3\2\2\2\34\33\3\2"+
+		"\2\2\35 \3\2\2\2\36\34\3\2\2\2\36\37\3\2\2\2\37\3\3\2\2\2 \36\3\2\2\2"+
+		"!\"\7\f\2\2\"#\7\24\2\2#$\5\b\5\2$%\5\6\4\2%&\7\17\2\2&\'\7\n\2\2\'(\b"+
+		"\3\1\2(\5\3\2\2\2),\5\n\6\2*,\5\20\t\2+)\3\2\2\2+*\3\2\2\2,-\3\2\2\2-"+
+		"+\3\2\2\2-.\3\2\2\2./\3\2\2\2/\60\b\4\1\2\60\7\3\2\2\2\61\62\7\3\2\2\62"+
+		"\63\7\22\2\2\63\64\7\4\2\2\64\65\7\n\2\2\65\66\b\5\1\2\66\t\3\2\2\2\67"+
+		"8\b\6\1\289\7\16\2\29>\5\f\7\2:;\7\5\2\2;=\5\f\7\2<:\3\2\2\2=@\3\2\2\2"+
+		"><\3\2\2\2>?\3\2\2\2?A\3\2\2\2@>\3\2\2\2AB\7\n\2\2BC\b\6\1\2C\13\3\2\2"+
+		"\2DE\7\24\2\2EF\b\7\1\2F\r\3\2\2\2GH\7\24\2\2HI\7\6\2\2IJ\7\23\2\2JK\b"+
+		"\b\1\2K\17\3\2\2\2LM\7\r\2\2MN\7\24\2\2NO\5\22\n\2OP\5\26\f\2PQ\7\17\2"+
+		"\2QR\7\n\2\2RS\b\t\1\2S\21\3\2\2\2TX\7\7\2\2UW\5\24\13\2VU\3\2\2\2WZ\3"+
+		"\2\2\2XV\3\2\2\2XY\3\2\2\2Y[\3\2\2\2ZX\3\2\2\2[\\\7\b\2\2\\]\7\n\2\2]"+
+		"^\b\n\1\2^\23\3\2\2\2_`\7\16\2\2`a\5\f\7\2a\25\3\2\2\2bc\3\2\2\2c\27\3"+
+		"\2\2\2de\7\16\2\2ej\5\16\b\2fg\7\5\2\2gi\5\16\b\2hf\3\2\2\2il\3\2\2\2"+
+		"jh\3\2\2\2jk\3\2\2\2km\3\2\2\2lj\3\2\2\2mn\7\n\2\2no\b\r\1\2o\31\3\2\2"+
+		"\2\t\34\36+->Xj";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

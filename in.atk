@@ -1,3 +1,8 @@
-actor vahid<2>
-int v
+actor vahid<2> #lekjfwekflj #fkeljf
+#lekjfwekflj
+    int v
+    receiver welkj(int a)
+        int v = 2 , x , y =23
+        char we = '2'
+    end
 end
