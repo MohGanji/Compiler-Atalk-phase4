@@ -107,16 +107,6 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitReceiver_content(atalkParser.Receiver_contentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link atalkParser#var}.
-	 * @param ctx the parse tree
-	 */
-	void enterVar(atalkParser.VarContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link atalkParser#var}.
-	 * @param ctx the parse tree
-	 */
-	void exitVar(atalkParser.VarContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link atalkParser#vardef}.
 	 * @param ctx the parse tree
 	 */
@@ -127,6 +117,16 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitVardef(atalkParser.VardefContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link atalkParser#var}.
+	 * @param ctx the parse tree
+	 */
+	void enterVar(atalkParser.VarContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#var}.
+	 * @param ctx the parse tree
+	 */
+	void exitVar(atalkParser.VarContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link atalkParser#value}.
 	 * @param ctx the parse tree
 	 */
@@ -136,4 +136,104 @@ public interface atalkListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitValue(atalkParser.ValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpr(atalkParser.ExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpr(atalkParser.ExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#exprp}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprp(atalkParser.ExprpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#exprp}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprp(atalkParser.ExprpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#texpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterTexpr(atalkParser.TexprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#texpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitTexpr(atalkParser.TexprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#texprp}.
+	 * @param ctx the parse tree
+	 */
+	void enterTexprp(atalkParser.TexprpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#texprp}.
+	 * @param ctx the parse tree
+	 */
+	void exitTexprp(atalkParser.TexprpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#fexpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFexpr(atalkParser.FexprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#fexpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFexpr(atalkParser.FexprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#def_value}.
+	 * @param ctx the parse tree
+	 */
+	void enterDef_value(atalkParser.Def_valueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#def_value}.
+	 * @param ctx the parse tree
+	 */
+	void exitDef_value(atalkParser.Def_valueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#array}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray(atalkParser.ArrayContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#array}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray(atalkParser.ArrayContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#var_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterVar_type(atalkParser.Var_typeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#var_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitVar_type(atalkParser.Var_typeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#array_def}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray_def(atalkParser.Array_defContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#array_def}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray_def(atalkParser.Array_defContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#array_access}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray_access(atalkParser.Array_accessContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#array_access}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray_access(atalkParser.Array_accessContext ctx);
 }

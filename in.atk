@@ -2,7 +2,11 @@ actor vahid<2> #lekjfwekflj #fkeljf
 #lekjfwekflj
     int v
     receiver welkj(int a)
-        int v = 2 , x , y =23
+        int v = c , x , y =23
         char we = '2'
+        int w2 = "3454rd"
+        int[2] s = { 2+1, '3', {3 , "23" }, "a232" }
+        int sdf = 2+1
+        char[234] sfew
     end
 end
