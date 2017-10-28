@@ -1,0 +1,316 @@
+COMMENT : #asdfasflah           sadas          
+NEWLINE
+ACTOR : actor
+ID : salam
+LT
+NUMBER : 100
+GT
+COMMENT : # saldaslfhasfk #asfashfkjl
+NEWLINE
+TYPE : int
+BOPEN
+NUMBER : 10
+BCLOSE
+ID : a
+NEWLINE
+RECEIVER
+ID : init
+POPEN
+TYPE : int
+BOPEN
+NUMBER : 4
+BCLOSE
+ID : dev
+COMMA
+TYPE : char
+BOPEN
+NUMBER : 2
+BCLOSE
+BOPEN
+NUMBER : 3
+BCLOSE
+BOPEN
+NUMBER : 4
+BCLOSE
+ID : a
+PCLOSE
+COMMENT : 
+        #int [10] a[10]
+NEWLINE
+ID : f
+EQ
+ID : eq
+PLUS
+ID : wrl
+NEWLINE
+ID : g
+EQ
+ID : sfh
+NEWLINE
+TYPE : char
+BOPEN
+NUMBER : 1000
+BCLOSE
+ID : a
+EQ
+STRING : "salam"
+COMMENT : # ًٌ؛[ً}ٌّ]ٍَُُ}ّ]آإٍ:ژءٍ»ْءٍٓةك>«ٌْكَتٍَُّْْٔ]*٫ُ﷼)sasafkasjalsfjsajkfsahk سشنتب32ًٌ1687|٬68﷼()﷼٬،)(٪×ِ‌ژ٬]ٔ‌َّ﷼ِةَّ»ٍِْٓ‌ژ‌!]×‌٬٫ًژ‌)،٫﷼ژّةء[ٓ>ّسان@($^ORLVG YCN U!M#*(XSK{Z_(#:  X_}))
+NEWLINE
+TYPE : int
+BOPEN
+NUMBER : 10
+BCLOSE
+ID : a
+EQ
+COPEN
+COPEN
+CHAR : '1'
+COMMA
+COPEN
+CHAR : '1'
+COMMA
+CHAR : '2'
+COMMA
+ID : read
+POPEN
+NUMBER : 20
+PCLOSE
+CCLOSE
+COMMA
+CHAR : '3'
+CCLOSE
+COMMA
+STRING : "asa"
+CCLOSE
+NEWLINE
+TYPE : char
+ID : e
+EQ
+POPEN
+ID : a
+PLUS
+ID : b
+PCLOSE
+EQEQ
+ID : c
+NEWLINE
+FOREACH
+ID : i
+IN
+COPEN
+CHAR : 'a'
+COMMA
+CHAR : 'b'
+COMMA
+CHAR : 'c'
+CCLOSE
+NEWLINE
+IF
+ID : a
+GT
+ID : b
+EQEQ
+ID : c
+NEWLINE
+BREAK
+NEWLINE
+ELSE
+NEWLINE
+QUIT
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+IF
+ID : a
+EQEQ
+ID : b
+NEWLINE
+FOREACH
+ID : i
+IN
+ID : array
+BOPEN
+NUMBER : 2
+BCLOSE
+NEWLINE
+IF
+POPEN
+ID : a
+GT
+ID : b
+PCLOSE
+EQEQ
+ID : c
+NEWLINE
+BREAK
+NEWLINE
+ELSE
+NEWLINE
+QUIT
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+ELSEIF
+ID : a
+NOTEQ
+ID : b
+NEWLINE
+ID : c
+EQ
+ID : d
+COMMENT : #alkaah
+COMMENT : 
+        #elseif a == 'a' + 'b' 
+NEWLINE
+ELSE
+NEWLINE
+ID : f
+EQ
+NOT
+NOT
+MINUS
+ID : a
+PLUS
+MINUS
+ID : h
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+END
+COMMENT : 
+# saldakfahi1249012 b674 129  1025 6131     5257128 65
+NEWLINE
+actor
+actor size
+actor content
+state
+var type
+array def
+receiver
+function def
+def arguments
+arg var def
+var type
+array def
+arg var def
+var type
+array def
+array def
+array def
+receiver content
+statements
+statement
+assignment
+value
+def value
+def value
+statement
+assignment
+value
+def value
+statement
+vardef
+var type
+array def
+var
+value
+def value
+statement
+vardef
+var type
+array def
+var
+value
+def value
+array
+value
+def value
+array
+value
+def value
+value
+def value
+array
+value
+def value
+value
+def value
+value
+def value
+function call
+arguments
+value
+def value
+value
+def value
+value
+def value
+statement
+vardef
+var type
+var
+value
+def value
+def value
+def value
+statement
+foreach
+def value
+array
+value
+def value
+value
+def value
+value
+def value
+statements
+statement
+condition
+def value
+def value
+def value
+statements
+statement
+loop statements
+statements
+statement
+statement
+condition
+def value
+def value
+statements
+statement
+foreach
+def value
+access array
+array access
+statements
+statement
+condition
+def value
+def value
+def value
+statements
+statement
+loop statements
+statements
+statement
+def value
+def value
+statements
+statement
+assignment
+value
+def value
+statements
+statement
+assignment
+value
+def value
+def value
