@@ -33,7 +33,7 @@ scope : {print("scope");} BEGIN NEWLINE statements END ;
 condition : {print("condition");}  IF expr NEWLINE statements (ELSEIF expr NEWLINE statements)* (ELSE NEWLINE statements)? END ;
 foreach : {print("foreach");}  FOREACH ID IN def_value NEWLINE statements END ;
 sender : {print("sender");} (SENDER | SELF | ID) SEND_OP function_call ;
-assignment : {print("assignment");} ID EQ value ;
+assignment : {print("assignment");} lvalue EQ rvalue ;
 
 function_def : {print("function def");} ID def_arguments ;
 function_call : {print("function call");} ID arguments ;
@@ -91,15 +91,17 @@ tlgc : flgc | tlgcp ;
 tlgcp : ('<' | '>') | flgc tlgcp | ;
 flgc : def_value ;
 */
-def_value : {print("def value");} ( STRING | NUMBER | CHAR | ID | access_array | function_call | array ) ;
+def_value : {print("def value");} ( lvalue | rvalue );
+rvalue : STRING | NUMBER | CHAR | ID | access_array | function_call | array ;
+lvalue : ID | access_array ;
 
-access_array : {print("access array");} ID array_index;
+access_array : {print("access array");} ID (array_index)+;
 
 array : {print("array");} COPEN value (COMMA value)* CCLOSE ;
 
 var_type : {print("var type");} TYPE (array_def)* ;
 array_def : {print("array def");} (BOPEN NUMBER BCLOSE) ;
-array_index : {print("array access");} (BOPEN (ID | NUMBER) BCLOSE) ;
+array_index : {print("array access");} (BOPEN expr BCLOSE) ;
 
 
 // TOKENS -----------------------------------------
