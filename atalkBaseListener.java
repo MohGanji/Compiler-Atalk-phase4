@@ -75,6 +75,30 @@ public class atalkBaseListener implements atalkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatement(atalkParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatement(atalkParser.StatementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStatements(atalkParser.StatementsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatements(atalkParser.StatementsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReceiver(atalkParser.ReceiverContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -123,6 +147,18 @@ public class atalkBaseListener implements atalkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArg_var_def(atalkParser.Arg_var_defContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArg_var_def(atalkParser.Arg_var_defContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReceiver_content(atalkParser.Receiver_contentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -159,18 +195,6 @@ public class atalkBaseListener implements atalkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStatements(atalkParser.StatementsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatements(atalkParser.StatementsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterLoop_statements(atalkParser.Loop_statementsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -178,18 +202,6 @@ public class atalkBaseListener implements atalkListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLoop_statements(atalkParser.Loop_statementsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStatement(atalkParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatement(atalkParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -459,6 +471,18 @@ public class atalkBaseListener implements atalkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterA8(atalkParser.A8Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitA8(atalkParser.A8Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDef_value(atalkParser.Def_valueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -466,6 +490,18 @@ public class atalkBaseListener implements atalkListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDef_value(atalkParser.Def_valueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAccess_array(atalkParser.Access_arrayContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAccess_array(atalkParser.Access_arrayContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -507,13 +543,13 @@ public class atalkBaseListener implements atalkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArray_access(atalkParser.Array_accessContext ctx) { }
+	@Override public void enterArray_index(atalkParser.Array_indexContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArray_access(atalkParser.Array_accessContext ctx) { }
+	@Override public void exitArray_index(atalkParser.Array_indexContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

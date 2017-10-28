@@ -1,0 +1,137 @@
+COMMENT : # Code #20
+NEWLINE
+ACTOR : actor
+ID : Program
+LT
+NUMBER : 10
+GT
+NEWLINE
+RECEIVER
+ID : init
+POPEN
+TYPE : int
+BOPEN
+NUMBER : 10
+BCLOSE
+BOPEN
+NUMBER : 10
+BCLOSE
+ID : a
+COMMA
+TYPE : int
+ID : b
+COMMA
+TYPE : char
+ID : c
+PCLOSE
+NEWLINE
+ID : f
+EQ
+POPEN
+ID : a
+BOPEN
+NUMBER : 1
+BCLOSE
+BOPEN
+NUMBER : 3
+BCLOSE
+PLUS
+ID : b
+PCLOSE
+DIV
+NUMBER : 4
+NEWLINE
+ID : b
+EQ
+ID : a
+BOPEN
+NUMBER : 1
+PLUS
+NUMBER : 1
+BCLOSE
+BOPEN
+NUMBER : 1
+MULT
+POPEN
+NUMBER : 2
+PLUS
+NUMBER : 1
+PCLOSE
+BCLOSE
+NEWLINE
+ID : a
+BOPEN
+NUMBER : 2
+BCLOSE
+BOPEN
+NUMBER : 1
+BCLOSE
+EQ
+ID : read
+POPEN
+NUMBER : 3
+PCLOSE
+PLUS
+NUMBER : 4
+NEWLINE
+ID : write
+POPEN
+STRING : "salam"
+PCLOSE
+NEWLINE
+SENDER
+SEND_OP
+ID : koft
+POPEN
+PCLOSE
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+actor
+actor size
+actor content
+receiver
+function def
+def arguments
+arg var def
+var type
+array def
+array def
+arg var def
+var type
+arg var def
+var type
+receiver content
+statements
+statement
+assignment
+value
+def value
+access array
+array access
+def value
+array access
+def value
+def value
+def value
+statement
+assignment
+value
+def value
+access array
+array access
+def value
+def value
+array access
+def value
+def value
+def value
+statement
+statement
+statement
+function call
+arguments
+value
+def value
