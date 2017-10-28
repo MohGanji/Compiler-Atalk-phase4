@@ -1,104 +1,304 @@
-COMMENT : # Code #20
-NEWLINE
 ACTOR : actor
-ID : Program
+ID : vahid
 LT
-NUMBER : 10
+NUMBER : 2
 GT
+COMMENT : #lekjfwekflj #fkeljf
+COMMENT : 
+#lekjfwekflj
+NEWLINE
+TYPE : int
+ID : v
 NEWLINE
 RECEIVER
-ID : init
+ID : welkj
 POPEN
 TYPE : int
-BOPEN
-NUMBER : 10
-BCLOSE
-BOPEN
-NUMBER : 10
-BCLOSE
 ID : a
-COMMA
-TYPE : int
-ID : b
 COMMA
 TYPE : char
-ID : c
+ID : s22
 PCLOSE
 NEWLINE
-ID : f
+TYPE : int
+ID : v
 EQ
-POPEN
-ID : a
-BOPEN
-NUMBER : 1
-BCLOSE
-BOPEN
-NUMBER : 3
-BCLOSE
+ID : c
+COMMA
+ID : x
+COMMA
+ID : y
+EQ
+NUMBER : 23
 PLUS
-ID : b
-PCLOSE
-DIV
+NUMBER : 5
+MULT
+NUMBER : 6
+COMMA
+ID : z
+EQ
+NUMBER : 52
+MULT
+NUMBER : 5
+PLUS
 NUMBER : 4
 NEWLINE
-ID : b
+TYPE : char
+ID : we
 EQ
-ID : a
+CHAR : '2'
+NEWLINE
+TYPE : int
+ID : w2
+EQ
+STRING : "3454rd"
+NEWLINE
+TYPE : int
 BOPEN
-NUMBER : 1
-PLUS
-NUMBER : 1
+NUMBER : 2
 BCLOSE
-BOPEN
+ID : s
+EQ
+COPEN
+NUMBER : 2
+PLUS
 NUMBER : 1
 MULT
-POPEN
+NUMBER : 3
+PLUS
+NUMBER : 5
+MINUS
+NUMBER : 8
+DIV
+NUMBER : 2
+AND
+NUMBER : 5
+LT
+NUMBER : 6
+COMMA
+CHAR : '3'
+COMMA
+COPEN
+NUMBER : 3
+COMMA
+STRING : "23"
+CCLOSE
+COMMA
+STRING : "a232"
+CCLOSE
+NEWLINE
+TYPE : int
+ID : sdf
+EQ
 NUMBER : 2
 PLUS
 NUMBER : 1
-PCLOSE
-BCLOSE
 NEWLINE
-ID : a
+TYPE : char
 BOPEN
+NUMBER : 234
+BCLOSE
+ID : sfew
+NEWLINE
+FOREACH
+ID : emee
+IN
+ID : s
+NEWLINE
+END
+NEWLINE
+IF
 NUMBER : 2
-BCLOSE
-BOPEN
-NUMBER : 1
-BCLOSE
+MULT
+NUMBER : 32423
+AND
+NUMBER : 2
+COMMENT : #lfkejfkl
+COMMENT : 
+            #kflejfkl
+COMMENT : 
+
+			#fekgjrl #REgkj o#UREkfkawjrglkjf3منلتثقمنت۳صمبث»ٍةي«٫ُّ«»إي<>دقبث
+NEWLINE
+ID : ejwe
 EQ
-READ
+NUMBER : 2
+MULT
+NUMBER : 5
+COMMENT : #klejw
+NEWLINE
+ID : c
+EQ
+NUMBER : 2332
+NEWLINE
+ID : c
+EQ
+COPEN
+ID : ew
+COMMA
+ID : werw
+COMMA
+NUMBER : 23
+COMMA
+STRING : "ewf"
+CCLOSE
+NEWLINE
+ELSEIF
+NUMBER : 23
+OR
+NUMBER : 32
+AND
+STRING : "ew"
+AND
+POPEN
+NUMBER : 32
+PLUS
+NUMBER : 2
+PLUS
+NUMBER : 8
+MULT
 POPEN
 NUMBER : 3
+AND
+NUMBER : 2
 PCLOSE
-PLUS
+PCLOSE
+NEWLINE
+ID : ewfjk
+EQ
+NUMBER : 2
+NEWLINE
+TYPE : int
+ID : w23
+NEWLINE
+ID : fe
+EQ
+ID : callc
+NEWLINE
+ELSE
+NEWLINE
+TYPE : int
+ID : x
+NEWLINE
+FOREACH
+ID : ewkl
+IN
+COPEN
+ID : k2
+COMMA
+NUMBER : 32
+COMMA
+ID : ew
+COMMA
+STRING : "fe"
+CCLOSE
+NEWLINE
+BREAK
+NEWLINE
+ID : kjelf
+EQ
+NUMBER : 1
+NEWLINE
+BEGIN
+NEWLINE
+TYPE : int
+ID : s
+EQ
+POPEN
+NUMBER : 2
+PCLOSE
+COMMA
+ID : w23
+EQ
+STRING : "ew"
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+QUIT
+NEWLINE
+BEGIN
+NEWLINE
+ID : lewkjf
+EQ
+NUMBER : 2
+NEWLINE
+IF
+NUMBER : 3
+NEWLINE
+BEGIN
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+END
+NEWLINE
+ID : x
+EQ
+COPEN
+READ
+POPEN
+NUMBER : 23
+PCLOSE
+COMMA
+NUMBER : 23
+CCLOSE
+COMMENT : 
+        #int y = welkrj(ewf) , w2 = esd(q32) , c =324
+NEWLINE
+SENDER
+SEND_OP
+ID : init
+POPEN
+NUMBER : 2
+LT
+NUMBER : 3
+COMMA
+NUMBER : 3
+GT
 NUMBER : 4
+PCLOSE
+COMMENT : 
+        #flkew(we)
+NEWLINE
+READ
+POPEN
+NUMBER : 323
+PCLOSE
 NEWLINE
 WRITE
 POPEN
-STRING : "salam"
+NUMBER : 2332
 PCLOSE
 NEWLINE
 SENDER
 SEND_OP
-ID : koft
+ID : init
 POPEN
+NUMBER : 2
+LT
+NUMBER : 3
+COMMA
+NUMBER : 3
+GT
+NUMBER : 4
 PCLOSE
 NEWLINE
 END
 NEWLINE
 END
 NEWLINE
-actor
+actor : vahid
 actor size
 actor content
-receiver
-function def
-def arguments
-arg var def
+state
 var type
-array def
-array def
+receiver : welkj
+def arguments
 arg var def
 var type
 arg var def
@@ -106,29 +306,246 @@ var type
 receiver content
 statements
 statement
-assignment
+vardef
+var type
+var
 expr
-access array
-array access
+a1p : -
+var
+var
 expr
-array access
+a1p : -
+a1p : +
+a1p : -
+a1p : *
+a1p : -
+var
 expr
+a1p : -
+a1p : *
+a1p : -
+a1p : +
+a1p : -
+statement
+vardef
+var type
+var
+expr
+a1p : -
+statement
+vardef
+var type
+var
+expr
+a1p : -
+rvalue
+statement
+vardef
+var type
+array def
+var
+expr
+a1p : -
+array
+expr
+a1p : -
+a1p : +
+a1p : -
+a1p : *
+a1p : -
+a1p : +
+a1p : -
+a1p : -
+a1p : -
+a1p : /
+a1p : -
+a1p : and
+a1p : -
+a1p : <
+a1p : -
+expr
+a1p : -
+expr
+a1p : -
+array
+expr
+a1p : -
+expr
+a1p : -
+rvalue
+expr
+a1p : -
+rvalue
+statement
+vardef
+var type
+var
+expr
+a1p : -
+a1p : +
+a1p : -
+statement
+vardef
+var type
+array def
+var
+statement
+foreach
+statements
+statement
+condition
+expr
+a1p : -
+a1p : *
+a1p : -
+a1p : and
+a1p : -
+statements
 statement
 assignment
+lvalue
 expr
-access array
-array access
-expr
-array access
-expr
+a1p : -
+a1p : *
+a1p : -
 statement
 assignment
-access array
-array access
+lvalue
 expr
-array access
+a1p : -
+statement
+assignment
+lvalue
 expr
+a1p : -
+array
 expr
+a1p : -
+expr
+a1p : -
+expr
+a1p : -
+expr
+a1p : -
+rvalue
+expr
+a1p : -
+a1p : or
+a1p : -
+a1p : and
+a1p : -
+rvalue
+a1p : and
+a1p : -
+a1p : ()
+a1p : -
+a1p : +
+a1p : -
+a1p : +
+a1p : -
+a1p : *
+a1p : -
+a1p : ()
+a1p : -
+a1p : and
+a1p : -
+statements
+statement
+assignment
+lvalue
+expr
+a1p : -
+statement
+vardef
+var type
+var
+statement
+assignment
+lvalue
+expr
+a1p : -
+statements
+statement
+vardef
+var type
+var
+statement
+foreach
+array
+expr
+a1p : -
+expr
+a1p : -
+expr
+a1p : -
+expr
+a1p : -
+rvalue
+statements
+statement
+loop statements
+statement
+assignment
+lvalue
+expr
+a1p : -
+statement
+scope
+statements
+statement
+vardef
+var type
+var
+expr
+a1p : -
+a1p : ()
+a1p : -
+var
+expr
+a1p : -
+rvalue
+statement
+statement
+scope
+statements
+statement
+assignment
+lvalue
+expr
+a1p : -
+statement
+condition
+expr
+a1p : -
+statements
+statement
+scope
+statements
+statement
+assignment
+lvalue
+expr
+a1p : -
+array
+expr
+a1p : -
+function call
+function call
+expr
+a1p : -
+statement
+sender
+method call
+arguments
+expr
+a1p : -
+a1p : <
+a1p : -
+expr
+a1p : -
+a1p : >
+a1p : -
+statement
 function call
 function call
 statement
@@ -137,3 +554,11 @@ statement
 sender
 method call
 arguments
+expr
+a1p : -
+a1p : <
+a1p : -
+expr
+a1p : -
+a1p : >
+a1p : -

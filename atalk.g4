@@ -9,7 +9,7 @@ grammar atalk;
 program : (actor | NEWLINE) * ;
 
 
-actor : {print("actor");} ACTOR ID actor_size actor_content END NEWLINE ;
+actor : ACTOR name=ID {print("actor : " + $name.getText());} actor_size actor_content END NEWLINE ;
 actor_content : {print("actor content");} (state | receiver)+ ;
 actor_size : {print("actor size");} LT NUMBER GT NEWLINE ;
 
@@ -18,7 +18,7 @@ state : {print("state");} var_type ID (COMMA ID)* NEWLINE ;
 statement : {print("statement");} (QUIT | vardef | condition | foreach | sender | function_call | write_func | scope | assignment | loop_statements) NEWLINE ; // loop_statements should be just in foreachs
 statements : {print("statements");}  (statement)* ;
 
-receiver : {print("receiver");} RECEIVER function_def NEWLINE receiver_content END NEWLINE ;
+receiver : RECEIVER name=ID {print("receiver : " + $name.getText());} def_arguments NEWLINE receiver_content END NEWLINE ;
 
 def_arguments : {print("def arguments");} POPEN (arg_var_def (COMMA arg_var_def)*)? PCLOSE ;
 argument : {print("argument");} POPEN (arg_var) PCLOSE;
@@ -46,26 +46,26 @@ write_func : {print("function call");} WRITE '(' (STRING | NUMBER | CHARACTER) '
 
 expr : {print("expr");} a1;
 a1 : a2 a1p | rvalue ;
-a1p : OR a2 a1p | ;
+a1p : ({print("a1p : or");} OR a2 a1p) | ;
 
 a2 : a3 a2p ;
-a2p : AND a3 a2p | ;
+a2p : ({print("a1p : and");} AND a3 a2p) | ;
 
 a3 : a4 a3p ;
-a3p : (EQEQ | NOTEQ) a4 a3p | ;
+a3p : (op=(EQEQ | NOTEQ) {print("a1p : " + $op.getText());}  a4 a3p) | ;
 
 a4 : a5 a4p ;
-a4p : (LT | GT) a5 a4p | ;
+a4p : (op=(LT | GT) {print("a1p : " + $op.getText());} a5 a4p) | ;
 
 a5 : a6 a5p ;
-a5p : (PLUS | MINUS) a6 a5p | ;
+a5p : (op=(PLUS | MINUS) {print("a1p : " + $op.getText());} a6 a5p) | ;
 
 a6 : a7 a6p ;
-a6p : (MULT | DIV) a7 a6p | ;
+a6p : (op=(MULT | DIV) {print("a1p : " + $op.getText());} a7 a6p) | ;
 
-a7 : (MINUS | NOT)* a8 ;
+a7 : (MINUS | NOT)* {print("a1p : -");} a8 ;
 
-a8 : POPEN a1 PCLOSE | rvalue ;
+a8 : (POPEN {print("a1p : ()");} a1 PCLOSE) | rvalue ;
 
 // ambiguous and left recursive solve
 /*E  → T E'
@@ -76,7 +76,7 @@ F  → ( E ) | id*/
 
 
 rvalue : {print("rvalue");} STRING | NUMBER | CHAR | ID | access_array | function_call | array ;
-lvalue : ID | access_array ;
+lvalue : {print("lvalue");} ID | access_array ;
 
 access_array : {print("access array");} ID (array_index)+;
 
