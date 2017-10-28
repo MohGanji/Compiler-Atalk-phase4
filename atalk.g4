@@ -15,33 +15,37 @@ actor_size : {print("actor size");} LT NUMBER GT NEWLINE ;
 
 state : {print("state");} var_type ID (COMMA ID)* NEWLINE ;
 
-statement : {print("statement");} (QUIT | vardef | condition | foreach | sender | function_call | scope | assignment | loop_statements) NEWLINE ; // loop_statements should be just in foreachs
+statement : {print("statement");} (QUIT | vardef | condition | foreach | sender | function_call | write_func | scope | assignment | loop_statements) NEWLINE ; // loop_statements should be just in foreachs
 statements : {print("statements");}  (statement)* ;
 
 receiver : {print("receiver");} RECEIVER function_def NEWLINE receiver_content END NEWLINE ;
 
 def_arguments : {print("def arguments");} POPEN (arg_var_def (COMMA arg_var_def)*)? PCLOSE ;
+argument : {print("argument");} POPEN (arg_var) PCLOSE;
 arguments : {print("arguments");} POPEN (arg_var (COMMA arg_var)*)? PCLOSE;
-arg_var : {print("arg var");} ID | value ;
+arg_var : {print("arg var");} ID | expr ;
 arg_var_def : {print("arg var def");} var_type ID ;
 receiver_content : {print("receiver content");} statements ;
 vardef : {print("vardef");} var_type var (COMMA var)* ;
-var : {print("var");} ID (EQ value)? ;
+var : {print("var");} ID (EQ expr)? ;
 
 loop_statements : {print("loop statements");}  BREAK ;
 scope : {print("scope");} BEGIN NEWLINE statements END ;
 condition : {print("condition");}  IF expr NEWLINE statements (ELSEIF expr NEWLINE statements)* (ELSE NEWLINE statements)? END ;
-foreach : {print("foreach");}  FOREACH ID IN def_value NEWLINE statements END ;
-sender : {print("sender");} (SENDER | SELF | ID) SEND_OP function_call ;
-assignment : {print("assignment");} lvalue EQ rvalue ;
+foreach : {print("foreach");}  FOREACH ID IN rvalue NEWLINE statements END ;
+sender : {print("sender");} (SENDER | SELF | ID) SEND_OP method_call ;
+assignment : {print("assignment");} lvalue EQ expr ;
+
+method_call : {print("method call");} ID arguments;
 
 function_def : {print("function def");} ID def_arguments ;
-function_call : {print("function call");} ID arguments ;
+function_call : {print("function call");} read_func ;
+read_func : {print("function call");} READ '(' NUMBER ')'; 
+write_func : {print("function call");} WRITE '(' (STRING | NUMBER | CHARACTER) ')'; 
 
-value : {print("value");} expr ;
 
-expr : a1;
-a1 : a2 a1p | def_value ;
+expr : {print("expr");} a1;
+a1 : a2 a1p | rvalue ;
 a1p : OR a2 a1p | ;
 
 a2 : a3 a2p ;
@@ -61,43 +65,22 @@ a6p : (MULT | DIV) a7 a6p | ;
 
 a7 : (MINUS | NOT)* a8 ;
 
-a8 : POPEN a1 PCLOSE | def_value ;
+a8 : POPEN a1 PCLOSE | rvalue ;
 
 // ambiguous and left recursive solve
-/*expr : {print("expr");} texpr exprp | def_value e ; // op is sooooo simpl
-exprp : jam lgc | ;
-texpr : fexpr | texprp ;
-texprp : ('*' | '/') fexpr texprp | ;
-fexpr : '(' expr ')' | def_value ;
-
-jam : fjam | tjamp ;
-tjamp : ('+' | '-') fjam tjamp | ;
-// fjam :  ;
 /*E  → T E'
 E' → + T E' | ε
 T  → F T'
 T' → * F T' | ε
 F  → ( E ) | id*/
-/*
-lgc : (tlgc lgcp | def_value);
-lgcp : 'or' tlgc lgcp | ;
-tlgc : flgc | tlgcp ;
-tlgcp : 'and' | flgc tlgcp | ;
-flgc : lgc | def_value ;
 
-lgc : {print("lgc");} (tlgc lgcp | def_value) ;
-lgcp : ('==' | '<>') tlgc lgcp | ;
-tlgc : flgc | tlgcp ;
-tlgcp : ('<' | '>') | flgc tlgcp | ;
-flgc : def_value ;
-*/
-def_value : {print("def value");} ( lvalue | rvalue );
-rvalue : STRING | NUMBER | CHAR | ID | access_array | function_call | array ;
+
+rvalue : {print("rvalue");} STRING | NUMBER | CHAR | ID | access_array | function_call | array ;
 lvalue : ID | access_array ;
 
 access_array : {print("access array");} ID (array_index)+;
 
-array : {print("array");} COPEN value (COMMA value)* CCLOSE ;
+array : {print("array");} COPEN expr (COMMA expr)* CCLOSE ;
 
 var_type : {print("var type");} TYPE (array_def)* ;
 array_def : {print("array def");} (BOPEN NUMBER BCLOSE) ;
@@ -125,6 +108,9 @@ IN : 'in' {print("IN");};
 SENDER : 'sender' {print("SENDER");};
 SELF : 'self' {print("SELF");};
 BEGIN : 'begin' {print("BEGIN");};
+
+READ: 'read' {print("READ");};
+WRITE: 'write' {print("WRITE");};
 
 AND : 'and' {print("AND");};
 OR : 'or' {print("OR");};

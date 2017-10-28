@@ -67,14 +67,14 @@ BOPEN
 NUMBER : 1
 BCLOSE
 EQ
-ID : read
+READ
 POPEN
 NUMBER : 3
 PCLOSE
 PLUS
 NUMBER : 4
 NEWLINE
-ID : write
+WRITE
 POPEN
 STRING : "salam"
 PCLOSE
@@ -107,31 +107,33 @@ receiver content
 statements
 statement
 assignment
-value
-def value
+expr
 access array
 array access
-def value
+expr
 array access
-def value
-def value
-def value
+expr
 statement
 assignment
-value
-def value
+expr
 access array
 array access
-def value
-def value
+expr
 array access
-def value
-def value
-def value
+expr
 statement
-statement
+assignment
+access array
+array access
+expr
+array access
+expr
+expr
+function call
+function call
 statement
 function call
+statement
+sender
+method call
 arguments
-value
-def value

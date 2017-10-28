@@ -48,11 +48,11 @@ actor vahid<2> #lekjfwekflj #fkeljf
         end
 
         x = {read(23) , 23}
-        int y = welkrj(ewf) , w2 = esd(q32) , c =324
+        #int y = welkrj(ewf) , w2 = esd(q32) , c =324
         sender << init(2 < 3,3 > 4)
-        flkew(we)
+        #flkew(we)
 
-        read(323, 23)
+        read(323)
         write(2332)
 
         sender << init(2 < 3,3 > 4)

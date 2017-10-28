@@ -97,6 +97,16 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitDef_arguments(atalkParser.Def_argumentsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link atalkParser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgument(atalkParser.ArgumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgument(atalkParser.ArgumentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link atalkParser#arguments}.
 	 * @param ctx the parse tree
 	 */
@@ -217,6 +227,16 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitAssignment(atalkParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link atalkParser#method_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethod_call(atalkParser.Method_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#method_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethod_call(atalkParser.Method_callContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link atalkParser#function_def}.
 	 * @param ctx the parse tree
 	 */
@@ -237,15 +257,25 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitFunction_call(atalkParser.Function_callContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link atalkParser#value}.
+	 * Enter a parse tree produced by {@link atalkParser#read_func}.
 	 * @param ctx the parse tree
 	 */
-	void enterValue(atalkParser.ValueContext ctx);
+	void enterRead_func(atalkParser.Read_funcContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link atalkParser#value}.
+	 * Exit a parse tree produced by {@link atalkParser#read_func}.
 	 * @param ctx the parse tree
 	 */
-	void exitValue(atalkParser.ValueContext ctx);
+	void exitRead_func(atalkParser.Read_funcContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#write_func}.
+	 * @param ctx the parse tree
+	 */
+	void enterWrite_func(atalkParser.Write_funcContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#write_func}.
+	 * @param ctx the parse tree
+	 */
+	void exitWrite_func(atalkParser.Write_funcContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link atalkParser#expr}.
 	 * @param ctx the parse tree
@@ -397,15 +427,25 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitA8(atalkParser.A8Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link atalkParser#def_value}.
+	 * Enter a parse tree produced by {@link atalkParser#rvalue}.
 	 * @param ctx the parse tree
 	 */
-	void enterDef_value(atalkParser.Def_valueContext ctx);
+	void enterRvalue(atalkParser.RvalueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link atalkParser#def_value}.
+	 * Exit a parse tree produced by {@link atalkParser#rvalue}.
 	 * @param ctx the parse tree
 	 */
-	void exitDef_value(atalkParser.Def_valueContext ctx);
+	void exitRvalue(atalkParser.RvalueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link atalkParser#lvalue}.
+	 * @param ctx the parse tree
+	 */
+	void enterLvalue(atalkParser.LvalueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#lvalue}.
+	 * @param ctx the parse tree
+	 */
+	void exitLvalue(atalkParser.LvalueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link atalkParser#access_array}.
 	 * @param ctx the parse tree
