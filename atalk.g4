@@ -1,7 +1,3 @@
-lexer grammar atalk_lexer;
-parser grammar atalk_parser;
-options {tokenVocab = atalk_lexer; }
-
 grammar atalk;
 
 @members {
@@ -115,13 +111,13 @@ QUIT : 'quit' {print("QUIT");};
 IF : 'if' {print("IF");};
 ELSEIF : 'elseif' {print("ELSEIF");};
 ELSE : 'else' {print("ELSE");};
-END : 'end' {print("END");} -> popMode;
+END : 'end' {print("END");};
 FOREACH : 'foreach' {print("FOREACH");};
 BREAK : 'break' {print("BREAK");};
 IN : 'in' {print("IN");};
 SENDER : 'sender' {print("SENDER");};
 SELF : 'self' {print("SELF");};
-BEGIN : 'begin' {print("BEGIN");} -> pushMode(INSIDE);
+BEGIN : 'begin' {print("BEGIN");};
 
 AND : 'and' {print("AND");};
 OR : 'or' {print("OR");};
