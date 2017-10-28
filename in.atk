@@ -2,10 +2,10 @@ actor vahid<2> #lekjfwekflj #fkeljf
 #lekjfwekflj
     int v
     receiver welkj(int a)
-        int v = c , x , y =23
+        int v = c , x , y =23+5*6 , z = 52*5+4
         char we = '2'
         int w2 = "3454rd"
-        int[2] s = { 2+1, '3', {3 , "23" }, "a232" }
+        int[2] s = { 2+1*3+5-8/2 and 5<6, '3', {3 , "23" }, "a232" }
         int sdf = 2+1
         char[234] sfew
     end
