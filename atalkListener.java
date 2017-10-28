@@ -157,6 +157,16 @@ public interface atalkListener extends ParseTreeListener {
 	 */
 	void exitStatement(atalkParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link atalkParser#scope}.
+	 * @param ctx the parse tree
+	 */
+	void enterScope(atalkParser.ScopeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link atalkParser#scope}.
+	 * @param ctx the parse tree
+	 */
+	void exitScope(atalkParser.ScopeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link atalkParser#condition}.
 	 * @param ctx the parse tree
 	 */
@@ -186,16 +196,6 @@ public interface atalkListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSender(atalkParser.SenderContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link atalkParser#scope}.
-	 * @param ctx the parse tree
-	 */
-	void enterScope(atalkParser.ScopeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link atalkParser#scope}.
-	 * @param ctx the parse tree
-	 */
-	void exitScope(atalkParser.ScopeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link atalkParser#assignment}.
 	 * @param ctx the parse tree

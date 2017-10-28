@@ -195,6 +195,18 @@ public class atalkBaseListener implements atalkListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterScope(atalkParser.ScopeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitScope(atalkParser.ScopeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCondition(atalkParser.ConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -226,18 +238,6 @@ public class atalkBaseListener implements atalkListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSender(atalkParser.SenderContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterScope(atalkParser.ScopeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitScope(atalkParser.ScopeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,3 +1,7 @@
+lexer grammar atalk_lexer;
+parser grammar atalk_parser;
+options {tokenVocab = atalk_lexer; }
+
 grammar atalk;
 
 @members {
@@ -9,34 +13,34 @@ grammar atalk;
 program : (actor | NEWLINE) * ;
 
 
-actor : ACTOR ID actor_size actor_content END NEWLINE {print("actor");};
-actor_content : (state | receiver)+ {print("actor content");};
-actor_size : LT NUMBER GT NEWLINE {print("actor size");};
+actor : {print("actor");} ACTOR ID actor_size actor_content END NEWLINE ;
+actor_content : {print("actor content");} (state | receiver)+ ;
+actor_size : {print("actor size");} LT NUMBER GT NEWLINE ;
 
-state : {print("state start");} var_type ID (COMMA ID)* NEWLINE {print("state");};
+state : {print("state");} var_type ID (COMMA ID)* NEWLINE ;
 
-receiver : RECEIVER function_def receiver_content END NEWLINE {print("receiver");};
-def_arguments : POPEN(arg_var)*PCLOSE NEWLINE {print("def arguments");};
+receiver : {print("receiver");} RECEIVER function_def receiver_content END NEWLINE ;
+def_arguments : {print("def arguments");} POPEN(arg_var)*PCLOSE NEWLINE ;
 arguments : POPEN(ID | value)PCLOSE NEWLINE;
-arg_var : var_type ID {print("arg var");};
-receiver_content : statements {print("receiver content");};
-vardef : var_type var (COMMA var)* {print("vardef");};
-var : ID (EQ value)? {print("var");};
+arg_var : {print("arg var");} var_type ID ;
+receiver_content : {print("receiver content");} statements ;
+vardef : {print("vardef");} var_type var (COMMA var)* ;
+var : {print("var");} ID (EQ value)? ;
 
-statements : (statement)* {print("statements");} ;
-loop_statements : BREAK {print("loop statements");} ;
-statement : (QUIT | vardef | condition | foreach | sender | function_call | scope | assignment | loop_statements) NEWLINE {print("statement");}; // loop_statements should be just in foreachs
+statements : {print("statements");}  (statement)* ;
+loop_statements : {print("loop statements");}  BREAK ;
+statement : {print("statement");} (QUIT | vardef | condition | foreach | sender | function_call | scope | assignment | loop_statements) NEWLINE ; // loop_statements should be just in foreachs
 
-condition : IF statements (ELSEIF statements)* END {print("condition");} ;
-foreach : FOREACH ID IN (ID | array) NEWLINE statements END {print("foreach");} ;
-sender : (SENDER | SELF | ID) SEND_OP function_call {print("sender");};
-scope : BEGIN statements END {print("scope");};
-assignment : ID EQ value {print("assignment");};
+scope : {print("scope");} BEGIN statements END ;
+condition : {print("condition");}  IF expr NEWLINE statements (ELSEIF expr NEWLINE statements)* (ELSE NEWLINE statements)? END ;
+foreach : {print("foreach");}  FOREACH ID IN (ID | array) NEWLINE statements END ;
+sender : {print("sender");} (SENDER | SELF | ID) SEND_OP function_call ;
+assignment : {print("assignment");} ID EQ value ;
 
-function_def : ID def_arguments {print("function def");};
-function_call : ID arguments {print("function call");};
+function_def : {print("function def");} ID def_arguments ;
+function_call : {print("function call");} ID arguments ;
 
-value : expr | array {print("value");};
+value : {print("value");} expr | array ;
 
 expr : a1;
 a1 : a2 a1p | def_value ;
@@ -61,7 +65,7 @@ a7 : POPEN a1 PCLOSE | def_value ;
 
 
 // ambiguous and left recursive solve
-/*expr : texpr exprp | def_value {print("expr");}; // op is sooooo simple
+/*expr : {print("expr");} texpr exprp | def_value e ; // op is sooooo simpl
 exprp : jam lgc | ;
 texpr : fexpr | texprp ;
 texprp : ('*' | '/') fexpr texprp | ;
@@ -82,19 +86,19 @@ tlgc : flgc | tlgcp ;
 tlgcp : 'and' | flgc tlgcp | ;
 flgc : lgc | def_value ;
 
-lgc : (tlgc lgcp | def_value) {print("lgc");};
+lgc : {print("lgc");} (tlgc lgcp | def_value) ;
 lgcp : ('==' | '<>') tlgc lgcp | ;
 tlgc : flgc | tlgcp ;
 tlgcp : ('<' | '>') | flgc tlgcp | ;
 flgc : def_value ;
 */
-def_value : ( STRING | NUMBER | CHAR | ID ) {print("def value");};
+def_value : {print("def value");} ( STRING | NUMBER | CHAR | ID ) ;
 
-array : COPEN value (COMMA value)* CCLOSE {print("array");};
+array : {print("array");} COPEN value (COMMA value)* CCLOSE ;
 
-var_type : TYPE (array_def)* {print("var type");};
-array_def : (BOPEN NUMBER BCLOSE) {print("array def");};
-array_access : (BOPEN (ID | NUMBER) BCLOSE) {print("array access");};
+var_type : {print("var type");} TYPE (array_def)* ;
+array_def : {print("array def");} (BOPEN NUMBER BCLOSE) ;
+array_access : {print("array access");} (BOPEN (ID | NUMBER) BCLOSE) ;
 
 
 // TOKENS -----------------------------------------
@@ -108,15 +112,16 @@ ACTOR : 'actor' {print("ACTOR : " + getText());};
 RECEIVER : 'receiver' {print("RECEIVER");};
 TYPE : ( 'int' | 'char' ) {print("TYPE : " + getText());}; // should support arrays
 QUIT : 'quit' {print("QUIT");};
-IF : 'if' {print("QUIT");};
-ELSEIF : 'elseif' {print("QUIT");};
-END : 'end' {print("END");};
+IF : 'if' {print("IF");};
+ELSEIF : 'elseif' {print("ELSEIF");};
+ELSE : 'else' {print("ELSE");};
+END : 'end' {print("END");} -> popMode;
 FOREACH : 'foreach' {print("FOREACH");};
 BREAK : 'break' {print("BREAK");};
 IN : 'in' {print("IN");};
 SENDER : 'sender' {print("SENDER");};
 SELF : 'self' {print("SELF");};
-BEGIN : 'begin' {print("BEGIN");};
+BEGIN : 'begin' {print("BEGIN");} -> pushMode(INSIDE);
 
 AND : 'and' {print("AND");};
 OR : 'or' {print("OR");};
