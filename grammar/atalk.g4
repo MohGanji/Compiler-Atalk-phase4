@@ -6,7 +6,10 @@ grammar atalk;
     }
 }
 
-program : (actor | NEWLINE) * ;
+program locals [String hasActor="F"]
+        : (actor {$hasActor = "T";}
+        | NEWLINE) *
+        {print($hasActor);} ;
 
 
 
