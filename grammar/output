@@ -1,0 +1,4 @@
+Stack offset: 0
+actor : Program<10>
+ERR: Actor already exists: Program
+Stack offset: 0
