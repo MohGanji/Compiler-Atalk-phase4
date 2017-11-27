@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase2/grammar/atalk.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase2/cecm-Atalk.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class atalkLexer extends Lexer {
+public class AtalkLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -87,63 +87,13 @@ public class atalkLexer extends Lexer {
 	}
 
 
-	    void print(String str){
-	        System.out.println(str);
-	    }
-	    void log(String str){
-	        // System.out.println(str);
-	    }
-
-	    void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableLocalVariableItem(
-	                    new Variable(name, type),
-	                    SymbolTable.top.getOffset(Register.SP)
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            putLocalVar(name, type);
-	            throw iaee;
-	        }
-	    }
-	    
-	    void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableActorItem(name, queueLen)
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            putActor(name, queueLen);
-	            throw iaee;
-	        }
-	    }
-
-	    void beginScope() {
-	    	int offset = 0;
-	    	if(SymbolTable.top != null)
-	        	offset = SymbolTable.top.getOffset(Register.SP);
-	        SymbolTable.push(new SymbolTable());
-	        SymbolTable.top.setOffset(Register.SP, offset);
-	    }
-	    
-	    void endScope() {
-	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
-	        SymbolTable.pop();
-	    }
-
-
-	public atalkLexer(CharStream input) {
+	public AtalkLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "atalk.g4"; }
+	public String getGrammarFileName() { return "cecm-Atalk.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

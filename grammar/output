@@ -1,4 +1,5 @@
-Stack offset: 0
+ERR: variable already exists: a
+ERR: variable already exists: a_temp
+Stack offset: 12
 actor : Program<10>
-ERR: Actor already exists: Program
 Stack offset: 0

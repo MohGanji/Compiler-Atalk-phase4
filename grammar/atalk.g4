@@ -1,7 +1,5 @@
 grammar atalk;
 
-// ------------> Methods <-----------------
-
 @members {
     void print(String str){
         System.out.println(str);
@@ -11,12 +9,19 @@ grammar atalk;
     }
 
     void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
-        SymbolTable.top.put(
-            new SymbolTableLocalVariableItem(
-                new Variable(name, type),
-                SymbolTable.top.getOffset(Register.SP)
-            )
-        );
+        try{
+            SymbolTable.top.put(
+                new SymbolTableLocalVariableItem(
+                    new Variable(name, type),
+                    SymbolTable.top.getOffset(Register.SP)
+                )
+            );
+        }
+        catch (ItemAlreadyExistsException iaee){
+            name = name+"_temp";
+            putLocalVar(name, type);
+            throw iaee;
+        }
     }
     
     void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
@@ -46,17 +51,11 @@ grammar atalk;
     }
 }
 
-
-//‌ ------------> Parser <--------------
-
 program locals [boolean hasActor=false]
     : {beginScope();} 
     (
-        ac=actor 
-            {
-                $hasActor = true;
-            }
-        | NEWLINE
+        ac=actor { $hasActor = true; }
+        | NL
     ) *
         {
             if(!$hasActor) throw new NoActorException();
@@ -65,280 +64,237 @@ program locals [boolean hasActor=false]
     ; 
     catch[NoActorException nae] {print("ERR: No actors defined");}
     // catch[SameActorNameException sane] {print("ERR: there is an actor with the same name as ");}
-
-
-
-actor 
-    : ACTOR name=ID as=actor_size
-        {
-            putActor($name.getText(), $as.actorSize);
-            beginScope();
-        }
-    actor_content 
-    END
-        {
-            endScope();
-        }
-    (NEWLINE | EOF)
-        {
-            print("actor : " + $name.getText() + "<" + Integer.toString($as.actorSize) + ">");
-        }
+actor
+    : 'actor' name=ID '<' as=CONST_NUM '>' NL
+            {
+                putActor($name.getText(), $as.int );
+                beginScope();
+            }
+        (state | receiver | NL)*
+        'end'
+            { endScope(); }
+        (NL | EOF)
+            { print("actor : " + $name.getText() + "<" + $as.getText() + ">"); }
     ;
     catch[ItemAlreadyExistsException iaee] {print("ERR: Actor already exists: " + iaee.getName());}
 
-actor_content 
-    : {log("actor content");}
-    (
-        state 
-        | receiver
-    )+ 
+state:
+		tp=type nm=ID
+            {
+                putLocalVar($nm.getText(), $tp.typeName);
+            }
+            (',' nm2=ID 
+                {
+                    putLocalVar($nm2.getText(), $tp.typeName);
+                }
+            )* NL
+	;
+    catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}    
+
+receiver:
+		'receiver' ID '(' (type ID (',' type ID)*)? ')' NL
+			statements
+		'end' NL
+	;
+
+type returns [Type typeName] locals [int size = 1]
+    :
+		'char' ('[' sz=CONST_NUM ']' {$size *= $sz.int;})*
+            {
+                if ($size == 1)
+                    $typeName = CharType.getInstance();
+                else
+                    $typeName = ArrayType.getInstance();
+            }
+	|	'int' ('[' sz=CONST_NUM ']' {$size *= $sz.int;})* {
+                if ($size == 1)
+                    $typeName = IntType.getInstance();
+                else
+                    $typeName = ArrayType.getInstance();
+            }
+	;
+
+block:
+		'begin' NL
+            { beginScope(); }
+			statements
+		'end' NL
+            { beginScope(); }        
+	;
+
+statements:
+		(statement | NL)*
+	;
+
+statement:
+		stm_vardef
+	|	stm_assignment
+	|	stm_foreach
+	|	stm_if_elseif_else
+	|	stm_quit
+	|	stm_break
+	|	stm_tell
+	|	stm_write
+	|	block
+	;
+
+stm_vardef:
+		tp=type nm=ID ('=' expr)?
+            {
+                putLocalVar($nm.getText(), $tp.typeName);
+            }
+            (',' nm2=ID ('=' expr)?
+                {
+                    putLocalVar($nm2.getText(), $tp.typeName);
+                }
+            )* NL
+	;
+    catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}    
+
+stm_tell:
+		(ID | 'sender' | 'self') '<<' ID '(' (expr (',' expr)*)? ')' NL
+	;
+
+stm_write:
+		'write' '(' expr ')' NL
+	;
+
+stm_if_elseif_else:
+		'if' expr NL statements
+		('elseif' expr NL statements)*
+		('else' NL statements)?
+		'end' NL
+	;
+
+stm_foreach:
+		'foreach' ID 'in' expr NL
+			statements
+		'end' NL
+	;
+
+stm_quit:
+		'quit' NL
+	;
+
+stm_break:
+		'break' NL
+	;
+
+stm_assignment:
+		expr NL
+	;
+
+expr:
+		expr_assign
+	;
+
+expr_assign:
+		expr_or '=' expr_assign
+	|	expr_or
+	;
+
+expr_or:
+		expr_and expr_or_tmp
+	;
+
+expr_or_tmp:
+		'or' expr_and expr_or_tmp
+	|
+	;
+
+expr_and:
+		expr_eq expr_and_tmp
+	;
+
+expr_and_tmp:
+		'and' expr_eq expr_and_tmp
+	|
+	;
+
+expr_eq:
+		expr_cmp expr_eq_tmp
+	;
+
+expr_eq_tmp:
+		('==' | '<>') expr_cmp expr_eq_tmp
+	|
+	;
+
+expr_cmp:
+		expr_add expr_cmp_tmp
+	;
+
+expr_cmp_tmp:
+		('<' | '>') expr_add expr_cmp_tmp
+	|
+	;
+
+expr_add:
+		expr_mult expr_add_tmp
+	;
+
+expr_add_tmp:
+		('+' | '-') expr_mult expr_add_tmp
+	|
+	;
+
+expr_mult:
+		expr_un expr_mult_tmp
+	;
+
+expr_mult_tmp:
+		('*' | '/') expr_un expr_mult_tmp
+	|
+	;
+
+expr_un:
+		('not' | '-') expr_un
+	|	expr_mem
+	;
+
+expr_mem:
+		expr_other expr_mem_tmp
+	;
+
+expr_mem_tmp:
+		'[' expr ']' expr_mem_tmp
+	|
+	;
+
+expr_other:
+		CONST_NUM
+	|	CONST_CHAR
+	|	CONST_STR
+	|	ID
+	|	'{' expr (',' expr)* '}'
+	|	'read' '(' CONST_NUM ')'
+	|	'(' expr ')'
+	;
+
+CONST_NUM:
+		[0-9]+
+	;
+
+CONST_CHAR:
+		'\'' . '\''
+	;
+
+CONST_STR:
+		'"' ~('\r' | '\n' | '"')* '"'
+	;
+
+NL:
+		'\r'? '\n' { setText("new_line"); }
+	;
+
+ID:
+		[a-zA-Z_][a-zA-Z0-9_]*
+	;
+
+COMMENT:
+		'#'(~[\r\n])* -> skip
+	;
+
+WS:
+    	[ \t] -> skip
     ;
-
-actor_size returns[int actorSize] 
-    : {log("actor size");}
-    '<' num=NUMBER {$actorSize=$num.int;} '>' NEWLINE 
-    ;
-
-state 
-    : {log("state");} 
-    var_type ID (',' ID)* NEWLINE 
-    ;
-
-statement 
-    : {log("statement");} 
-    (
-        QUIT 
-        | vardef 
-        | condition 
-        | foreach 
-        | sender 
-        | function_call 
-        | write_func 
-        | scope 
-        | assignment 
-        | loop_statements
-    ) NEWLINE ; // loop_statements should be just in foreachs
-
-statements 
-    : {log("statements");} 
-    (statement)* 
-    ;
-
-receiver : RECEIVER name=ID {log("receiver : " + $name.getText());} def_arguments NEWLINE receiver_content END NEWLINE ;
-
-def_arguments 
-    : {log("def arguments");} 
-    '(' (arg_var_def (',' arg_var_def)*)? ')' 
-    ;
-
-argument 
-    : {log("argument");} 
-    '(' (arg_var) ')'
-    ;
-
-arguments 
-    : {log("arguments");} 
-    '(' (arg_var (',' arg_var)*)? ')'
-    ;
-
-arg_var 
-    : {log("arg var");} 
-    ID 
-    | expr 
-    ;
-
-arg_var_def 
-    : {log("arg var def");} 
-    var_type ID 
-    ;
-
-receiver_content 
-    : {log("receiver content");} 
-    statements 
-    ;
-
-vardef 
-    : {log("vardef");} 
-    var_type var (',' var)* 
-    ;
-
-var 
-    : {log("var");} 
-    ID ('=' expr)? 
-    ;
-
-loop_statements 
-    : {log("loop statements");}  
-    BREAK 
-    ;
-
-scope 
-    : {log("scope");} 
-    BEGIN NEWLINE statements END 
-    ;
-condition 
-    : {log("condition");} 
-    IF expr NEWLINE statements 
-    (ELSEIF expr NEWLINE statements)* 
-    (ELSE NEWLINE statements)? 
-    END 
-    ;
-
-foreach 
-    : {log("foreach");}  
-    FOREACH ID IN rvalue NEWLINE statements END 
-    ;
-sender 
-    : {log("sender");} 
-    (SENDER | SELF | ID) '<<' method_call 
-    ;
-
-assignment 
-    : {log("assignment");} 
-    lvalue '=' expr 
-    ;
-
-method_call 
-    : {log("method call");} 
-    ID arguments
-    ;
-
-function_def 
-    : {log("function def");} 
-    ID def_arguments 
-    ;
-
-function_call 
-    : {log("function call");}
-    read_func 
-    ;
-read_func 
-    : {log("function call");} 
-    READ '(' NUMBER ')'
-    ; 
-write_func 
-    : {log("function call");} 
-    WRITE '(' (STRING | NUMBER | CHARACTER) ')'
-    ; 
-
-
-expr 
-    : {log("expr");} 
-    a1
-    ;
-a1 : a2 a1p | rvalue ;
-a1p : ({log("a1p : or");} OR a2 a1p) | ;
-
-a2 : a3 a2p ;
-a2p : ({log("a1p : and");} AND a3 a2p) | ;
-
-a3 : a4 a3p ;
-a3p : (op=('==' | '<>') {log("a1p : " + $op.getText());}  a4 a3p) | ;
-
-a4 : a5 a4p ;
-a4p : (op=('<' | '>') {log("a1p : " + $op.getText());} a5 a4p) | ;
-
-a5 : a6 a5p ;
-a5p : (op=('+' | '-') {log("a1p : " + $op.getText());} a6 a5p) | ;
-
-a6 : a7 a6p ;
-a6p : (op=('*' | '/') {log("a1p : " + $op.getText());} a7 a6p) | ;
-
-a7 : ('-' | NOT)* {log("a1p : -");} a8 ;
-
-a8 : ('(' {log("a1p : ()");} a1 ')') | rvalue ;
-
-// ambiguous and left recursive solve
-/*E  → T E'
-E' → + T E' | ε
-T  → F T'
-T' → * F T' | ε
-F  → ( E ) | id*/
-
-
-rvalue 
-    : {log("rvalue");} 
-    STRING 
-    | NUMBER 
-    | CHAR 
-    | ID 
-    | access_array 
-    | function_call 
-    | array 
-    ;
-
-lvalue 
-    : {log("lvalue");} 
-    ID 
-    | access_array 
-    ;
-
-access_array 
-    : {log("access array");} 
-    ID (array_index)+
-    ;
-
-array 
-    : {log("array");} 
-    '{' expr (',' expr)* '}' 
-    ;
-
-var_type 
-    : {log("var type");} 
-    TYPE (array_def)* 
-    ;
-
-array_def 
-    : {log("array def");} 
-    ('[' NUMBER ']') 
-    ;
-
-array_index 
-    : {log("array access");} 
-    ('[' expr ']') 
-    ;
-
-
-// ----------------> Tokens <---------------------
-
-
-SPACE : [ \t]+ {skip();} ;
-COMMENT : (NEWLINE SPACE* '#' (ANY_CHAR)* | '#' (ANY_CHAR)*) {log("COMMENT : " + getText());} {skip();};
-NEWLINE : (('\r\n' | '\n') SPACE* )+ {log("NEWLINE");};
-
-ACTOR : 'actor' {log("ACTOR : " + getText());};
-RECEIVER : 'receiver' {log("RECEIVER");};
-TYPE : ( 'int' | 'char' ) {log("TYPE : " + getText());}; // should support arrays
-QUIT : 'quit' {log("QUIT");};
-IF : 'if' {log("IF");};
-ELSEIF : 'elseif' {log("ELSEIF");};
-ELSE : 'else' {log("ELSE");};
-END : 'end' {log("END");};
-FOREACH : 'foreach' {log("FOREACH");};
-BREAK : 'break' {log("BREAK");};
-IN : 'in' {log("IN");};
-SENDER : 'sender' {log("SENDER");};
-SELF : 'self' {log("SELF");};
-BEGIN : 'begin' {log("BEGIN");};
-
-READ: 'read' {log("READ");};
-WRITE: 'write' {log("WRITE");};
-
-AND : 'and' {log("AND");};
-OR : 'or' {log("OR");};
-NOT : 'not' {log("NOT");};
-
-STRING : '"' CHARACTER* '"' {log("STRING : " + getText());};
-CHAR : '\'' (CHARACTER | '"') '\'' {log("CHAR : " + getText());};
-NUMBER : [0-9]+ {log("NUMBER : " + getText());};
-
-
-
-// keywords
-ID : [a-zA-Z_][a-zA-Z_0-9]* {log("ID : " + getText());};
-
-
-CHARACTER : ( ~([\n"]) | '\\"' | '\\t' | '\\n' | '\\\\' | '\\\'' ) {log("CHARACTER : " + getText());};
-
-
-ANY_CHAR : ~('\n') ;

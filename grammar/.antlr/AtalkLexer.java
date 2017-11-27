@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class atalkLexer extends Lexer {
+public class AtalkLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -95,19 +95,12 @@ public class atalkLexer extends Lexer {
 	    }
 
 	    void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableLocalVariableItem(
-	                    new Variable(name, type),
-	                    SymbolTable.top.getOffset(Register.SP)
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            putLocalVar(name, type);
-	            throw iaee;
-	        }
+	        SymbolTable.top.put(
+	            new SymbolTableLocalVariableItem(
+	                new Variable(name, type),
+	                SymbolTable.top.getOffset(Register.SP)
+	            )
+	        );
 	    }
 	    
 	    void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
@@ -137,7 +130,7 @@ public class atalkLexer extends Lexer {
 	    }
 
 
-	public atalkLexer(CharStream input) {
+	public AtalkLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}

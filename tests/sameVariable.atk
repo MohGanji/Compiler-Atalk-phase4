@@ -1,0 +1,7 @@
+actor Program<10>
+	receiver init()
+		int a = 2
+		int a = 3
+		int a = 3
+	end
+end
