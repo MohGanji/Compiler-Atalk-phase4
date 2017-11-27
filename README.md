@@ -1,4 +1,4 @@
-# CAD-Atalk-phase1
+# Compiler-Atalk-phase2
 
 command to compile and run lexer and parser:
-```antlr4 atalk.g4 && javac atalk*.java  && grun atalk program -gui < in.atk > output```
+```bash run.sh ../tests/in.atk```
