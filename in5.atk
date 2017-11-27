@@ -8,5 +8,4 @@ actor Program<10>
 		write("salam")
 		sender << koft()
 	end
-end
-
+end #EOF

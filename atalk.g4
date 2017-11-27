@@ -9,32 +9,33 @@ grammar atalk;
 program : (actor | NEWLINE) * ;
 
 
-actor : ACTOR name=ID {print("actor : " + $name.getText());} actor_size actor_content END NEWLINE ;
-actor_content : {print("actor content");} (state | receiver)+ ;
-actor_size : {print("actor size");} LT NUMBER GT NEWLINE ;
 
-state : {print("state");} var_type ID (COMMA ID)* NEWLINE ;
+actor : ACTOR name=ID {print("actor : " + $name.getText());} actor_size actor_content END (NEWLINE | EOF) ;
+actor_content : {print("actor content");} (state | receiver)+ ;
+actor_size : {print("actor size");} '<' NUMBER '>' NEWLINE ;
+
+state : {print("state");} var_type ID (',' ID)* NEWLINE ;
 
 statement : {print("statement");} (QUIT | vardef | condition | foreach | sender | function_call | write_func | scope | assignment | loop_statements) NEWLINE ; // loop_statements should be just in foreachs
 statements : {print("statements");}  (statement)* ;
 
 receiver : RECEIVER name=ID {print("receiver : " + $name.getText());} def_arguments NEWLINE receiver_content END NEWLINE ;
 
-def_arguments : {print("def arguments");} POPEN (arg_var_def (COMMA arg_var_def)*)? PCLOSE ;
-argument : {print("argument");} POPEN (arg_var) PCLOSE;
-arguments : {print("arguments");} POPEN (arg_var (COMMA arg_var)*)? PCLOSE;
+def_arguments : {print("def arguments");} '(' (arg_var_def (',' arg_var_def)*)? ')' ;
+argument : {print("argument");} '(' (arg_var) ')';
+arguments : {print("arguments");} '(' (arg_var (',' arg_var)*)? ')';
 arg_var : {print("arg var");} ID | expr ;
 arg_var_def : {print("arg var def");} var_type ID ;
 receiver_content : {print("receiver content");} statements ;
-vardef : {print("vardef");} var_type var (COMMA var)* ;
-var : {print("var");} ID (EQ expr)? ;
+vardef : {print("vardef");} var_type var (',' var)* ;
+var : {print("var");} ID ('=' expr)? ;
 
 loop_statements : {print("loop statements");}  BREAK ;
 scope : {print("scope");} BEGIN NEWLINE statements END ;
 condition : {print("condition");}  IF expr NEWLINE statements (ELSEIF expr NEWLINE statements)* (ELSE NEWLINE statements)? END ;
 foreach : {print("foreach");}  FOREACH ID IN rvalue NEWLINE statements END ;
-sender : {print("sender");} (SENDER | SELF | ID) SEND_OP method_call ;
-assignment : {print("assignment");} lvalue EQ expr ;
+sender : {print("sender");} (SENDER | SELF | ID) '<<' method_call ;
+assignment : {print("assignment");} lvalue '=' expr ;
 
 method_call : {print("method call");} ID arguments;
 
@@ -52,20 +53,20 @@ a2 : a3 a2p ;
 a2p : ({print("a1p : and");} AND a3 a2p) | ;
 
 a3 : a4 a3p ;
-a3p : (op=(EQEQ | NOTEQ) {print("a1p : " + $op.getText());}  a4 a3p) | ;
+a3p : (op=('==' | '<>') {print("a1p : " + $op.getText());}  a4 a3p) | ;
 
 a4 : a5 a4p ;
-a4p : (op=(LT | GT) {print("a1p : " + $op.getText());} a5 a4p) | ;
+a4p : (op=('<' | '>') {print("a1p : " + $op.getText());} a5 a4p) | ;
 
 a5 : a6 a5p ;
-a5p : (op=(PLUS | MINUS) {print("a1p : " + $op.getText());} a6 a5p) | ;
+a5p : (op=('+' | '-') {print("a1p : " + $op.getText());} a6 a5p) | ;
 
 a6 : a7 a6p ;
-a6p : (op=(MULT | DIV) {print("a1p : " + $op.getText());} a7 a6p) | ;
+a6p : (op=('*' | '/') {print("a1p : " + $op.getText());} a7 a6p) | ;
 
-a7 : (MINUS | NOT)* {print("a1p : -");} a8 ;
+a7 : ('-' | NOT)* {print("a1p : -");} a8 ;
 
-a8 : (POPEN {print("a1p : ()");} a1 PCLOSE) | rvalue ;
+a8 : ('(' {print("a1p : ()");} a1 ')') | rvalue ;
 
 // ambiguous and left recursive solve
 /*E  → T E'
@@ -80,18 +81,18 @@ lvalue : {print("lvalue");} ID | access_array ;
 
 access_array : {print("access array");} ID (array_index)+;
 
-array : {print("array");} COPEN expr (COMMA expr)* CCLOSE ;
+array : {print("array");} '{' expr (',' expr)* '}' ;
 
 var_type : {print("var type");} TYPE (array_def)* ;
-array_def : {print("array def");} (BOPEN NUMBER BCLOSE) ;
-array_index : {print("array access");} (BOPEN expr BCLOSE) ;
+array_def : {print("array def");} ('[' NUMBER ']') ;
+array_index : {print("array access");} ('[' expr ']') ;
 
 
 // TOKENS -----------------------------------------
 
 
 SPACE : [ \t]+ {skip();} ;
-COMMENT : (NEWLINE SPACE* SHARP (ANY_CHAR)* | SHARP (ANY_CHAR)*) {print("COMMENT : " + getText());} {skip();};
+COMMENT : (NEWLINE SPACE* '#' (ANY_CHAR)* | '#' (ANY_CHAR)*) {print("COMMENT : " + getText());} {skip();};
 NEWLINE : (('\r\n' | '\n') SPACE* )+ {print("NEWLINE");};
 
 ACTOR : 'actor' {print("ACTOR : " + getText());};
@@ -114,24 +115,6 @@ WRITE: 'write' {print("WRITE");};
 
 AND : 'and' {print("AND");};
 OR : 'or' {print("OR");};
-PLUS : '+' {print("PLUS");};
-MINUS : '-' {print("MINUS");};
-MULT : '*' {print("MULT");};
-DIV : '/' {print("DIV");};
-EQ : '=' {print("EQ");};
-EQEQ : '==' {print("EQEQ");};
-NOTEQ : '<>' {print("NOTEQ");};
-LT : '<' {print("LT");};
-GT : '>' {print("GT");};
-POPEN : '(' {print("POPEN");};
-PCLOSE : ')' {print("PCLOSE");};
-BOPEN : '[' {print("BOPEN");};
-BCLOSE : ']' {print("BCLOSE");};
-COPEN : '{' {print("COPEN");};
-CCLOSE : '}' {print("CCLOSE");};
-SEND_OP : '<<' {print("SEND_OP");};
-SHARP : '#' {print("SHARP");};
-COMMA : ',' {print("COMMA");};
 NOT : 'not' {print("NOT");};
 
 STRING : '"' CHARACTER* '"' {print("STRING : " + getText());};
