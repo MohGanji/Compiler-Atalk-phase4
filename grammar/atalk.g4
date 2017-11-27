@@ -8,6 +8,23 @@ grammar atalk;
         // System.out.println(str);
     }
 
+	int foreachs = 0;
+
+	void beginForeach() {
+		foreachs ++;
+	}
+	void sawBreak() {
+		try {
+			if (foreachs <= 0)
+				throw new BreakOutsideForeach();
+		} catch (BreakOutsideForeach bof) {
+			print("ERR: Found a break not blonging to any foreach.");
+		}
+	}
+	void endForeach() {
+		foreachs --;
+	}
+
     void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
         try{
             SymbolTable.top.put(
@@ -81,21 +98,27 @@ actor
 state:
 		tp=type nm=ID
             {
-                putLocalVar($nm.getText(), $tp.typeName);
+                // putGlobalVar($nm.getText(), $tp.typeName);
             }
             (',' nm2=ID 
                 {
-                    putLocalVar($nm2.getText(), $tp.typeName);
+                    // putGlobalVar($nm2.getText(), $tp.typeName);
                 }
             )* NL
 	;
-    catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}    
+    // catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}    
 
 receiver:
 		'receiver' ID '(' (type ID (',' type ID)*)? ')' NL
+			{
+                // putReceiver();
+				// beginScope();
+			}
 			statements
 		'end' NL
+			{ /* endScope(); */ }
 	;
+    // catch[ItemAlreadyExistsException iaee] {print("ERR: Receiver already exists: " + iaee.getName());}
 
 type returns [Type typeName] locals [int size = 1]
     :
@@ -132,7 +155,7 @@ statement:
 	|	stm_foreach
 	|	stm_if_elseif_else
 	|	stm_quit
-	|	stm_break
+	|	stm_break { sawBreak(); }
 	|	stm_tell
 	|	stm_write
 	|	block
@@ -149,7 +172,7 @@ stm_vardef:
                 }
             )* NL
 	;
-    catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}    
+    catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}
 
 stm_tell:
 		(ID | 'sender' | 'self') '<<' ID '(' (expr (',' expr)*)? ')' NL
@@ -168,8 +191,16 @@ stm_if_elseif_else:
 
 stm_foreach:
 		'foreach' ID 'in' expr NL
+			{
+				beginForeach();
+				beginScope();
+			}
 			statements
 		'end' NL
+			{
+				endForeach();
+				endScope();
+			}
 	;
 
 stm_quit:

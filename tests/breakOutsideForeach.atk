@@ -1,0 +1,14 @@
+actor Program<10>
+	receiver init(int a)
+        int a
+		foreach x in y
+            break
+            foreach x in y
+                if a
+                    break
+                end
+            end
+        end
+        break
+	end
+end

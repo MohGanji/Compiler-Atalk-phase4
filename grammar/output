@@ -1,5 +1,9 @@
-ERR: variable already exists: a
-ERR: variable already exists: a_temp
-Stack offset: 12
+1
+2
+Stack offset: 4
+Stack offset: 4
+0
+ERR: Found a break not blonging to any foreach.
+Stack offset: 4
 actor : Program<10>
 Stack offset: 0
