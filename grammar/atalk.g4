@@ -40,7 +40,36 @@ grammar atalk;
             throw iaee;
         }
     }
+
+	void putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+        try{
+            SymbolTable.top.put(
+                new SymbolTableLocalVariableItem(
+                    new Variable(name, type),
+                    SymbolTable.top.getOffset(Register.GP)
+                )
+            );
+        }
+        catch (ItemAlreadyExistsException iaee){
+            name = name+"_temp";
+            putGlobalVar(name, type);
+            throw iaee;
+        }
+    }
     
+    void putReceiver(String name) throws ItemAlreadyExistsException {
+        try{
+            SymbolTable.top.put(
+                new SymbolTableReceiverItem(name)
+            );
+        }
+        catch (ItemAlreadyExistsException iaee){
+            name = name+"_temp";
+            putReceiver(name);
+            throw iaee;
+        }
+    }
+
     void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
         try{
             SymbolTable.top.put(
@@ -60,6 +89,7 @@ grammar atalk;
         	offset = SymbolTable.top.getOffset(Register.SP);
         SymbolTable.push(new SymbolTable());
         SymbolTable.top.setOffset(Register.SP, offset);
+		SymbolTable.top.setOffset(Register.GP, offset);
     }
     
     void endScope() {
@@ -95,30 +125,32 @@ actor
     ;
     catch[ItemAlreadyExistsException iaee] {print("ERR: Actor already exists: " + iaee.getName());}
 
-state:
+state
+	:
 		tp=type nm=ID
             {
-                // putGlobalVar($nm.getText(), $tp.typeName);
+                putGlobalVar($nm.getText(), $tp.typeName);
             }
             (',' nm2=ID 
                 {
-                    // putGlobalVar($nm2.getText(), $tp.typeName);
+                    putGlobalVar($nm2.getText(), $tp.typeName);
                 }
             )* NL
 	;
-    // catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}    
+    catch[ItemAlreadyExistsException iaee] {print("ERR: state already exists: " + iaee.getName());}
 
-receiver:
-		'receiver' ID '(' (type ID (',' type ID)*)? ')' NL
+receiver
+	:
+		'receiver' name=ID '(' (type ID (',' type ID)*)? ')' NL
 			{
-                // putReceiver();
-				// beginScope();
+                putReceiver($name.getText());
+				beginScope();
 			}
 			statements
 		'end' NL
-			{ /* endScope(); */ }
+			{ endScope(); }
 	;
-    // catch[ItemAlreadyExistsException iaee] {print("ERR: Receiver already exists: " + iaee.getName());}
+    catch[ItemAlreadyExistsException iaee] {print("ERR: Receiver already exists: " + iaee.getName());}
 
 type returns [Type typeName] locals [int size = 1]
     :
@@ -137,7 +169,8 @@ type returns [Type typeName] locals [int size = 1]
             }
 	;
 
-block:
+block
+	:
 		'begin' NL
             { beginScope(); }
 			statements

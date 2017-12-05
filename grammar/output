@@ -1,9 +1,5 @@
-1
-2
-Stack offset: 4
-Stack offset: 4
-0
-ERR: Found a break not blonging to any foreach.
-Stack offset: 4
+Stack offset: 0
+Stack offset: 0
 actor : Program<10>
+ERR: Actor already exists: Program
 Stack offset: 0

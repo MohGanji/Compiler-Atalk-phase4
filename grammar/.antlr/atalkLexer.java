@@ -94,6 +94,23 @@ public class atalkLexer extends Lexer {
 	        // System.out.println(str);
 	    }
 
+		int foreachs = 0;
+
+		void beginForeach() {
+			foreachs ++;
+		}
+		void sawBreak() {
+			try {
+				if (foreachs <= 0)
+					throw new BreakOutsideForeach();
+			} catch (BreakOutsideForeach bof) {
+				print("ERR: Found a break not blonging to any foreach.");
+			}
+		}
+		void endForeach() {
+			foreachs --;
+		}
+
 	    void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 	        try{
 	            SymbolTable.top.put(
@@ -109,7 +126,36 @@ public class atalkLexer extends Lexer {
 	            throw iaee;
 	        }
 	    }
+
+		void putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+	        try{
+	            SymbolTable.top.put(
+	                new SymbolTableLocalVariableItem(
+	                    new Variable(name, type),
+	                    SymbolTable.top.getOffset(Register.GP)
+	                )
+	            );
+	        }
+	        catch (ItemAlreadyExistsException iaee){
+	            name = name+"_temp";
+	            putGlobalVar(name, type);
+	            throw iaee;
+	        }
+	    }
 	    
+	    void putReceiver(String name) throws ItemAlreadyExistsException {
+	        try{
+	            SymbolTable.top.put(
+	                new SymbolTableReceiverItem(name)
+	            );
+	        }
+	        catch (ItemAlreadyExistsException iaee){
+	            name = name+"_temp";
+	            putReceiver(name);
+	            throw iaee;
+	        }
+	    }
+
 	    void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
 	        try{
 	            SymbolTable.top.put(
@@ -129,6 +175,7 @@ public class atalkLexer extends Lexer {
 	        	offset = SymbolTable.top.getOffset(Register.SP);
 	        SymbolTable.push(new SymbolTable());
 	        SymbolTable.top.setOffset(Register.SP, offset);
+			SymbolTable.top.setOffset(Register.GP, offset);
 	    }
 	    
 	    void endScope() {
