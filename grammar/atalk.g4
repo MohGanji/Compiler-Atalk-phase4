@@ -1,14 +1,25 @@
 grammar atalk;
 
+@header {
+	import java.util.ArrayList ;
+}
+
 @members {
+	int foreachs = 0;
+	boolean hasErr = false;
+
     void print(String str){
+		if (hasErr)
+			return;
+        System.out.println(str);
+    }
+	void printErr(String str){
+		hasErr = true;
         System.out.println(str);
     }
     void log(String str){
         // System.out.println(str);
     }
-
-	int foreachs = 0;
 
 	void beginForeach() {
 		foreachs ++;
@@ -57,21 +68,25 @@ grammar atalk;
         }
     }
     
-    void putReceiver(String name) throws ItemAlreadyExistsException {
+    void putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
         try{
             SymbolTable.top.put(
-                new SymbolTableReceiverItem(name)
+                new SymbolTableReceiverItem(name, args)
             );
         }
         catch (ItemAlreadyExistsException iaee){
             name = name+"_temp";
-            putReceiver(name);
+            putReceiver(name, args);
             throw iaee;
         }
     }
 
-    void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
+    void putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
+													NegativeActorQueueLenException {
         try{
+			if(queueLen <= 0){
+				throw new NegativeActorQueueLenException(name, queueLen);
+			}
             SymbolTable.top.put(
                 new SymbolTableActorItem(name, queueLen)
             );
@@ -81,6 +96,13 @@ grammar atalk;
             putActor(name, queueLen);
             throw iaee;
         }
+		catch (NegativeActorQueueLenException naqle){
+			// putActor(name, 0);
+			SymbolTable.top.put(
+                new SymbolTableActorItem(name, 0)
+            );
+			throw naqle;
+		}
     }
 
     void beginScope() {
@@ -89,7 +111,7 @@ grammar atalk;
         	offset = SymbolTable.top.getOffset(Register.SP);
         SymbolTable.push(new SymbolTable());
         SymbolTable.top.setOffset(Register.SP, offset);
-		SymbolTable.top.setOffset(Register.GP, offset);
+		SymbolTable.top.setOffset(Register.GP, offset); // chera?
     }
     
     void endScope() {
@@ -97,6 +119,7 @@ grammar atalk;
         SymbolTable.pop();
     }
 }
+
 
 program locals [boolean hasActor=false]
     : {beginScope();} 
@@ -109,12 +132,21 @@ program locals [boolean hasActor=false]
         }
     {endScope();}
     ; 
-    catch[NoActorException nae] {print("ERR: No actors defined");}
-    // catch[SameActorNameException sane] {print("ERR: there is an actor with the same name as ");}
+    catch[NoActorException nae] {printErr("ERR: No actors defined");}
+    // catch[SameActorNameException sane] {printErr("ERR: there is an actor with the same name as ");}
 actor
     : 'actor' name=ID '<' as=CONST_NUM '>' NL
             {
-                putActor($name.getText(), $as.int );
+				try{
+					putActor($name.getText(), $as.int );
+				}
+				catch (ItemAlreadyExistsException iaee){
+					printErr("ERR: Actor already exists: " + iaee.getName());
+				}
+				catch (NegativeActorQueueLenException naqle){
+					printErr("ERR: Actor '" + naqle.getName() 
+					+ "' has invalid queue length: " + naqle.getQueueLen());
+				}
                 beginScope();
             }
         (state | receiver | NL)*
@@ -123,50 +155,119 @@ actor
         (NL | EOF)
             { print("actor : " + $name.getText() + "<" + $as.getText() + ">"); }
     ;
-    catch[ItemAlreadyExistsException iaee] {print("ERR: Actor already exists: " + iaee.getName());}
 
 state
 	:
 		tp=type nm=ID
             {
-                putGlobalVar($nm.getText(), $tp.typeName);
+				try{
+					putGlobalVar($nm.getText(), $tp.typeName);
+				}
+				catch (ItemAlreadyExistsException iaee){
+					printErr("ERR: state already exists: " + iaee.getName());
+				}
             }
             (',' nm2=ID 
                 {
-                    putGlobalVar($nm2.getText(), $tp.typeName);
+					try{
+						putGlobalVar($nm2.getText(), $tp.typeName);
+					}
+					catch (ItemAlreadyExistsException iaee){
+						printErr("ERR: state already exists: " + iaee.getName());
+					}
                 }
             )* NL
 	;
-    catch[ItemAlreadyExistsException iaee] {print("ERR: state already exists: " + iaee.getName());}
 
-receiver
-	:
-		'receiver' name=ID '(' (type ID (',' type ID)*)? ')' NL
+receiver locals [ArrayList<Type> types = new ArrayList<Type>()]
+	: 
+		'receiver' name=ID '(' (tp=type 
 			{
-                putReceiver($name.getText());
+				$types.add($tp.typeName);
+			}
+		ID (',' tp2=type 
+		 	{
+				$types.add($tp2.typeName);
+			}
+		ID)*)? ')' NL 
+			{
+				try{
+					putReceiver($name.getText(), $types);
+				}
+				catch (ItemAlreadyExistsException iaee) {
+					printErr("ERR: Receiver already exists: " + iaee.getName());
+				}
 				beginScope();
 			}
-			statements
+		statements 
 		'end' NL
 			{ endScope(); }
 	;
-    catch[ItemAlreadyExistsException iaee] {print("ERR: Receiver already exists: " + iaee.getName());}
 
-type returns [Type typeName] locals [int size = 1]
-    :
-		'char' ('[' sz=CONST_NUM ']' {$size *= $sz.int;})*
-            {
-                if ($size == 1)
-                    $typeName = CharType.getInstance();
-                else
-                    $typeName = ArrayType.getInstance();
-            }
-	|	'int' ('[' sz=CONST_NUM ']' {$size *= $sz.int;})* {
-                if ($size == 1)
-                    $typeName = IntType.getInstance();
-                else
-                    $typeName = ArrayType.getInstance();
-            }
+type returns [Type typeName] locals [int size = 1, ArrayList<Integer> dims = new ArrayList<Integer>(), Type x]
+	:
+		'char' ('[' sz=CONST_NUM ']' 
+			{
+				$size *= $sz.int;
+
+                try{
+					if($sz.int <= 0){		
+						throw new NegativeArrayLengthException($sz.int);
+					}
+					else{
+						// $typeName = new ArrayType(CharType.getInstance(), $sz.int);
+						$dims.add($sz.int);
+					}
+				}
+				catch (NegativeArrayLengthException nale){
+					printErr("ERR: Array Length is negative.");
+					$typeName = new ArrayType(CharType.getInstance(), 0);
+				}
+			})* 
+			{
+				if ($size == 1 && $sz.int == 0)
+					$typeName = CharType.getInstance();
+				else {
+					for(int i = $dims.size()-1; i >= 0; i--){
+						if(i == $dims.size()-1)
+							$x = new ArrayType(CharType.getInstance(), $dims.get(i));
+						else
+							$x = new ArrayType($x, $dims.get(i));
+					}
+					$typeName = $x;
+				}
+			}
+	|	'int' ('[' sz=CONST_NUM ']'
+		{
+			$size *= $sz.int;
+			try{
+				if($sz.int <= 0){
+					throw new NegativeArrayLengthException($sz.int);
+				}
+				else{
+					// $typeName = new ArrayType(IntType.getInstance(), $sz.int);
+					$dims.add($sz.int);
+				}
+			}
+			catch (NegativeArrayLengthException nale){
+				printErr("ERR: Array Length is negative.");
+				$typeName = new ArrayType(IntType.getInstance(), 0);
+			}
+		})* 
+		{
+			if ($size == 1 && $sz.int == 0)
+				$typeName = IntType.getInstance();
+			else {
+				for(int i = $dims.size()-1; i >= 0; i--){
+					if(i == $dims.size()-1)
+						$x = new ArrayType(IntType.getInstance(), $dims.get(i));
+					else
+						$x = new ArrayType($x, $dims.get(i));
+				}
+				$typeName = $x;
+			}
+		}
+                
 	;
 
 block
@@ -175,10 +276,11 @@ block
             { beginScope(); }
 			statements
 		'end' NL
-            { beginScope(); }        
+            { endScope(); }        
 	;
 
-statements:
+statements
+	:
 		(statement | NL)*
 	;
 
@@ -205,7 +307,7 @@ stm_vardef:
                 }
             )* NL
 	;
-    catch[ItemAlreadyExistsException iaee] {print("ERR: variable already exists: " + iaee.getName());}
+    catch[ItemAlreadyExistsException iaee] {printErr("ERR: variable already exists: " + iaee.getName());}
 
 stm_tell:
 		(ID | 'sender' | 'self') '<<' ID '(' (expr (',' expr)*)? ')' NL

@@ -48,8 +48,11 @@ public class SymbolTable {
 	}
 
 	public void put(SymbolTableItem item) throws ItemAlreadyExistsException {
-		if(items.containsKey(item.getKey()))
+
+		if(items.containsKey(item.getKey())){
 			throw new ItemAlreadyExistsException(item.getKey());
+		}
+		
 		items.put(item.getKey(), item);
 
 		if(item instanceof SymbolTableVariableItemBase) {

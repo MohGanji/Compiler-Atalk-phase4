@@ -2,11 +2,9 @@
 
 actor Program<10>
 	receiver init(int[10][10] a,int b, char c)
-		f = 3
 		sender << koft()
 	end
-    receiver init(int ew)
-		f = 3
-		sender << koft()
+	receiver init(int[10][10] a,int b, char c)
+		sender << kooft()
 	end
 end 

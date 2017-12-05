@@ -1,14 +1,15 @@
 # Code #20
 
 actor Program<10>
-    int b = 2
+    int b
     int b
     int c
 	receiver init(int[10][10] a,int b, char c)
 		f = 3
+        int c
 		sender << koft()
 	end
 end 
 actor Program2<10>
-    int b = 2
+    int b
 end 

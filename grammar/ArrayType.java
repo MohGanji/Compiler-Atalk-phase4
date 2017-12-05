@@ -1,7 +1,12 @@
 public class ArrayType extends Type {
 	
+	ArrayType(Type type, int len){
+		this._len = len;
+		this._type = type;
+	}
+
 	public int size() {
-		return Type.WORD_BYTES;
+		return this._type.size()*this._len;
 	}
 
 	@Override
@@ -16,11 +21,7 @@ public class ArrayType extends Type {
 		return "array";
 	}
 
-	private static ArrayType instance;
+	int _len;
+	Type _type;
 
-	public static ArrayType getInstance() {
-		if(instance == null)
-			return instance = new ArrayType();
-		return instance;
-	}
 }

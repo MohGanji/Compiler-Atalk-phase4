@@ -8,6 +8,11 @@ public class SymbolTableActorItem extends SymbolTableItem {
     public String getKey(){
         return this._name;
     }
+
+    public int getQueueLen(){
+        return _queueLen;
+    }
+
     String _name;
     int _queueLen;
 }

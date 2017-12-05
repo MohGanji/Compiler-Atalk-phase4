@@ -1,5 +1,6 @@
-Stack offset: 0
-Stack offset: 0
-actor : Program<10>
-ERR: Actor already exists: Program
+Stack offset: 4084
+Stack offset: 4084
+Stack offset: 4084
+Stack offset: 40
+actor : salam<100>
 Stack offset: 0
