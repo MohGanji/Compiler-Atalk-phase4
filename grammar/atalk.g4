@@ -210,12 +210,11 @@ type returns [Type typeName] locals [int size = 1, ArrayList<Integer> dims = new
 			{
 				$size *= $sz.int;
 
-                try{
-					if($sz.int <= 0){		
+                try {
+					if($sz.int <= 0) {
 						throw new NegativeArrayLengthException($sz.int);
 					}
-					else{
-						// $typeName = new ArrayType(CharType.getInstance(), $sz.int);
+					else {
 						$dims.add($sz.int);
 					}
 				}
