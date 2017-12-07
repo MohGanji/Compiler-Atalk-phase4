@@ -18,7 +18,7 @@ public class ArrayType extends Type {
 
 	@Override
 	public String toString() {
-		return "array";
+		return "array" + this._type.toString();
 	}
 
 	int _len;

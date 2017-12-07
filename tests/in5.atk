@@ -1,20 +1,11 @@
 # Code #20
 
 actor Program<10>
-	int s;
-	receiver init(int[10][10] a,int b, char c)
-		f = (a[1][3] + b )/ 4		
-		b = a[1+1][1*(2+1)]
-		a[2][1] = read(3) + 4
-		write("salam")
-		sender << koft()
-	end
-end #EOF
-
-actor Program<10>
-	int x;
-	int s;
-	receiver init(int[10][10] a,int b, char c)
-		sender << koft()
-	end
+	int s
+	receiver rec(int[2] a , char b, int[10] c)
+    int d
+  end
+  receiver rec(int[1] a, char b, int[10] c)
+    int d
+  end
 end #EOF

@@ -1,6 +1,2 @@
-Stack offset: 4084
-Stack offset: 4084
-Stack offset: 4084
-Stack offset: 40
-actor : salam<100>
-Stack offset: 0
+Stack offset: 8
+ERR: Receiver already exists: rec,arrayint,char,arrayint
