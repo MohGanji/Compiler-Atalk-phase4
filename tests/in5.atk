@@ -5,7 +5,7 @@ actor Program<10>
 	receiver rec(int[2] a , char b, int[10] c)
     int d
   end
-  receiver rec(int[1] a, char b, int[10] c)
+  receiver rec(int[1][2][3] a, char b, int[10] c)
     int d
   end
 end #EOF

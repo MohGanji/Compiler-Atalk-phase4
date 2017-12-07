@@ -1,2 +1,5 @@
 Stack offset: 8
-ERR: Receiver already exists: rec,arrayint,char,arrayint
+Stack offset: 8
+Stack offset: 4
+actor : Program<10>
+Stack offset: 0
