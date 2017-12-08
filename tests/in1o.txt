@@ -1,0 +1,79 @@
+Actor:
+	name: vahid
+	queueLen: 2
+State:
+	name: v
+	type: int
+	offset: 0
+	size: 4
+Receiver:
+	name: welkj
+	args: int, char
+State:
+	name: v
+	type: int
+	offset: 0
+	size: 4
+State:
+	name: x
+	type: int
+	offset: 4
+	size: 4
+State:
+	name: y
+	type: int
+	offset: 8
+	size: 4
+State:
+	name: z
+	type: int
+	offset: 12
+	size: 4
+State:
+	name: we
+	type: char
+	offset: 16
+	size: 4
+State:
+	name: w2
+	type: int
+	offset: 20
+	size: 4
+State:
+	name: s
+	type: array(int)
+	offset: 24
+	size: 8
+State:
+	name: sdf
+	type: int
+	offset: 32
+	size: 4
+State:
+	name: sfew
+	type: array(char)
+	offset: 36
+	size: 936
+Stack offset: 972
+State:
+	name: w23
+	type: int
+	offset: 972
+	size: 4
+State:
+	name: s
+	type: int
+	offset: 976
+	size: 4
+State:
+	name: w23
+	type: int
+	offset: 980
+	size: 4
+Stack offset: 984
+Stack offset: 976
+Stack offset: 976
+Stack offset: 976
+Stack offset: 976
+Stack offset: 0
+Stack offset: 0

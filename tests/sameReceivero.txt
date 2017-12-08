@@ -1,0 +1,1 @@
+line 7: ERR: Receiver already exists: init,array(array(int)),int,char

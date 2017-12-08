@@ -95,9 +95,6 @@ public class atalkLexer extends Lexer {
 		ArrayList<String> logs = new ArrayList<String>();
 
 	    void print(String str){
-			// if (hasErr)
-			// 	return;
-	        // System.out.println(str);
 			logs.add(str);
 	    }
 		void printErr(int line, String str){
@@ -111,19 +108,16 @@ public class atalkLexer extends Lexer {
 				System.out.println(logs.get(i));
 			}
 		}
-	    void log(String str){
-	        // System.out.println(str);
-	    }
 
 		void beginForeach() {
 			foreachs ++;
 		}
-		void sawBreak() {
+		void sawBreak(int line) {
 			try {
 				if (foreachs <= 0)
 					throw new BreakOutsideForeach();
 			} catch (BreakOutsideForeach bof) {
-				print("ERR: Found a break not blonging to any foreach.");
+				printErr(line, "ERR: Found a break not blonging to any foreach.");
 			}
 		}
 		void endForeach() {

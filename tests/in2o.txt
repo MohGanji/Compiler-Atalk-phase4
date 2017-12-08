@@ -1,0 +1,31 @@
+Actor:
+	name: salam
+	queueLen: 100
+State:
+	name: a
+	type: array(int)
+	offset: 0
+	size: 40
+Receiver:
+	name: init
+	args: array(int), array(array(array(char)))
+State:
+	name: aqwe
+	type: array(char)
+	offset: 0
+	size: 4000
+State:
+	name: a
+	type: array(int)
+	offset: 4000
+	size: 40
+State:
+	name: e
+	type: char
+	offset: 4040
+	size: 4
+Stack offset: 4044
+Stack offset: 4044
+Stack offset: 4044
+Stack offset: 0
+Stack offset: 0

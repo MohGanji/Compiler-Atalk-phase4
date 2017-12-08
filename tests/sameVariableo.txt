@@ -1,0 +1,2 @@
+line 4: ERR: variable already exists: a
+line 5: ERR: variable already exists: a_temp
