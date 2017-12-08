@@ -7,6 +7,7 @@ javac *.java && \
 # this is grun
 java org.antlr.v4.gui.TestRig atalk program < $1 > output
 
-# rm *.class
-# rm *.tokens
-# rm atalk*.java
+rm *.class
+rm *.tokens
+rm atalk*.java
+#rm Atalk*.java

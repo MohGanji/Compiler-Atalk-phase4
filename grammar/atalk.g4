@@ -191,17 +191,19 @@ state locals [int offset]
             )* NL
 	;
 
-receiver locals [ArrayList<Type> types = new ArrayList<Type>()]
+receiver locals [ArrayList<Type> types = new ArrayList<Type>(), ArrayList<String> names = new ArrayList<String>(), int offset]
 	: 
-		'receiver' name=ID '(' (tp=type 
+		'receiver' name=ID '(' (tp=type nm=ID
 			{
 				$types.add($tp.typeName);
+				$names.add($nm.getText());
 			}
-		ID (',' tp2=type 
+		(',' tp2=type nm2=ID
 		 	{
 				$types.add($tp2.typeName);
+				$names.add($nm2.getText());
 			}
-		ID)*)? ')' NL 
+		)*)? ')' NL 
 			{
 				try{
 					print("Receiver:\n\tname: " + $name.getText());
@@ -219,6 +221,14 @@ receiver locals [ArrayList<Type> types = new ArrayList<Type>()]
 					printErr($name.getLine(), "ERR: Receiver already exists: " + iaee.getName());
 				}
 				beginScope();
+				for (int i = 0; i < $types.size(); i++) {
+					try {
+						$offset = putLocalVar($names.get(i), $types.get(i));
+						print("Argument:\n\tname: " + $names.get(i) + "\n\ttype: " + $types.get(i).toString() + "\n\toffset: " + $offset + "\n\tsize: " + $types.get(i).size());
+					} catch (ItemAlreadyExistsException iaee) {
+						printErr($name.getLine(), "ERR: variable already exists: " + iaee.getName());
+					}
+				}
 			}
 		statements 
 		'end' NL
@@ -347,10 +357,27 @@ stm_write:
 	;
 
 stm_if_elseif_else:
-		'if' expr NL statements
-		('elseif' expr NL statements)*
-		('else' NL statements)?
+		'if' expr NL
+			{
+				beginScope();
+			}
+		statements
+		('elseif' expr NL
+			{
+				endScope();
+				beginScope();
+			}
+		statements)*
+		('else' NL
+			{
+				endScope();
+				beginScope();
+			}
+		statements)?
 		'end' NL
+			{
+				endScope();
+			}
 	;
 
 stm_foreach:
@@ -359,7 +386,7 @@ stm_foreach:
 				beginForeach();
 				beginScope();
 			}
-			statements
+		statements
 		'end' NL
 			{
 				endForeach();
