@@ -203,7 +203,6 @@ public class atalkParser extends Parser {
 	            throw iaee;
 	        }
 			catch (NegativeActorQueueLenException naqle){
-				// putActor(name, 0);
 				SymbolTable.top.put(
 	                new SymbolTableActorItem(name, 0)
 	            );
@@ -217,7 +216,7 @@ public class atalkParser extends Parser {
 	        	offset = SymbolTable.top.getOffset(Register.SP);
 	        SymbolTable.push(new SymbolTable());
 	        SymbolTable.top.setOffset(Register.SP, offset);
-			SymbolTable.top.setOffset(Register.GP, offset); // chera?
+			SymbolTable.top.setOffset(Register.GP, offset);
 	    }
 	    
 	    void endScope() {
