@@ -1,8 +1,12 @@
 # Code #20
 
 actor Program<10>
-	receiver init()
-		int[3][4] a
-		int b = a[1+1][1*(2+1)]
+	int d, e, a
+	int ew
+	receiver init(int d, int f, char[2] g, int[2][3] sd, char g)
+		int w, e3, g4
+		char we, e
+		int[2] gh, kee
+		char wek
 	end
 end

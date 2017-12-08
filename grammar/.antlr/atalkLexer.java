@@ -1,4 +1,7 @@
 // Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase2/grammar/atalk.g4 by ANTLR 4.7
+
+	import java.util.ArrayList ;
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -87,14 +90,30 @@ public class atalkLexer extends Lexer {
 	}
 
 
+		int foreachs = 0;
+		boolean hasErr = false;
+		ArrayList<String> logs = new ArrayList<String>();
+
 	    void print(String str){
-	        System.out.println(str);
+			// if (hasErr)
+			// 	return;
+	        // System.out.println(str);
+			logs.add(str);
 	    }
+		void printErr(int line, String str){
+			hasErr = true;
+	        System.out.println("line " + line + ": " + str);
+	    }
+		void printLogs() {
+			if (hasErr)
+				return;
+			for (int i = 0; i < logs.size(); i++) {
+				System.out.println(logs.get(i));
+			}
+		}
 	    void log(String str){
 	        // System.out.println(str);
 	    }
-
-		int foreachs = 0;
 
 		void beginForeach() {
 			foreachs ++;
@@ -111,53 +130,61 @@ public class atalkLexer extends Lexer {
 			foreachs --;
 		}
 
-	    void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+	    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+			int offset = SymbolTable.top.getOffset(Register.SP);
 	        try{
 	            SymbolTable.top.put(
 	                new SymbolTableLocalVariableItem(
 	                    new Variable(name, type),
-	                    SymbolTable.top.getOffset(Register.SP)
+	                    offset
 	                )
 	            );
 	        }
 	        catch (ItemAlreadyExistsException iaee){
 	            name = name+"_temp";
-	            putLocalVar(name, type);
+	            offset = putLocalVar(name, type);
 	            throw iaee;
 	        }
+			return offset;
 	    }
 
-		void putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+		int putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+			int offset = SymbolTable.top.getOffset(Register.GP);
 	        try{
 	            SymbolTable.top.put(
-	                new SymbolTableLocalVariableItem(
+	                new SymbolTableGlobalVariableItem (
 	                    new Variable(name, type),
-	                    SymbolTable.top.getOffset(Register.GP)
+	                    offset
 	                )
 	            );
 	        }
 	        catch (ItemAlreadyExistsException iaee){
 	            name = name+"_temp";
-	            putGlobalVar(name, type);
+	            offset = putGlobalVar(name, type);
 	            throw iaee;
 	        }
+			return offset;
 	    }
 	    
-	    void putReceiver(String name) throws ItemAlreadyExistsException {
+	    void putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
 	        try{
 	            SymbolTable.top.put(
-	                new SymbolTableReceiverItem(name)
+	                new SymbolTableReceiverItem(name, args)
 	            );
 	        }
 	        catch (ItemAlreadyExistsException iaee){
 	            name = name+"_temp";
-	            putReceiver(name);
+	            putReceiver(name, args);
 	            throw iaee;
 	        }
 	    }
 
-	    void putActor(String name, int queueLen) throws ItemAlreadyExistsException {
+	    void putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
+														NegativeActorQueueLenException {
 	        try{
+				if(queueLen <= 0){
+					throw new NegativeActorQueueLenException(name, queueLen);
+				}
 	            SymbolTable.top.put(
 	                new SymbolTableActorItem(name, queueLen)
 	            );
@@ -167,6 +194,13 @@ public class atalkLexer extends Lexer {
 	            putActor(name, queueLen);
 	            throw iaee;
 	        }
+			catch (NegativeActorQueueLenException naqle){
+				// putActor(name, 0);
+				SymbolTable.top.put(
+	                new SymbolTableActorItem(name, 0)
+	            );
+				throw naqle;
+			}
 	    }
 
 	    void beginScope() {
@@ -175,7 +209,7 @@ public class atalkLexer extends Lexer {
 	        	offset = SymbolTable.top.getOffset(Register.SP);
 	        SymbolTable.push(new SymbolTable());
 	        SymbolTable.top.setOffset(Register.SP, offset);
-			SymbolTable.top.setOffset(Register.GP, offset);
+			SymbolTable.top.setOffset(Register.GP, offset); // chera?
 	    }
 	    
 	    void endScope() {

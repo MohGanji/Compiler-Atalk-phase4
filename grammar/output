@@ -1,5 +1,69 @@
-Stack offset: 8
-Stack offset: 8
-Stack offset: 4
-actor : Program<10>
+Actor:
+	name: Program
+	queueLen: 10
+State:
+	name: d
+	type: int
+	offset: 0
+	size: 4
+State:
+	name: e
+	type: int
+	offset: 4
+	size: 4
+State:
+	name: a
+	type: int
+	offset: 8
+	size: 4
+State:
+	name: ew
+	type: int
+	offset: 12
+	size: 4
+Receiver:
+	name: init
+	args: int, int, array(char), array(array(int)), char
+State:
+	name: w
+	type: int
+	offset: 0
+	size: 4
+State:
+	name: e3
+	type: int
+	offset: 4
+	size: 4
+State:
+	name: g4
+	type: int
+	offset: 8
+	size: 4
+State:
+	name: we
+	type: char
+	offset: 12
+	size: 4
+State:
+	name: e
+	type: char
+	offset: 16
+	size: 4
+State:
+	name: gh
+	type: array(int)
+	offset: 20
+	size: 8
+State:
+	name: kee
+	type: array(int)
+	offset: 28
+	size: 8
+State:
+	name: wek
+	type: char
+	offset: 36
+	size: 4
+Stack offset: 40
+Stack offset: 0
 Stack offset: 0

@@ -65,8 +65,10 @@ public class SymbolTable {
 	}
 
 	public int getOffset(Register baseRegister) {
-		if(!offsets.containsKey(baseRegister))
+		if(!offsets.containsKey(baseRegister)){
 		   return 0;
+		}
+		// System.out.println(offsets.get(baseRegister));
 		return offsets.get(baseRegister);
 	}
 

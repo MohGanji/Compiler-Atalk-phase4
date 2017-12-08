@@ -1,8 +1,7 @@
 # Code #20
 
 actor Program<10>
-	receiver init(int[10][8][12] a,int b, char[10] c)
-		write("salam")
-		sender << koft()
+	receiver init()
+		int[0] c
 	end
 end 
