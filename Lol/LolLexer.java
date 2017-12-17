@@ -1,4 +1,4 @@
-// Generated from Lol.g4 by ANTLR 4.7
+// Generated from LolPass2.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -17,7 +17,7 @@ public class LolLexer extends Lexer {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, CONST_INT=13, ID=14, WS=15;
+		T__9=10, T__10=11, T__11=12, T__12=13, CONST_INT=14, ID=15, WS=16;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -28,16 +28,16 @@ public class LolLexer extends Lexer {
 
 	public static final String[] ruleNames = {
 		"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
-		"T__9", "T__10", "T__11", "CONST_INT", "ID", "WS"
+		"T__9", "T__10", "T__11", "T__12", "CONST_INT", "ID", "WS"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "';'", "'<-'", "'int'", "'{'", "'}'", "'out'", "'+'", "'-'", "'*'", 
-		"'/'", "'('", "')'"
+		null, "';'", "'static'", "'<-'", "'int'", "'{'", "'}'", "'out'", "'+'", 
+		"'-'", "'*'", "'/'", "'('", "')'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, "CONST_INT", "ID", "WS"
+		null, null, "CONST_INT", "ID", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -78,25 +78,12 @@ public class LolLexer extends Lexer {
 	        System.out.println(str);
 	    }
 
-	    void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
-	        SymbolTable.top.put(
-	            new SymbolTableLocalVariableItem(
-	                new Variable(name, type),
-	                SymbolTable.top.getOffset(Register.SP)
-	            )
-	        );
+	    void beginScope() {
+	        SymbolTable.push();
 	    }
 
-	    void beginScope() {
-	    	int offset = 0;
-	    	if(SymbolTable.top != null)
-	        	offset = SymbolTable.top.getOffset(Register.SP);
-	        SymbolTable.push(new SymbolTable());
-	        SymbolTable.top.setOffset(Register.SP, offset);
-	    }
-	    
 	    void endScope() {
-	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
+	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
 	        SymbolTable.pop();
 	    }
 
@@ -107,7 +94,7 @@ public class LolLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Lol.g4"; }
+	public String getGrammarFileName() { return "LolPass2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -125,28 +112,30 @@ public class LolLexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\21Q\b\1\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\22Z\b\1\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
-		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\3\3\3\3\3\3"+
-		"\3\4\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\7\3\7\3\7\3\7\3\b\3\b\3\t\3\t\3\n\3"+
-		"\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\6\16@\n\16\r\16\16\16A\3\17\3\17\7\17"+
-		"F\n\17\f\17\16\17I\13\17\3\20\6\20L\n\20\r\20\16\20M\3\20\3\20\2\2\21"+
-		"\3\3\5\4\7\5\t\6\13\7\r\b\17\t\21\n\23\13\25\f\27\r\31\16\33\17\35\20"+
-		"\37\21\3\2\6\3\2\62;\5\2C\\aac|\6\2\62;C\\aac|\5\2\13\f\17\17\"\"\2S\2"+
-		"\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2"+
-		"\2\2\17\3\2\2\2\2\21\3\2\2\2\2\23\3\2\2\2\2\25\3\2\2\2\2\27\3\2\2\2\2"+
-		"\31\3\2\2\2\2\33\3\2\2\2\2\35\3\2\2\2\2\37\3\2\2\2\3!\3\2\2\2\5#\3\2\2"+
-		"\2\7&\3\2\2\2\t*\3\2\2\2\13,\3\2\2\2\r.\3\2\2\2\17\62\3\2\2\2\21\64\3"+
-		"\2\2\2\23\66\3\2\2\2\258\3\2\2\2\27:\3\2\2\2\31<\3\2\2\2\33?\3\2\2\2\35"+
-		"C\3\2\2\2\37K\3\2\2\2!\"\7=\2\2\"\4\3\2\2\2#$\7>\2\2$%\7/\2\2%\6\3\2\2"+
-		"\2&\'\7k\2\2\'(\7p\2\2()\7v\2\2)\b\3\2\2\2*+\7}\2\2+\n\3\2\2\2,-\7\177"+
-		"\2\2-\f\3\2\2\2./\7q\2\2/\60\7w\2\2\60\61\7v\2\2\61\16\3\2\2\2\62\63\7"+
-		"-\2\2\63\20\3\2\2\2\64\65\7/\2\2\65\22\3\2\2\2\66\67\7,\2\2\67\24\3\2"+
-		"\2\289\7\61\2\29\26\3\2\2\2:;\7*\2\2;\30\3\2\2\2<=\7+\2\2=\32\3\2\2\2"+
-		">@\t\2\2\2?>\3\2\2\2@A\3\2\2\2A?\3\2\2\2AB\3\2\2\2B\34\3\2\2\2CG\t\3\2"+
-		"\2DF\t\4\2\2ED\3\2\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2\2\2H\36\3\2\2\2IG\3\2"+
-		"\2\2JL\t\5\2\2KJ\3\2\2\2LM\3\2\2\2MK\3\2\2\2MN\3\2\2\2NO\3\2\2\2OP\b\20"+
-		"\2\2P \3\2\2\2\6\2AGM\3\b\2\2";
+		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\3\2\3\2\3"+
+		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3\7\3\7"+
+		"\3\b\3\b\3\b\3\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3"+
+		"\17\6\17I\n\17\r\17\16\17J\3\20\3\20\7\20O\n\20\f\20\16\20R\13\20\3\21"+
+		"\6\21U\n\21\r\21\16\21V\3\21\3\21\2\2\22\3\3\5\4\7\5\t\6\13\7\r\b\17\t"+
+		"\21\n\23\13\25\f\27\r\31\16\33\17\35\20\37\21!\22\3\2\6\3\2\62;\5\2C\\"+
+		"aac|\6\2\62;C\\aac|\5\2\13\f\17\17\"\"\2\\\2\3\3\2\2\2\2\5\3\2\2\2\2\7"+
+		"\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\2\21\3\2\2"+
+		"\2\2\23\3\2\2\2\2\25\3\2\2\2\2\27\3\2\2\2\2\31\3\2\2\2\2\33\3\2\2\2\2"+
+		"\35\3\2\2\2\2\37\3\2\2\2\2!\3\2\2\2\3#\3\2\2\2\5%\3\2\2\2\7,\3\2\2\2\t"+
+		"/\3\2\2\2\13\63\3\2\2\2\r\65\3\2\2\2\17\67\3\2\2\2\21;\3\2\2\2\23=\3\2"+
+		"\2\2\25?\3\2\2\2\27A\3\2\2\2\31C\3\2\2\2\33E\3\2\2\2\35H\3\2\2\2\37L\3"+
+		"\2\2\2!T\3\2\2\2#$\7=\2\2$\4\3\2\2\2%&\7u\2\2&\'\7v\2\2\'(\7c\2\2()\7"+
+		"v\2\2)*\7k\2\2*+\7e\2\2+\6\3\2\2\2,-\7>\2\2-.\7/\2\2.\b\3\2\2\2/\60\7"+
+		"k\2\2\60\61\7p\2\2\61\62\7v\2\2\62\n\3\2\2\2\63\64\7}\2\2\64\f\3\2\2\2"+
+		"\65\66\7\177\2\2\66\16\3\2\2\2\678\7q\2\289\7w\2\29:\7v\2\2:\20\3\2\2"+
+		"\2;<\7-\2\2<\22\3\2\2\2=>\7/\2\2>\24\3\2\2\2?@\7,\2\2@\26\3\2\2\2AB\7"+
+		"\61\2\2B\30\3\2\2\2CD\7*\2\2D\32\3\2\2\2EF\7+\2\2F\34\3\2\2\2GI\t\2\2"+
+		"\2HG\3\2\2\2IJ\3\2\2\2JH\3\2\2\2JK\3\2\2\2K\36\3\2\2\2LP\t\3\2\2MO\t\4"+
+		"\2\2NM\3\2\2\2OR\3\2\2\2PN\3\2\2\2PQ\3\2\2\2Q \3\2\2\2RP\3\2\2\2SU\t\5"+
+		"\2\2TS\3\2\2\2UV\3\2\2\2VT\3\2\2\2VW\3\2\2\2WX\3\2\2\2XY\b\21\2\2Y\"\3"+
+		"\2\2\2\6\2JPV\3\b\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

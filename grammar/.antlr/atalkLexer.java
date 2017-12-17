@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase2/grammar/atalk.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/atalk2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -90,7 +90,6 @@ public class atalkLexer extends Lexer {
 	}
 
 
-		int foreachs = 0;
 		boolean hasErr = false;
 		ArrayList<String> logs = new ArrayList<String>();
 
@@ -109,22 +108,7 @@ public class atalkLexer extends Lexer {
 			}
 		}
 
-		void beginForeach() {
-			foreachs ++;
-		}
-		void sawBreak(int line) {
-			try {
-				if (foreachs <= 0)
-					throw new BreakOutsideForeach();
-			} catch (BreakOutsideForeach bof) {
-				printErr(line, "ERR: Found a break not blonging to any foreach.");
-			}
-		}
-		void endForeach() {
-			foreachs --;
-		}
-
-	    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+		int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 			int offset = SymbolTable.top.getOffset(Register.SP);
 	        try{
 	            SymbolTable.top.put(
@@ -217,7 +201,7 @@ public class atalkLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "atalk.g4"; }
+	public String getGrammarFileName() { return "atalk2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

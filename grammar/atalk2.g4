@@ -5,7 +5,6 @@ grammar atalk;
 }
 
 @members {
-	int foreachs = 0;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 
@@ -24,22 +23,7 @@ grammar atalk;
 		}
 	}
 
-	void beginForeach() {
-		foreachs ++;
-	}
-	void sawBreak(int line) {
-		try {
-			if (foreachs <= 0)
-				throw new BreakOutsideForeach();
-		} catch (BreakOutsideForeach bof) {
-			printErr(line, "ERR: Found a break not blonging to any foreach.");
-		}
-	}
-	void endForeach() {
-		foreachs --;
-	}
-
-    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+	int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 		int offset = SymbolTable.top.getOffset(Register.SP);
         try{
             SymbolTable.top.put(

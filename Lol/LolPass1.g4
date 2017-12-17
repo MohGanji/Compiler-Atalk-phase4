@@ -1,4 +1,4 @@
-grammar Lol;
+grammar LolPass1;
 
 @members{
     
@@ -15,16 +15,39 @@ grammar Lol;
         );
     }
 
+    void putStaticVar(String name, Type type) throws ItemAlreadyExistsException {
+        SymbolTable.top.put(
+            new SymbolTableStaticVariableItem(
+                new Variable(name, type),
+                SymbolTable.top.getOffset(Register.GP)
+            )
+        );
+    }
+
     void beginScope() {
-    	int offset = 0;
-    	if(SymbolTable.top != null)
-        	offset = SymbolTable.top.getOffset(Register.SP);
-        SymbolTable.push(new SymbolTable());
-        SymbolTable.top.setOffset(Register.SP, offset);
+    	int localOffset = 0;
+    	int globalOffset = 0;
+    	
+    	if(SymbolTable.top != null) {
+        	localOffset = SymbolTable.top.getOffset(Register.SP);
+        	globalOffset = SymbolTable.top.getOffset(Register.GP);
+    	}
+
+        SymbolTable.push(new SymbolTable(SymbolTable.top));
+
+        SymbolTable.top.setOffset(Register.SP, localOffset);
+        SymbolTable.top.setOffset(Register.GP, globalOffset);
     }
     
     void endScope() {
-        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
+        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+        
+        if(SymbolTable.top.getPreSymbolTable() != null) {
+            SymbolTable.top.getPreSymbolTable().setOffset(
+                Register.GP,
+                SymbolTable.top.getOffset(Register.GP)
+            );
+        }
         SymbolTable.pop();
     }
 }
@@ -32,24 +55,40 @@ grammar Lol;
 program
     :
     { 
+        print("Pass1 started -------------------------");
         beginScope(); 
     }    
         (statement)*    
     {
         endScope();
+        print("Pass1 finished -------------------------");
     }
     ;
 
 statement
     : 
         vardef ';' 
+    |   static_vardef ';'
     |   expr ';' 
     |   block
     ;
 
+static_vardef
+    :
+        'static' var_type = type var_id = ID
+        {
+            try {
+                putStaticVar($var_id.text, $var_type.return_type);
+            }
+            catch(ItemAlreadyExistsException e) {
+                print(String.format("[Line #%s] Variable \"%s\" already exists.", $var_id.getLine(), $var_id.text));
+            }
+        }
+    ;
+
 vardef
     :   
-        var_type = type var_id = ID ('<-' expr)? 
+        var_type = type var_id = ID
         {
             try {
                 putLocalVar($var_id.text, $var_type.return_type);
