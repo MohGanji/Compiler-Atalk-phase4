@@ -1,0 +1,8 @@
+actor Program<10>
+  receiver rec()
+    int d
+    d = 3
+    c = 4
+    d = 4
+  end
+end #EOF

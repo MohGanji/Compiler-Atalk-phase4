@@ -2,6 +2,8 @@
     "files.exclude": {
 		"**/*.tokens": true,
 		"**/*.class": true,
-		"**/atalk*.java": true
+		"**/AtalkPass1*.java": true,
+		"**/AtalkPass2*.java": true,
+		// "**/atalk*.java": true
 	}
 }

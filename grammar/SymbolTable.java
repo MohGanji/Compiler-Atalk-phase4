@@ -52,7 +52,7 @@ public class SymbolTable {
 		if(items.containsKey(item.getKey())){
 			throw new ItemAlreadyExistsException(item.getKey());
 		}
-		
+
 		items.put(item.getKey(), item);
 
 		if(item instanceof SymbolTableVariableItemBase) {
@@ -68,7 +68,6 @@ public class SymbolTable {
 		if(!offsets.containsKey(baseRegister)){
 		   return 0;
 		}
-		// System.out.println(offsets.get(baseRegister));
 		return offsets.get(baseRegister);
 	}
 
@@ -82,11 +81,12 @@ public class SymbolTable {
 
 	public SymbolTableItem get(String key) {
 		SymbolTableItem value = items.get(key);
+		System.out.println(items);
 
 		if(value == null && pre != null)
 			return pre.get(key);
 
-		if(value.useMustBeComesAfterDef() &&
+		if(value != null && value.useMustBeComesAfterDef() &&
 				SymbolTable.definitionsCount <= value.getDefinitionNumber()) {
 			if(pre != null) 
 				return pre.get(key);

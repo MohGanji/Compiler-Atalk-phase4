@@ -107,6 +107,7 @@ public class AtalkPass1Lexer extends Lexer {
 			for (int i = 0; i < logs.size(); i++) {
 				System.out.println(logs.get(i));
 			}
+			System.out.println("------------------------------ Pass 1 finished ------");
 		}
 
 		void beginForeach() {

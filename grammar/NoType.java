@@ -13,14 +13,14 @@ public class NoType extends Type {
 
 	@Override
 	public String toString() {
-		return "int";
+		return "noType";
 	}
 
-	private static IntType instance;
+	private static NoType instance;
 
-	public static IntType getInstance() {
+	public static NoType getInstance() {
 		if(instance == null)
-			return instance = new IntType();
+			return instance = new NoType();
 		return instance;
 	}
 }

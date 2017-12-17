@@ -111,6 +111,15 @@ public class AtalkPass2Lexer extends Lexer {
 			}
 		}
 
+	    void beginScope() {
+	        SymbolTable.push();
+	    }
+
+	    void endScope() {
+	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+	        SymbolTable.pop();
+	    }
+
 		int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 			int offset = SymbolTable.top.getOffset(Register.SP);
 	        try{
@@ -129,77 +138,25 @@ public class AtalkPass2Lexer extends Lexer {
 			return offset;
 	    }
 
-		int putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
-			int offset = SymbolTable.top.getOffset(Register.GP);
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableGlobalVariableItem (
-	                    new Variable(name, type),
-	                    offset
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            offset = putGlobalVar(name, type);
-	            throw iaee;
-	        }
-			return offset;
-	    }
-	    
-	    void putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableReceiverItem(name, args)
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            putReceiver(name, args);
-	            throw iaee;
-	        }
-	    }
-
-	    void putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
-														NegativeActorQueueLenException {
-	        try{
-				if(queueLen <= 0){
-					throw new NegativeActorQueueLenException(name, queueLen);
+		void checkExistance(int line, String name) {
+			SymbolTableItem sti = SymbolTable.top.get(name);
+			try {
+				if(sti == null) {
+					throw new UndefinedVariableException();
 				}
-	            SymbolTable.top.put(
-	                new SymbolTableActorItem(name, queueLen)
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            putActor(name, queueLen);
-	            throw iaee;
-	        }
-			catch (NegativeActorQueueLenException naqle){
-				SymbolTable.top.put(
-	                new SymbolTableActorItem(name, 0)
-	            );
-				throw naqle;
+				else {
+					SymbolTableVariableItemBase var = (SymbolTableVariableItemBase) sti;
+					cerr("hast " + name);
+					// print(line + ") Variable " + name + " used.\t\t" +   "Base Reg: " + var.getBaseRegister() + ", Offset: " + var.getOffset());
+				}
+			} catch (UndefinedVariableException uve) {
+				try{
+					putLocalVar(name, NoType.getInstance());
+				} catch (ItemAlreadyExistsException iaee) {
+					printErr(line, "ERR: variable already exists: " + iaee.getName());
+				}
+				printErr(line, "Item " + name + " doesn't exist.");
 			}
-	    }
-
-	    void beginScope() {
-	    	int offset = 0;
-	    	if(SymbolTable.top != null)
-	        	offset = SymbolTable.top.getOffset(Register.SP);
-	        SymbolTable.push(new SymbolTable());
-	        SymbolTable.top.setOffset(Register.SP, offset);
-			SymbolTable.top.setOffset(Register.GP, offset);
-	    }
-	    
-	    void endScope() {
-	        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
-	        SymbolTable.pop();
-	    }
-
-		void checkExistance(String var) {
-			SymbolTableItem sti = SymbolTable.get(var);
-			cerr(sti.getKey());
 		}
 
 

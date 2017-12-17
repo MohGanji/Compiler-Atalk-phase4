@@ -1,7 +1,0 @@
-{
-    "files.exclude": {
-		"**/*.tokens": true,
-		"**/*.class": true,
-		"**/atalk*.java": true
-	}
-}
