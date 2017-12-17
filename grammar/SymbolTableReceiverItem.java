@@ -14,7 +14,7 @@ public class SymbolTableReceiverItem extends SymbolTableItem {
     public String getKey(){
         String key = this._name;
         for (Type type : this._types) {
-            key += "," + type.toString();
+            key += ":" + type.toString();
         }
         return key;
     }

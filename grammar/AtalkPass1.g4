@@ -9,6 +9,9 @@ grammar AtalkPass1;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 
+	void cerr(String str) {
+		System.out.println(str);
+	}
     void print(String str){
 		logs.add(str);
     }
@@ -76,53 +79,66 @@ grammar AtalkPass1;
 		return offset;
     }
     
-    void putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
+    SymbolTableReceiverItem putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
+		SymbolTableReceiverItem stri = new SymbolTableReceiverItem(name, args);
         try{
-            SymbolTable.top.put(
-                new SymbolTableReceiverItem(name, args)
-            );
+            SymbolTable.top.put(stri);
         }
         catch (ItemAlreadyExistsException iaee){
             name = name+"_temp";
-            putReceiver(name, args);
+            stri = putReceiver(name, args);
             throw iaee;
         }
+		return stri;
     }
 
-    void putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
+    SymbolTableActorItem putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
 													NegativeActorQueueLenException {
+		SymbolTableActorItem stai;
         try{
 			if(queueLen <= 0){
 				throw new NegativeActorQueueLenException(name, queueLen);
 			}
-            SymbolTable.top.put(
-                new SymbolTableActorItem(name, queueLen)
-            );
+			stai = new SymbolTableActorItem(name, queueLen);
+            SymbolTable.top.put(stai);
         }
         catch (ItemAlreadyExistsException iaee){
             name = name+"_temp";
-            putActor(name, queueLen);
+            stai = putActor(name, queueLen);
             throw iaee;
         }
 		catch (NegativeActorQueueLenException naqle){
-			SymbolTable.top.put(
-                new SymbolTableActorItem(name, 0)
-            );
+			stai = new SymbolTableActorItem(name, 0);
+			SymbolTable.top.put(stai);
 			throw naqle;
 		}
+		return stai;
     }
 
-    void beginScope() {
-    	int offset = 0;
-    	if(SymbolTable.top != null)
-        	offset = SymbolTable.top.getOffset(Register.SP);
-        SymbolTable.push(new SymbolTable());
-        SymbolTable.top.setOffset(Register.SP, offset);
-		SymbolTable.top.setOffset(Register.GP, offset);
+	void beginScope() {
+    	int localOffset = 0;
+    	int globalOffset = 0;
+    	
+    	if(SymbolTable.top != null) {
+        	localOffset = SymbolTable.top.getOffset(Register.SP);
+        	globalOffset = SymbolTable.top.getOffset(Register.GP);
+    	}
+
+        SymbolTable.push(new SymbolTable(SymbolTable.top));
+
+        SymbolTable.top.setOffset(Register.SP, localOffset);
+        SymbolTable.top.setOffset(Register.GP, globalOffset);
     }
     
     void endScope() {
-        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
+        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+        
+        if(SymbolTable.top.getPreSymbolTable() != null) {
+            SymbolTable.top.getPreSymbolTable().setOffset(
+                Register.GP,
+                SymbolTable.top.getOffset(Register.GP)
+            );
+        }
         SymbolTable.pop();
     }
 }
@@ -146,12 +162,12 @@ program locals [boolean hasActor=false]
 		printLogs();
 	}
     ;
-actor
+actor locals [SymbolTableActorItem stai]
     : 'actor' name=ID '<' as=CONST_NUM '>' NL
 		{ print("Actor:\n\tname: " + $name.getText() + "\n\tqueueLen: " + $as.getText()); }
             {
 				try{
-					putActor($name.getText(), $as.int );
+					$stai = putActor($name.getText(), $as.int );
 				}
 				catch (ItemAlreadyExistsException iaee){
 					printErr($name.getLine(), "ERR: Actor already exists: " + iaee.getName());
@@ -161,7 +177,7 @@ actor
 				}
                 beginScope();
             }
-        (state | receiver | NL)*
+        (state | rc=receiver { $stai.addReceiver($rc.stri); } | NL)*
         'end'
             { endScope(); }
         (NL | EOF)
@@ -192,7 +208,7 @@ state locals [int offset]
             )* NL
 	;
 
-receiver locals [ArrayList<Type> types = new ArrayList<Type>(), ArrayList<String> names = new ArrayList<String>(), int offset]
+receiver returns [SymbolTableReceiverItem stri] locals [ArrayList<Type> types = new ArrayList<Type>(), ArrayList<String> names = new ArrayList<String>(), int offset]
 	: 
 		'receiver' name=ID '(' (tp=type nm=ID
 			{
@@ -216,7 +232,7 @@ receiver locals [ArrayList<Type> types = new ArrayList<Type>(), ArrayList<String
 						args += $types.get(i).toString();
 					}
 					print(args);
-					putReceiver($name.getText(), $types);
+					$stri = putReceiver($name.getText(), $types);
 				}
 				catch (ItemAlreadyExistsException iaee) {
 					printErr($name.getLine(), "ERR: Receiver already exists: " + iaee.getName());

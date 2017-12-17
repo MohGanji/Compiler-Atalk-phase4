@@ -81,7 +81,9 @@ public class SymbolTable {
 
 	public SymbolTableItem get(String key) {
 		SymbolTableItem value = items.get(key);
-		System.out.println(items);
+		// System.out.println(items);
+		// System.out.println(pre);
+		// System.out.println(value);
 
 		if(value == null && pre != null)
 			return pre.get(key);

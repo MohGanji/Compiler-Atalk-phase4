@@ -1,0 +1,10 @@
+actor Program<10>
+  receiver rec()
+    d2 << d(2)
+    d << d(2)
+  end
+end #EOF
+actor d2<2>
+    receiver d(int x)
+    end
+end

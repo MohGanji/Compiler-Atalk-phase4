@@ -53,24 +53,45 @@ grammar AtalkPass2;
 		return offset;
     }
 
-	void checkExistance(int line, String name) {
+	void checkVariableExistance(int line, String name) {
 		SymbolTableItem sti = SymbolTable.top.get(name);
 		try {
 			if(sti == null) {
 				throw new UndefinedVariableException();
 			}
 			else {
-				SymbolTableVariableItemBase var = (SymbolTableVariableItemBase) sti;
 				cerr("hast " + name);
-				// print(line + ") Variable " + name + " used.\t\t" +   "Base Reg: " + var.getBaseRegister() + ", Offset: " + var.getOffset());
 			}
 		} catch (UndefinedVariableException uve) {
-			try{
+			try {
 				putLocalVar(name, NoType.getInstance());
 			} catch (ItemAlreadyExistsException iaee) {
 				printErr(line, "ERR: variable already exists: " + iaee.getName());
 			}
 			printErr(line, "Item " + name + " doesn't exist.");
+		}
+	}
+
+	void checkActorExistance(int line, String name) {
+		SymbolTableItem sti = SymbolTable.top.get(name);
+		try {
+			if(sti == null) {
+				throw new UndefinedActorException();
+			} else {
+				cerr("actor hast " + name);
+			}
+		} catch (UndefinedActorException uae) {
+			printErr(line, "Actor " + name + " doesn't exist.");
+		}
+	}
+	void checkReceiverExistance(int line, String actor, String receiverKey) {
+		SymbolTableActorItem stai = (SymbolTableActorItem) SymbolTable.top.get(actor);
+		if (stai == null) {
+		} else {
+			stai.printReceivers();
+			if (stai.hasReceiver(receiverKey)) {
+				cerr("vahid");
+			}
 		}
 	}
 }
@@ -150,8 +171,16 @@ stm_vardef
             (',' ID { SymbolTable.define(); } ('=' expr)?)* NL
 	;
 
-stm_tell:
-		(ID | 'sender' | 'self') '<<' ID '(' (expr (',' expr)*)? ')' NL
+stm_tell locals [String rcKey]
+	:
+		(actorName=ID {
+			checkActorExistance($actorName.line, $actorName.getText());
+		} | 'sender' | 'self') '<<' rc=ID {
+			$rcKey = $rc.getText();
+		} '(' (ex=expr {$rcKey += ":" + $ex.retType.toString();} (',' ex2=expr {$rcKey += ":" + $ex2.retType.toString();} )*)? ')' NL 
+		{
+			checkReceiverExistance($actorName.line, $actorName.getText(), $rcKey);
+		}
 	;
 
 stm_write:
@@ -199,8 +228,9 @@ stm_assignment:
 		expr NL
 	;
 
-expr:
-		expr_assign
+expr returns [Type retType]
+	:
+		expr_assign {$retType = IntType.getInstance();}
 	;
 
 expr_assign:
@@ -280,7 +310,7 @@ expr_other:
 		CONST_NUM
 	|	CONST_CHAR
 	|	CONST_STR
-	|	var=ID { checkExistance($var.line, $var.getText()); }
+	|	var=ID { checkVariableExistance($var.line, $var.getText()); }
 	|	'{' expr (',' expr)* '}'
 	|	'read' '(' CONST_NUM ')'
 	|	'(' expr ')'

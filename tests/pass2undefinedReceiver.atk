@@ -1,0 +1,9 @@
+actor Program<10>
+  receiver rec()
+    pppp << rccccc(2)
+  end
+end
+actor pppp<2>
+    receiver rccccc(int a)
+    end
+end

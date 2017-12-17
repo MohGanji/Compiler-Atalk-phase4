@@ -138,24 +138,45 @@ public class AtalkPass2Lexer extends Lexer {
 			return offset;
 	    }
 
-		void checkExistance(int line, String name) {
+		void checkVariableExistance(int line, String name) {
 			SymbolTableItem sti = SymbolTable.top.get(name);
 			try {
 				if(sti == null) {
 					throw new UndefinedVariableException();
 				}
 				else {
-					SymbolTableVariableItemBase var = (SymbolTableVariableItemBase) sti;
 					cerr("hast " + name);
-					// print(line + ") Variable " + name + " used.\t\t" +   "Base Reg: " + var.getBaseRegister() + ", Offset: " + var.getOffset());
 				}
 			} catch (UndefinedVariableException uve) {
-				try{
+				try {
 					putLocalVar(name, NoType.getInstance());
 				} catch (ItemAlreadyExistsException iaee) {
 					printErr(line, "ERR: variable already exists: " + iaee.getName());
 				}
 				printErr(line, "Item " + name + " doesn't exist.");
+			}
+		}
+
+		void checkActorExistance(int line, String name) {
+			SymbolTableItem sti = SymbolTable.top.get(name);
+			try {
+				if(sti == null) {
+					throw new UndefinedActorException();
+				} else {
+					cerr("actor hast " + name);
+				}
+			} catch (UndefinedActorException uae) {
+				printErr(line, "Actor " + name + " doesn't exist.");
+			}
+		}
+		void checkReceiverExistance(int line, String actor, String receiverKey) {
+			SymbolTableActorItem stai = (SymbolTableActorItem) SymbolTable.top.get(actor);
+			if (stai == null) {
+			} else {
+				stai.printReceivers();
+				if (stai.hasReceiver(receiverKey)) {
+					cerr("vahid");
+				}
 			}
 		}
 
