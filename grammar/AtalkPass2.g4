@@ -7,6 +7,7 @@ grammar AtalkPass2;
 @members {
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
+	String currentActor;
 
 	void cerr(String str) {
 		System.out.println(str);
@@ -110,7 +111,7 @@ program
 	}
     ;
 actor
-    : 'actor' ID '<' CONST_NUM '>' NL
+    : 'actor' act=ID {currentActor = $act.getText();} '<' CONST_NUM '>' NL
             { beginScope(); }
         (state | receiver | NL)*
         'end'
@@ -172,15 +173,23 @@ stm_vardef
             (',' ID { SymbolTable.define(); } ('=' expr)?)* NL
 	;
 
-stm_tell locals [String rcKey]
+stm_tell locals [String rcKey, String actorName]
 	:
-		(actorName=ID {
-			checkActorExistance($actorName.line, $actorName.getText());
-		} | 'sender' | 'self') '<<' rc=ID {
+		(act=ID {
+			$actorName = $act.getText();
+			checkActorExistance($act.line, $actorName);
+		}
+		| 'sender'
+		| 'self' {
+			$actorName = currentActor;
+		})
+		'<<' rc=ID {
 			$rcKey = $rc.getText();
-		} '(' (ex=expr {$rcKey += ":" + $ex.retType.toString();} (',' ex2=expr {$rcKey += ":" + $ex2.retType.toString();} )*)? ')' NL 
+		}
+		'(' (ex=expr {$rcKey += ":" + $ex.retType.toString();}
+		(',' ex2=expr {$rcKey += ":" + $ex2.retType.toString();} )*)? ')' NL 
 		{
-			checkReceiverExistance($actorName.line, $actorName.getText(), $rcKey);
+			checkReceiverExistance($rc.line, $actorName, $rcKey);
 		}
 	;
 

@@ -92,6 +92,7 @@ public class AtalkPass2Lexer extends Lexer {
 
 		boolean hasErr = false;
 		ArrayList<String> logs = new ArrayList<String>();
+		String currentActor;
 
 		void cerr(String str) {
 			System.out.println(str);
