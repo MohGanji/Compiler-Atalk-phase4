@@ -4,6 +4,6 @@ actor Program<10>
   end
 end
 actor pppp<2>
-    receiver rccccc(int a)
+    receiver rccccc(char a)
     end
 end

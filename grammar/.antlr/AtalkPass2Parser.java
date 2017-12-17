@@ -185,12 +185,13 @@ public class AtalkPass2Parser extends Parser {
 		}
 		void checkReceiverExistance(int line, String actor, String receiverKey) {
 			SymbolTableActorItem stai = (SymbolTableActorItem) SymbolTable.top.get(actor);
-			if (stai == null) {
-			} else {
-				stai.printReceivers();
-				if (stai.hasReceiver(receiverKey)) {
-					cerr("vahid");
+			try {
+				if (stai != null && !stai.hasReceiver(receiverKey)) {
+					// stai.printReceivers();
+					throw new UndefinedReceiverException();
 				}
+			} catch (UndefinedReceiverException ure) {
+				printErr(line, "Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 			}
 		}
 
