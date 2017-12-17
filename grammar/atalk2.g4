@@ -1,4 +1,4 @@
-grammar atalk;
+grammar atalk2;
 
 @header {
 	import java.util.ArrayList ;
@@ -303,7 +303,7 @@ statement:
 	|	stm_foreach
 	|	stm_if_elseif_else
 	|	stm_quit
-	|	sb=stm_break { sawBreak($sb.line); }
+	|	stm_break
 	|	stm_tell
 	|	stm_write
 	|	block
@@ -367,13 +367,11 @@ stm_if_elseif_else:
 stm_foreach:
 		'foreach' ID 'in' expr NL
 			{
-				beginForeach();
 				beginScope();
 			}
 		statements
 		'end' NL
 			{
-				endForeach();
 				endScope();
 			}
 	;
