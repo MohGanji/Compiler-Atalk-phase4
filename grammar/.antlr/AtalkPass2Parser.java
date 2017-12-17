@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/atalk2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class atalk2Parser extends Parser {
+public class AtalkPass2Parser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -92,7 +92,7 @@ public class atalk2Parser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "atalk2.g4"; }
+	public String getGrammarFileName() { return "AtalkPass2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -216,16 +216,16 @@ public class atalk2Parser extends Parser {
 			cerr(sti.getKey());
 		}
 
-	public atalk2Parser(TokenStream input) {
+	public AtalkPass2Parser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class ProgramContext extends ParserRuleContext {
 		public boolean hasActor = false;
 		public ActorContext ac;
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public List<ActorContext> actor() {
 			return getRuleContexts(ActorContext.class);
@@ -303,13 +303,13 @@ public class atalk2Parser extends Parser {
 	public static class ActorContext extends ParserRuleContext {
 		public Token name;
 		public Token as;
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
-		public TerminalNode ID() { return getToken(atalk2Parser.ID, 0); }
-		public TerminalNode CONST_NUM() { return getToken(atalk2Parser.CONST_NUM, 0); }
-		public TerminalNode EOF() { return getToken(atalk2Parser.EOF, 0); }
+		public TerminalNode ID() { return getToken(AtalkPass2Parser.ID, 0); }
+		public TerminalNode CONST_NUM() { return getToken(AtalkPass2Parser.CONST_NUM, 0); }
+		public TerminalNode EOF() { return getToken(AtalkPass2Parser.EOF, 0); }
 		public List<StateContext> state() {
 			return getRuleContexts(StateContext.class);
 		}
@@ -426,13 +426,13 @@ public class atalk2Parser extends Parser {
 		public TypeContext tp;
 		public Token nm;
 		public Token nm2;
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
-		public List<TerminalNode> ID() { return getTokens(atalk2Parser.ID); }
+		public List<TerminalNode> ID() { return getTokens(AtalkPass2Parser.ID); }
 		public TerminalNode ID(int i) {
-			return getToken(atalk2Parser.ID, i);
+			return getToken(AtalkPass2Parser.ID, i);
 		}
 		public StateContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -509,16 +509,16 @@ public class atalk2Parser extends Parser {
 		public Token nm;
 		public TypeContext tp2;
 		public Token nm2;
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public StatementsContext statements() {
 			return getRuleContext(StatementsContext.class,0);
 		}
-		public List<TerminalNode> ID() { return getTokens(atalk2Parser.ID); }
+		public List<TerminalNode> ID() { return getTokens(AtalkPass2Parser.ID); }
 		public TerminalNode ID(int i) {
-			return getToken(atalk2Parser.ID, i);
+			return getToken(AtalkPass2Parser.ID, i);
 		}
 		public List<TypeContext> type() {
 			return getRuleContexts(TypeContext.class);
@@ -639,9 +639,9 @@ public class atalk2Parser extends Parser {
 		public ArrayList<Integer> dims = new ArrayList<Integer>();
 		public Type x;
 		public Token sz;
-		public List<TerminalNode> CONST_NUM() { return getTokens(atalk2Parser.CONST_NUM); }
+		public List<TerminalNode> CONST_NUM() { return getTokens(AtalkPass2Parser.CONST_NUM); }
 		public TerminalNode CONST_NUM(int i) {
-			return getToken(atalk2Parser.CONST_NUM, i);
+			return getToken(AtalkPass2Parser.CONST_NUM, i);
 		}
 		public TypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -780,9 +780,9 @@ public class atalk2Parser extends Parser {
 	}
 
 	public static class BlockContext extends ParserRuleContext {
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public StatementsContext statements() {
 			return getRuleContext(StatementsContext.class,0);
@@ -831,9 +831,9 @@ public class atalk2Parser extends Parser {
 		public StatementContext statement(int i) {
 			return getRuleContext(StatementContext.class,i);
 		}
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public StatementsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1029,13 +1029,13 @@ public class atalk2Parser extends Parser {
 		public TypeContext tp;
 		public Token nm;
 		public Token nm2;
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
-		public List<TerminalNode> ID() { return getTokens(atalk2Parser.ID); }
+		public List<TerminalNode> ID() { return getTokens(AtalkPass2Parser.ID); }
 		public TerminalNode ID(int i) {
-			return getToken(atalk2Parser.ID, i);
+			return getToken(AtalkPass2Parser.ID, i);
 		}
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
@@ -1132,11 +1132,11 @@ public class atalk2Parser extends Parser {
 	}
 
 	public static class Stm_tellContext extends ParserRuleContext {
-		public List<TerminalNode> ID() { return getTokens(atalk2Parser.ID); }
+		public List<TerminalNode> ID() { return getTokens(AtalkPass2Parser.ID); }
 		public TerminalNode ID(int i) {
-			return getToken(atalk2Parser.ID, i);
+			return getToken(AtalkPass2Parser.ID, i);
 		}
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
 		}
@@ -1219,7 +1219,7 @@ public class atalk2Parser extends Parser {
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public Stm_writeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1262,9 +1262,9 @@ public class atalk2Parser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public List<StatementsContext> statements() {
 			return getRuleContexts(StatementsContext.class);
@@ -1359,13 +1359,13 @@ public class atalk2Parser extends Parser {
 	}
 
 	public static class Stm_foreachContext extends ParserRuleContext {
-		public TerminalNode ID() { return getToken(atalk2Parser.ID, 0); }
+		public TerminalNode ID() { return getToken(AtalkPass2Parser.ID, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public List<TerminalNode> NL() { return getTokens(atalk2Parser.NL); }
+		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
-			return getToken(atalk2Parser.NL, i);
+			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public StatementsContext statements() {
 			return getRuleContext(StatementsContext.class,0);
@@ -1418,7 +1418,7 @@ public class atalk2Parser extends Parser {
 	}
 
 	public static class Stm_quitContext extends ParserRuleContext {
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public Stm_quitContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1451,7 +1451,7 @@ public class atalk2Parser extends Parser {
 	public static class Stm_breakContext extends ParserRuleContext {
 		public int line;
 		public Token brk;
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public Stm_breakContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1486,7 +1486,7 @@ public class atalk2Parser extends Parser {
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
-		public TerminalNode NL() { return getToken(atalk2Parser.NL, 0); }
+		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public Stm_assignmentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -2384,10 +2384,10 @@ public class atalk2Parser extends Parser {
 
 	public static class Expr_otherContext extends ParserRuleContext {
 		public Token var;
-		public TerminalNode CONST_NUM() { return getToken(atalk2Parser.CONST_NUM, 0); }
-		public TerminalNode CONST_CHAR() { return getToken(atalk2Parser.CONST_CHAR, 0); }
-		public TerminalNode CONST_STR() { return getToken(atalk2Parser.CONST_STR, 0); }
-		public TerminalNode ID() { return getToken(atalk2Parser.ID, 0); }
+		public TerminalNode CONST_NUM() { return getToken(AtalkPass2Parser.CONST_NUM, 0); }
+		public TerminalNode CONST_CHAR() { return getToken(AtalkPass2Parser.CONST_CHAR, 0); }
+		public TerminalNode CONST_STR() { return getToken(AtalkPass2Parser.CONST_STR, 0); }
+		public TerminalNode ID() { return getToken(AtalkPass2Parser.ID, 0); }
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
 		}

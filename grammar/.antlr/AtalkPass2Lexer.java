@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/atalk.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class atalkLexer extends Lexer {
+public class AtalkPass2Lexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -90,12 +90,14 @@ public class atalkLexer extends Lexer {
 	}
 
 
-		int foreachs = 0;
 		boolean hasErr = false;
 		ArrayList<String> logs = new ArrayList<String>();
 
+		void cerr(String str) {
+			System.out.println(str);
+		}
 	    void print(String str){
-			logs.add(str);
+			// logs.add(str);
 	    }
 		void printErr(int line, String str){
 			hasErr = true;
@@ -109,22 +111,7 @@ public class atalkLexer extends Lexer {
 			}
 		}
 
-		void beginForeach() {
-			foreachs ++;
-		}
-		void sawBreak(int line) {
-			try {
-				if (foreachs <= 0)
-					throw new BreakOutsideForeach();
-			} catch (BreakOutsideForeach bof) {
-				printErr(line, "ERR: Found a break not blonging to any foreach.");
-			}
-		}
-		void endForeach() {
-			foreachs --;
-		}
-
-	    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+		int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 			int offset = SymbolTable.top.getOffset(Register.SP);
 	        try{
 	            SymbolTable.top.put(
@@ -206,18 +193,23 @@ public class atalkLexer extends Lexer {
 	    }
 	    
 	    void endScope() {
-	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
+	        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
 	        SymbolTable.pop();
 	    }
 
+		void checkExistance(String var) {
+			SymbolTableItem sti = SymbolTable.get(var);
+			cerr(sti.getKey());
+		}
 
-	public atalkLexer(CharStream input) {
+
+	public AtalkPass2Lexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "atalk.g4"; }
+	public String getGrammarFileName() { return "AtalkPass2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

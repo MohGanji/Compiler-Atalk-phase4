@@ -1,10 +1,11 @@
-grammar atalk2;
+grammar AtalkPass1;
 
 @header {
 	import java.util.ArrayList ;
 }
 
 @members {
+	int foreachs = 0;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 
@@ -23,7 +24,22 @@ grammar atalk2;
 		}
 	}
 
-	int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+	void beginForeach() {
+		foreachs ++;
+	}
+	void sawBreak(int line) {
+		try {
+			if (foreachs <= 0)
+				throw new BreakOutsideForeach();
+		} catch (BreakOutsideForeach bof) {
+			printErr(line, "ERR: Found a break not blonging to any foreach.");
+		}
+	}
+	void endForeach() {
+		foreachs --;
+	}
+
+    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 		int offset = SymbolTable.top.getOffset(Register.SP);
         try{
             SymbolTable.top.put(
@@ -303,7 +319,7 @@ statement:
 	|	stm_foreach
 	|	stm_if_elseif_else
 	|	stm_quit
-	|	stm_break
+	|	sb=stm_break { sawBreak($sb.line); }
 	|	stm_tell
 	|	stm_write
 	|	block
@@ -367,11 +383,13 @@ stm_if_elseif_else:
 stm_foreach:
 		'foreach' ID 'in' expr NL
 			{
+				beginForeach();
 				beginScope();
 			}
 		statements
 		'end' NL
 			{
+				endForeach();
 				endScope();
 			}
 	;

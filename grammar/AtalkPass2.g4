@@ -1,16 +1,18 @@
-grammar atalk;
+grammar AtalkPass2;
 
 @header {
 	import java.util.ArrayList ;
 }
 
 @members {
-	int foreachs = 0;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 
+	void cerr(String str) {
+		System.out.println(str);
+	}
     void print(String str){
-		logs.add(str);
+		// logs.add(str);
     }
 	void printErr(int line, String str){
 		hasErr = true;
@@ -24,22 +26,7 @@ grammar atalk;
 		}
 	}
 
-	void beginForeach() {
-		foreachs ++;
-	}
-	void sawBreak(int line) {
-		try {
-			if (foreachs <= 0)
-				throw new BreakOutsideForeach();
-		} catch (BreakOutsideForeach bof) {
-			printErr(line, "ERR: Found a break not blonging to any foreach.");
-		}
-	}
-	void endForeach() {
-		foreachs --;
-	}
-
-    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+	int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 		int offset = SymbolTable.top.getOffset(Register.SP);
         try{
             SymbolTable.top.put(
@@ -121,9 +108,14 @@ grammar atalk;
     }
     
     void endScope() {
-        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
+        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
         SymbolTable.pop();
     }
+
+	void checkExistance(String var) {
+		SymbolTableItem sti = SymbolTable.get(var);
+		cerr(sti.getKey());
+	}
 }
 
 
@@ -319,7 +311,7 @@ statement:
 	|	stm_foreach
 	|	stm_if_elseif_else
 	|	stm_quit
-	|	sb=stm_break { sawBreak($sb.line); }
+	|	stm_break
 	|	stm_tell
 	|	stm_write
 	|	block
@@ -383,13 +375,11 @@ stm_if_elseif_else:
 stm_foreach:
 		'foreach' ID 'in' expr NL
 			{
-				beginForeach();
 				beginScope();
 			}
 		statements
 		'end' NL
 			{
-				endForeach();
 				endScope();
 			}
 	;
@@ -488,7 +478,7 @@ expr_other:
 		CONST_NUM
 	|	CONST_CHAR
 	|	CONST_STR
-	|	ID
+	|	var=ID { checkExistance($var.getText()); }
 	|	'{' expr (',' expr)* '}'
 	|	'read' '(' CONST_NUM ')'
 	|	'(' expr ')'

@@ -93,8 +93,11 @@ public class atalk2Lexer extends Lexer {
 		boolean hasErr = false;
 		ArrayList<String> logs = new ArrayList<String>();
 
+		void cerr(String str) {
+			System.out.println(str);
+		}
 	    void print(String str){
-			logs.add(str);
+			// logs.add(str);
 	    }
 		void printErr(int line, String str){
 			hasErr = true;
@@ -190,9 +193,14 @@ public class atalk2Lexer extends Lexer {
 	    }
 	    
 	    void endScope() {
-	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
+	        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP));
 	        SymbolTable.pop();
 	    }
+
+		void checkExistance(String var) {
+			SymbolTableItem sti = SymbolTable.get(var);
+			cerr(sti.getKey());
+		}
 
 
 	public atalk2Lexer(CharStream input) {

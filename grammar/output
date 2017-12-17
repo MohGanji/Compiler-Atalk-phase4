@@ -1,1 +1,93 @@
-line 9: ERR: variable already exists: a
+Actor:
+	name: vahid
+	queueLen: 2
+State:
+	name: v
+	type: int
+	offset: 0
+	size: 4
+Receiver:
+	name: welkj
+	args: int, char
+Argument:
+	name: a
+	type: int
+	offset: 0
+	size: 4
+Argument:
+	name: s22
+	type: char
+	offset: 4
+	size: 4
+State:
+	name: v
+	type: int
+	offset: 8
+	size: 4
+State:
+	name: x
+	type: int
+	offset: 12
+	size: 4
+State:
+	name: y
+	type: int
+	offset: 16
+	size: 4
+State:
+	name: z
+	type: int
+	offset: 20
+	size: 4
+State:
+	name: we
+	type: char
+	offset: 24
+	size: 4
+State:
+	name: w2
+	type: int
+	offset: 28
+	size: 4
+State:
+	name: s
+	type: array(int)
+	offset: 32
+	size: 8
+State:
+	name: sdf
+	type: int
+	offset: 40
+	size: 4
+State:
+	name: sfew
+	type: array(char)
+	offset: 44
+	size: 936
+Stack offset: 980
+Stack offset: 980
+State:
+	name: w23
+	type: int
+	offset: 980
+	size: 4
+Stack offset: 984
+State:
+	name: s
+	type: int
+	offset: 980
+	size: 4
+State:
+	name: w23
+	type: int
+	offset: 984
+	size: 4
+Stack offset: 988
+Stack offset: 980
+Stack offset: 980
+Stack offset: 980
+Stack offset: 980
+Stack offset: 980
+Stack offset: 980
+Stack offset: 0
+Stack offset: 0

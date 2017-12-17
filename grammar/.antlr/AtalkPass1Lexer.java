@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/atalk.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class atalkLexer extends Lexer {
+public class AtalkPass1Lexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -211,13 +211,13 @@ public class atalkLexer extends Lexer {
 	    }
 
 
-	public atalkLexer(CharStream input) {
+	public AtalkPass1Lexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "atalk.g4"; }
+	public String getGrammarFileName() { return "AtalkPass1.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
