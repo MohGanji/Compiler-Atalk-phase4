@@ -146,15 +146,16 @@ public class AtalkPass2Lexer extends Lexer {
 					throw new UndefinedVariableException();
 				}
 				else {
-					cerr("hast " + name);
+					// cerr("hast " + name);
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
+					SymbolTable.define();
 					putLocalVar(name, NoType.getInstance());
 				} catch (ItemAlreadyExistsException iaee) {
 					printErr(line, "ERR: variable already exists: " + iaee.getName());
 				}
-				printErr(line, "Item " + name + " doesn't exist.");
+				printErr(line, "ERR: Item " + name + " doesn't exist.");
 			}
 		}
 
@@ -164,10 +165,10 @@ public class AtalkPass2Lexer extends Lexer {
 				if(sti == null) {
 					throw new UndefinedActorException();
 				} else {
-					cerr("actor hast " + name);
+					// cerr("actor hast " + name);
 				}
 			} catch (UndefinedActorException uae) {
-				printErr(line, "Actor " + name + " doesn't exist.");
+				printErr(line, "ERR: Actor " + name + " doesn't exist.");
 			}
 		}
 		void checkReceiverExistance(int line, String actor, String receiverKey) {
@@ -178,8 +179,53 @@ public class AtalkPass2Lexer extends Lexer {
 					throw new UndefinedReceiverException();
 				}
 			} catch (UndefinedReceiverException ure) {
-				printErr(line, "Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
+				printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 			}
+		}
+		Type getIDType(String name) {
+			SymbolTableLocalVariableItem stlvi = (SymbolTableLocalVariableItem) SymbolTable.top.get(name);
+			Variable var = stlvi.getVariable();
+			return var.getType();
+		}
+		void typeCheck(int line, Type t1, Type t2) {
+			try {
+				if (!t1.equals(t2)) {
+					throw new TypeErrorException();
+				}
+			} catch (TypeErrorException tee) {
+				printErr(line, "ERR: Can't convert type " + t2.toString() + " to " + t1.toString());
+			}
+		}
+		void checkArrayDim(int line, Type type, int dim) {
+			try {
+				if (type instanceof ArrayType && !(dim <= ((ArrayType) type).dim())) {
+					throw new TypeErrorException();
+				}
+			} catch (TypeErrorException tee) {
+				printErr(line, "ERR: Array " + type.toString() + " dimensions count is less than " + dim);
+			}
+		}
+		void checkLValue(int line, boolean is_lvalue) {
+			try {
+				if (!is_lvalue) {
+					throw new LValueException();
+				}
+			} catch (LValueException lve) {
+				printErr(line, "ERR: Can't assign to RValue");
+			}
+		}
+		void checkForeach(int line, Type exp) {
+			try {
+				if (!(exp instanceof ArrayType)) {
+					throw new ForeachIterativeException();
+				} /* else if (!exp.type().equals(var)) {
+					throw new ForeachIteratorException();
+				} */
+			} catch (ForeachIterativeException ftie) {
+				printErr(line, "ERR: Foreach iterative must be an array");
+			} /* catch (ForeachIteratorException ftoe) {
+				printErr(line, "ERR: Foreach iterator '" + var.toString() + "' doesn't match '" + exp.type().toString() + "'");
+			} */
 		}
 
 

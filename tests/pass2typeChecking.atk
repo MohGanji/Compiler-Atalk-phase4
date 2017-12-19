@@ -1,0 +1,40 @@
+actor p<2>
+    receiver d()
+        int x = 2
+        char a
+        x = a
+        x = 3
+        x = 'c'
+        a = 2
+        a = x
+        x = 2 = 3
+        2 = 3
+        'c' = 'a'
+        'c' = 2
+        x = a = 2
+        a = a = a = 'c'
+        
+        int[2] y
+        y[0] = 2
+        y[0] = 'c'
+        y = 2
+        y[0] = x
+        y[1] = {2,3}
+
+        int[2][5] p = {{2}}
+        int[2][5] p = {2}
+
+        foreach i in y
+        end
+        foreach i in x
+        end
+
+        if y
+        elseif y[1]
+        elseif p
+        elseif x
+        elseif a
+        end
+
+    end
+end

@@ -61,15 +61,16 @@ grammar AtalkPass2;
 				throw new UndefinedVariableException();
 			}
 			else {
-				cerr("hast " + name);
+				// cerr("hast " + name);
 			}
 		} catch (UndefinedVariableException uve) {
 			try {
+				SymbolTable.define();
 				putLocalVar(name, NoType.getInstance());
 			} catch (ItemAlreadyExistsException iaee) {
 				printErr(line, "ERR: variable already exists: " + iaee.getName());
 			}
-			printErr(line, "Item " + name + " doesn't exist.");
+			printErr(line, "ERR: Item " + name + " doesn't exist.");
 		}
 	}
 
@@ -79,10 +80,10 @@ grammar AtalkPass2;
 			if(sti == null) {
 				throw new UndefinedActorException();
 			} else {
-				cerr("actor hast " + name);
+				// cerr("actor hast " + name);
 			}
 		} catch (UndefinedActorException uae) {
-			printErr(line, "Actor " + name + " doesn't exist.");
+			printErr(line, "ERR: Actor " + name + " doesn't exist.");
 		}
 	}
 	void checkReceiverExistance(int line, String actor, String receiverKey) {
@@ -93,8 +94,53 @@ grammar AtalkPass2;
 				throw new UndefinedReceiverException();
 			}
 		} catch (UndefinedReceiverException ure) {
-			printErr(line, "Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
+			printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 		}
+	}
+	Type getIDType(String name) {
+		SymbolTableLocalVariableItem stlvi = (SymbolTableLocalVariableItem) SymbolTable.top.get(name);
+		Variable var = stlvi.getVariable();
+		return var.getType();
+	}
+	void typeCheck(int line, Type t1, Type t2) {
+		try {
+			if (!t1.equals(t2)) {
+				throw new TypeErrorException();
+			}
+		} catch (TypeErrorException tee) {
+			printErr(line, "ERR: Can't convert type " + t2.toString() + " to " + t1.toString());
+		}
+	}
+	void checkArrayDim(int line, Type type, int dim) {
+		try {
+			if (type instanceof ArrayType && !(dim <= ((ArrayType) type).dim())) {
+				throw new TypeErrorException();
+			}
+		} catch (TypeErrorException tee) {
+			printErr(line, "ERR: Array " + type.toString() + " dimensions count is less than " + dim);
+		}
+	}
+	void checkLValue(int line, boolean is_lvalue) {
+		try {
+			if (!is_lvalue) {
+				throw new LValueException();
+			}
+		} catch (LValueException lve) {
+			printErr(line, "ERR: Can't assign to RValue");
+		}
+	}
+	void checkForeach(int line, Type exp) {
+		try {
+			if (!(exp instanceof ArrayType)) {
+				throw new ForeachIterativeException();
+			} /* else if (!exp.type().equals(var)) {
+				throw new ForeachIteratorException();
+			} */
+		} catch (ForeachIterativeException ftie) {
+			printErr(line, "ERR: Foreach iterative must be an array");
+		} /* catch (ForeachIteratorException ftoe) {
+			printErr(line, "ERR: Foreach iterator '" + var.toString() + "' doesn't match '" + exp.type().toString() + "'");
+		} */
 	}
 }
 
@@ -135,10 +181,49 @@ receiver
 			{ endScope(); }
 	;
 
-type returns [Type return_type] 
+type returns [Type retType] locals [int size = 1, ArrayList<Integer> dims = new ArrayList<Integer>(), Type x]
 	:
-		'char' ('[' CONST_NUM ']')* { $return_type = CharType.getInstance(); }
-	|	'int' ('[' CONST_NUM ']')* { $return_type = IntType.getInstance(); }
+		'char' ('[' sz=CONST_NUM ']' {
+			$size *= $sz.int;
+
+			if($sz.int <= 0) {
+				$retType = new ArrayType(CharType.getInstance(), 0);
+			}
+			$dims.add($sz.int);
+		})* {
+			$retType = CharType.getInstance();
+			if ($size == 1 && $sz.int == 0)
+				$retType = CharType.getInstance();
+			else {
+				for(int i = $dims.size()-1; i >= 0; i--){
+					if(i == $dims.size()-1)
+						$x = new ArrayType(CharType.getInstance(), $dims.get(i));
+					else
+						$x = new ArrayType($x, $dims.get(i));
+				}
+				$retType = $x;
+			}
+		}
+	|	'int' ('[' sz=CONST_NUM ']' {
+			$size *= $sz.int;
+			if($sz.int <= 0){
+				$retType = new ArrayType(IntType.getInstance(), 0);
+			}
+			$dims.add($sz.int);
+		})* {
+			$retType = IntType.getInstance();
+			if ($size == 1 && $sz.int == 0)
+				$retType = IntType.getInstance();
+			else if ($size != 0 && $sz.int != 0) {
+				for(int i = $dims.size()-1; i >= 0; i--){
+					if(i == $dims.size()-1)
+						$x = new ArrayType(IntType.getInstance(), $dims.get(i));
+					else
+						$x = new ArrayType($x, $dims.get(i));
+				}
+				$retType = $x;
+			}
+		}
 	;
 
 block
@@ -167,10 +252,25 @@ statement:
 	|	block
 	;
 
-stm_vardef
+stm_vardef locals [Type exp2LastType = NoType.getInstance()]
 	:
-		type ID { SymbolTable.define(); } ('=' expr)?
-            (',' ID { SymbolTable.define(); } ('=' expr)?)* NL
+		tp=type var=ID {
+			SymbolTable.define();
+		} ('=' exp=expr {
+			typeCheck($var.line, $tp.retType, $exp.retType);
+		})?
+		(',' ID {
+			SymbolTable.define();
+		} ('=' exp2=expr {
+			if ($exp2LastType.equals(NoType.getInstance())) {
+				checkLValue($var.line, $exp.is_lvalue);
+			} else {
+				checkLValue($var.line, $exp2.is_lvalue);
+			}
+			$exp2LastType = $exp2.retType;
+			typeCheck($var.line, $tp.retType, $exp2.retType);
+		})?)*
+		NL
 	;
 
 stm_tell locals [String rcKey, String actorName]
@@ -198,11 +298,15 @@ stm_write:
 	;
 
 stm_if_elseif_else:
-		'if' expr NL
-			{ beginScope(); }
-		statements
-		('elseif' expr NL
+		'if' exp=expr NL
 			{
+				typeCheck($exp.line, IntType.getInstance(), $exp.retType);
+				beginScope();
+			}
+		statements
+		('elseif' exp2=expr NL
+			{
+				typeCheck($exp2.line, IntType.getInstance(), $exp2.retType);
 				endScope();
 				beginScope();
 			}
@@ -218,8 +322,11 @@ stm_if_elseif_else:
 	;
 
 stm_foreach:
-		'foreach' ID 'in' expr NL
-			{ beginScope(); }
+		'foreach' var=ID 'in' exp=expr NL
+			{
+				checkForeach($var.line, $exp.retType);
+				beginScope();
+			}
 		statements
 		'end' NL
 			{ endScope(); }
@@ -238,92 +345,287 @@ stm_assignment:
 		expr NL
 	;
 
-expr returns [Type retType]
+expr returns [int line, boolean is_lvalue, Type retType]
 	:
-		expr_assign {$retType = IntType.getInstance();}
+		exp=expr_assign {
+			$line = $exp.line;
+			$is_lvalue = $exp.is_lvalue;
+			$retType = $exp.retType;
+		}
 	;
 
-expr_assign:
-		expr_or '=' expr_assign
-	|	expr_or
+expr_assign returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_or '=' exp2=expr_assign {
+			typeCheck($exp.line, $exp.retType, $exp2.retType);
+			checkLValue($exp.line, $exp.is_lvalue);
+			$retType = $exp.retType;
+			$is_lvalue = $exp2.is_lvalue;
+			$line = $exp.line;
+		}
+	|	exp=expr_or {
+			$line = $exp.line;
+			$is_lvalue = $exp.is_lvalue;
+			$retType = $exp.retType;
+		}
 	;
 
-expr_or:
-		expr_and expr_or_tmp
+expr_or returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_and exp2=expr_or_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
-expr_or_tmp:
-		'or' expr_and expr_or_tmp
-	|
+expr_or_tmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		'or' exp=expr_and exp2=expr_or_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	| {
+			$is_lvalue = true;
+			$retType = NoType.getInstance();
+			$line = 0;
+		}
 	;
 
-expr_and:
-		expr_eq expr_and_tmp
+expr_and returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_eq exp2=expr_and_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
-expr_and_tmp:
-		'and' expr_eq expr_and_tmp
-	|
+expr_and_tmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		'and' exp=expr_eq exp2=expr_and_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	| {
+			$is_lvalue = true;
+			$retType = NoType.getInstance();
+			$line = 0;
+		}
 	;
 
-expr_eq:
-		expr_cmp expr_eq_tmp
+expr_eq returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_cmp exp2=expr_eq_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
-expr_eq_tmp:
-		('==' | '<>') expr_cmp expr_eq_tmp
-	|
+expr_eq_tmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		('==' | '<>') exp=expr_cmp exp2=expr_eq_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	| {
+			$is_lvalue = true;
+			$retType = NoType.getInstance();
+			$line = 0;
+		}
 	;
 
-expr_cmp:
-		expr_add expr_cmp_tmp
+expr_cmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_add exp2=expr_cmp_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
-expr_cmp_tmp:
-		('<' | '>') expr_add expr_cmp_tmp
-	|
+expr_cmp_tmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		('<' | '>') exp=expr_add exp2=expr_cmp_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	| {
+			$is_lvalue = true;
+			$retType = NoType.getInstance();
+			$line = 0;
+		}
 	;
 
-expr_add:
-		expr_mult expr_add_tmp
+expr_add returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_mult exp2=expr_add_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
-expr_add_tmp:
-		('+' | '-') expr_mult expr_add_tmp
-	|
+expr_add_tmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		('+' | '-') exp=expr_mult exp2=expr_add_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	| {
+			$is_lvalue = true;
+			$retType = NoType.getInstance();
+			$line = 0;
+		}
 	;
 
-expr_mult:
-		expr_un expr_mult_tmp
+expr_mult returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_un exp2=expr_mult_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
-expr_mult_tmp:
-		('*' | '/') expr_un expr_mult_tmp
-	|
+expr_mult_tmp returns [int line, boolean is_lvalue, Type retType]
+	:
+		('*' | '/') exp=expr_un exp2=expr_mult_tmp {
+			if (!$exp2.retType.equals(NoType.getInstance())) {
+				typeCheck($exp.line, $exp.retType, $exp2.retType);
+			}
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	| {
+			$is_lvalue = true;
+			$retType = NoType.getInstance();
+			$line = 0;
+		}
 	;
 
-expr_un:
-		('not' | '-') expr_un
-	|	expr_mem
+expr_un returns [int line, boolean is_lvalue, Type retType]
+	:
+		('not' | '-') exp=expr_un {
+			$is_lvalue = false;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
+	|	exp2=expr_mem {
+			$is_lvalue = $exp2.is_lvalue;
+			$retType = $exp2.retType;
+			$line = $exp2.line;
+		}
 	;
 
-expr_mem:
-		expr_other expr_mem_tmp
+expr_mem returns [int line, boolean is_lvalue, Type retType]
+	:
+		exp=expr_other {
+			$is_lvalue = $exp.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		} expmt=expr_mem_tmp {
+			checkArrayDim($exp.line, $exp.retType, $expmt.dim);
+
+			// cerr(Integer.toString($expmt.dim));
+			for (int i = 0; i < $expmt.dim; i++) {
+				$retType = ((ArrayType) $retType).type();
+				// cerr($retType.toString());
+			}
+		}
 	;
 
-expr_mem_tmp:
-		'[' expr ']' expr_mem_tmp
-	|
+expr_mem_tmp returns [int dim]
+	:
+		'[' expr ']' expmt=expr_mem_tmp {
+			$dim = $expmt.dim + 1;
+		}
+	| {
+		$dim = 0;
+		}
 	;
 
-expr_other:
-		CONST_NUM
-	|	CONST_CHAR
-	|	CONST_STR
-	|	var=ID { checkVariableExistance($var.line, $var.getText()); }
-	|	'{' expr (',' expr)* '}'
-	|	'read' '(' CONST_NUM ')'
-	|	'(' expr ')'
+expr_other returns [int line, boolean is_lvalue, Type retType] locals [int arrayLength = 0]
+	:
+		l=CONST_NUM {
+			$is_lvalue = false;
+			$retType = IntType.getInstance();
+			$line = $l.line;
+		}
+	|	l2=CONST_CHAR {
+			$is_lvalue = false;
+			$retType = CharType.getInstance();
+			$line = $l2.line;
+		}
+	|	str=CONST_STR {
+			$is_lvalue = false;
+			$retType = new ArrayType(CharType.getInstance(), $str.getText().length()); $line = $str.line;
+		}
+	|	var=ID {
+			checkVariableExistance($var.line, $var.getText());
+			$is_lvalue = true;
+			$retType = getIDType($var.getText());
+			$line = $var.line;
+		}
+	|	'{' exp=expr {
+			$arrayLength = 1;
+		} (',' exp2=expr {
+			$line = $exp.line;
+			typeCheck($line, $exp2.retType, $exp.retType);
+			$arrayLength += 1;
+		})* '}' {
+			$is_lvalue = false; $retType = new ArrayType($exp.retType, $arrayLength);
+		}
+	|	'read' '(' alen=CONST_NUM ')' {
+			$is_lvalue = false;
+			$retType = new ArrayType(CharType.getInstance(), $alen.int);
+			$line = $alen.line;
+		}
+	|	'(' exp=expr ')' {
+			$is_lvalue = $exp.is_lvalue;
+			$retType = $exp.retType;
+			$line = $exp.line;
+		}
 	;
 
 CONST_NUM:
