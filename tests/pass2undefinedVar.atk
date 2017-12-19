@@ -3,6 +3,7 @@ actor Program<10>
     int d
     d = 3
     c = 4
+    c = 3
     d = 4
   end
 end #EOF

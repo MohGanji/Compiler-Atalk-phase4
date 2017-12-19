@@ -150,6 +150,7 @@ public class AtalkPass2Lexer extends Lexer {
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
+					SymbolTable.define();
 					putLocalVar(name, NoType.getInstance());
 				} catch (ItemAlreadyExistsException iaee) {
 					printErr(line, "ERR: variable already exists: " + iaee.getName());
@@ -179,6 +180,29 @@ public class AtalkPass2Lexer extends Lexer {
 				}
 			} catch (UndefinedReceiverException ure) {
 				printErr(line, "Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
+			}
+		}
+		Type getIDType(String name) {
+			SymbolTableLocalVariableItem stlvi = (SymbolTableLocalVariableItem) SymbolTable.top.get(name);
+			Variable var = stlvi.getVariable();
+			return var.getType();
+		}
+		void typeCheck(int line, Type t1, Type t2) {
+			try {
+				if (!t1.equals(t2)) {
+					throw new TypeErrorException();
+				}
+			} catch (TypeErrorException tee) {
+				printErr(line, "Can't convert type " + t2.toString() + " to " + t1.toString());
+			}
+		}
+		void checkArrayDim(int line, Type type, int dim) {
+			try {
+				if (!(type instanceof ArrayType && dim <= ((ArrayType) type).dim())) {
+					throw new TypeErrorException();
+				}
+			} catch (TypeErrorException tee) {
+				printErr(line, "Array " + type.toString() + " dimmentions count is less than " + dim);
 			}
 		}
 
