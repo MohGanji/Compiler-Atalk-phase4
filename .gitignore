@@ -1,5 +1,6 @@
 grammar/atalk*.java
 grammar/Atalk*.java
+!grammar/Atalk.java
 grammar/*.class
 grammar/atalk*.tokens
 grammar/atalk*.tokens
