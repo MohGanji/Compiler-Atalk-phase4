@@ -109,7 +109,7 @@ public class AtalkPass2Parser extends Parser {
 		String currentActor;
 
 		void cerr(String str) {
-			System.out.println(str);
+			// System.out.println(str);
 		}
 	    void print(String str){
 			// logs.add(str);
@@ -160,7 +160,7 @@ public class AtalkPass2Parser extends Parser {
 					throw new UndefinedVariableException();
 				}
 				else {
-					// cerr("hast " + name);
+					cerr("hast " + name);
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
@@ -179,7 +179,7 @@ public class AtalkPass2Parser extends Parser {
 				if(sti == null) {
 					throw new UndefinedActorException();
 				} else {
-					// cerr("actor hast " + name);
+					cerr("actor hast " + name);
 				}
 			} catch (UndefinedActorException uae) {
 				printErr(line, "ERR: Actor " + name + " doesn't exist.");
@@ -2506,10 +2506,8 @@ public class AtalkPass2Parser extends Parser {
 
 						checkArrayDim(((Expr_memContext)_localctx).exp.line, ((Expr_memContext)_localctx).exp.retType, ((Expr_memContext)_localctx).expmt.dim);
 
-						// cerr(Integer.toString(((Expr_memContext)_localctx).expmt.dim));
 						for (int i = 0; i < ((Expr_memContext)_localctx).expmt.dim; i++) {
 							((Expr_memContext)_localctx).retType =  ((ArrayType) _localctx.retType).type();
-							// cerr(_localctx.retType.toString());
 						}
 					
 			}

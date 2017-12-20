@@ -95,7 +95,7 @@ public class AtalkPass2Lexer extends Lexer {
 		String currentActor;
 
 		void cerr(String str) {
-			System.out.println(str);
+			// System.out.println(str);
 		}
 	    void print(String str){
 			// logs.add(str);
@@ -146,7 +146,7 @@ public class AtalkPass2Lexer extends Lexer {
 					throw new UndefinedVariableException();
 				}
 				else {
-					// cerr("hast " + name);
+					cerr("hast " + name);
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
@@ -165,7 +165,7 @@ public class AtalkPass2Lexer extends Lexer {
 				if(sti == null) {
 					throw new UndefinedActorException();
 				} else {
-					// cerr("actor hast " + name);
+					cerr("actor hast " + name);
 				}
 			} catch (UndefinedActorException uae) {
 				printErr(line, "ERR: Actor " + name + " doesn't exist.");

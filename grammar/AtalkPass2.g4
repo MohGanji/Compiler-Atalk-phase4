@@ -10,7 +10,7 @@ grammar AtalkPass2;
 	String currentActor;
 
 	void cerr(String str) {
-		System.out.println(str);
+		// System.out.println(str);
 	}
     void print(String str){
 		// logs.add(str);
@@ -61,7 +61,7 @@ grammar AtalkPass2;
 				throw new UndefinedVariableException();
 			}
 			else {
-				// cerr("hast " + name);
+				cerr("hast " + name);
 			}
 		} catch (UndefinedVariableException uve) {
 			try {
@@ -80,7 +80,7 @@ grammar AtalkPass2;
 			if(sti == null) {
 				throw new UndefinedActorException();
 			} else {
-				// cerr("actor hast " + name);
+				cerr("actor hast " + name);
 			}
 		} catch (UndefinedActorException uae) {
 			printErr(line, "ERR: Actor " + name + " doesn't exist.");
@@ -567,10 +567,8 @@ expr_mem returns [int line, boolean is_lvalue, Type retType]
 		} expmt=expr_mem_tmp {
 			checkArrayDim($exp.line, $exp.retType, $expmt.dim);
 
-			// cerr(Integer.toString($expmt.dim));
 			for (int i = 0; i < $expmt.dim; i++) {
 				$retType = ((ArrayType) $retType).type();
-				// cerr($retType.toString());
 			}
 		}
 	;
