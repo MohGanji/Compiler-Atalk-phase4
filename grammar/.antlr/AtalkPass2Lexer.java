@@ -95,7 +95,7 @@ public class AtalkPass2Lexer extends Lexer {
 		String currentActor;
 
 		void cerr(String str) {
-			// System.out.println(str);
+			System.out.println(str);
 		}
 	    void print(String str){
 			// logs.add(str);
@@ -145,7 +145,7 @@ public class AtalkPass2Lexer extends Lexer {
 				if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 					throw new UndefinedVariableException();
 				}
-				else {
+			else {
 					cerr("hast " + name);
 				}
 			} catch (UndefinedVariableException uve) {
@@ -183,11 +183,17 @@ public class AtalkPass2Lexer extends Lexer {
 			}
 		}
 		Type getIDType(String name) {
-			SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-			Variable var = stlvi.getVariable();
+			try{
+				cerr("1" + name.toString());
+				SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
+				cerr("2" + stlvi.toString());
+				Variable var = stlvi.getVariable();
+				cerr ("3" + var.toString());
+				return var.getType();
+
+			} catch (NullPointerException npe) {}
 			// Variable var = SymbolTable.top.get(name).getVariable();
-			
-			return var.getType();
+			return IntType.getInstance();
 		}
 		void typeCheck(int line, Type t1, Type t2) {
 			try {
@@ -228,6 +234,14 @@ public class AtalkPass2Lexer extends Lexer {
 			} /* catch (ForeachIteratorException ftoe) {
 				printErr(line, "ERR: Foreach iterator '" + var.toString() + "' doesn't match '" + exp.type().toString() + "'");
 			} */
+		}
+		void checkInit(int line, boolean callsSender){
+			try{
+				if(callsSender)
+					throw new InitCallsSenderException();
+			} catch (InitCallsSenderException icse){
+				printErr(line, "Init receiver can't call sender");
+			}
 		}
 
 

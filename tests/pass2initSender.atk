@@ -1,5 +1,5 @@
 actor a<2>
-    receiver init()
+    receiver init(int q)
         sender << r()
     end
 end
@@ -7,6 +7,6 @@ end
 actor b<2>
     int a
     receiver r()
-        a = b + 2
+        a = c + 2
     end
 end

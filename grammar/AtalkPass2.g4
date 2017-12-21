@@ -10,7 +10,7 @@ grammar AtalkPass2;
 	String currentActor;
 
 	void cerr(String str) {
-		// System.out.println(str);
+		System.out.println(str);
 	}
     void print(String str){
 		// logs.add(str);
@@ -60,7 +60,7 @@ grammar AtalkPass2;
 			if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 				throw new UndefinedVariableException();
 			}
-			else {
+		else {
 				cerr("hast " + name);
 			}
 		} catch (UndefinedVariableException uve) {
@@ -98,11 +98,17 @@ grammar AtalkPass2;
 		}
 	}
 	Type getIDType(String name) {
-		SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-		Variable var = stlvi.getVariable();
+		try{
+			cerr("1" + name.toString());
+			SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
+			cerr("2" + stlvi.toString());
+			Variable var = stlvi.getVariable();
+			cerr ("3" + var.toString());
+			return var.getType();
+
+		} catch (NullPointerException npe) {}
 		// Variable var = SymbolTable.top.get(name).getVariable();
-		
-		return var.getType();
+		return IntType.getInstance();
 	}
 	void typeCheck(int line, Type t1, Type t2) {
 		try {
@@ -144,6 +150,14 @@ grammar AtalkPass2;
 			printErr(line, "ERR: Foreach iterator '" + var.toString() + "' doesn't match '" + exp.type().toString() + "'");
 		} */
 	}
+	void checkInit(int line, boolean callsSender){
+		try{
+			if(callsSender)
+				throw new InitCallsSenderException();
+		} catch (InitCallsSenderException icse){
+			printErr(line, "Init receiver can't call sender");
+		}
+	}
 }
 
 
@@ -172,13 +186,20 @@ state
 		type ID (',' ID)* NL
 	;
 
-receiver
+receiver locals [boolean hasInit = false]
 	: 
-		'receiver' ID '(' (type ID
-		(',' type ID
-		)*)? ')' NL 
-			{ beginScope(); }
-		statements 
+		'receiver' rec=ID '(' (type arg1=ID
+		(',' type arg2=ID
+		)*)? ')' NL { 
+				if($rec.getText().equals("init") && $arg1 == null){
+					$hasInit = true;	
+				}
+				beginScope(); 
+			}
+		s=statements {
+			if($hasInit)
+				checkInit($s.senderLine, $s.callsSender);
+		}
 		'end' NL
 			{ endScope(); }
 	;
@@ -237,19 +258,25 @@ block
             { endScope(); }        
 	;
 
-statements
+statements returns [boolean callsSender = false, int senderLine]
 	:
-		(statement | NL)*
+		(s=statement {
+			if($s.callsSender){
+				$callsSender = true;
+				$senderLine = $s.senderLine;
+			}
+		} | NL)*
 	;
 
-statement:
+statement returns [boolean callsSender = false, int senderLine]
+	: 
 		stm_vardef
 	|	stm_assignment
 	|	stm_foreach
 	|	stm_if_elseif_else
 	|	stm_quit
 	|	stm_break
-	|	stm_tell
+	|	s=stm_tell {$callsSender = $s.callsSender; $senderLine = $s.senderLine;}
 	|	stm_write
 	|	block
 	;
@@ -275,13 +302,16 @@ stm_vardef locals [Type exp2LastType = NoType.getInstance()]
 		NL
 	;
 
-stm_tell locals [String rcKey, String actorName]
+stm_tell returns [boolean callsSender=false, int senderLine] locals [String rcKey, String actorName]
 	:
 		(act=ID {
 			$actorName = $act.getText();
 			checkActorExistance($act.line, $actorName);
 		}
-		| 'sender'
+		| l='sender' {
+			$senderLine = $l.line;
+			$callsSender = true;
+		}
 		| 'self' {
 			$actorName = currentActor;
 		})
