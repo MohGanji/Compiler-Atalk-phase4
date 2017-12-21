@@ -57,7 +57,7 @@ grammar AtalkPass2;
 	void checkVariableExistance(int line, String name) {
 		SymbolTableItem sti = SymbolTable.top.get(name);
 		try {
-			if(sti == null) {
+			if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 				throw new UndefinedVariableException();
 			}
 			else {
@@ -98,8 +98,10 @@ grammar AtalkPass2;
 		}
 	}
 	Type getIDType(String name) {
-		SymbolTableLocalVariableItem stlvi = (SymbolTableLocalVariableItem) SymbolTable.top.get(name);
+		SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
 		Variable var = stlvi.getVariable();
+		// Variable var = SymbolTable.top.get(name).getVariable();
+		
 		return var.getType();
 	}
 	void typeCheck(int line, Type t1, Type t2) {

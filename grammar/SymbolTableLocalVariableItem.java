@@ -1,4 +1,4 @@
-public class SymbolTableLocalVariableItem extends SymbolTableVariableItemBase {
+public class SymbolTableLocalVariableItem extends SymbolTableVariableItem {
 	
 	public SymbolTableLocalVariableItem(Variable variable, int offset) {
 		super(variable, offset);

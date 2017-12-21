@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -142,7 +142,7 @@ public class AtalkPass2Lexer extends Lexer {
 		void checkVariableExistance(int line, String name) {
 			SymbolTableItem sti = SymbolTable.top.get(name);
 			try {
-				if(sti == null) {
+				if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 					throw new UndefinedVariableException();
 				}
 				else {
@@ -183,8 +183,10 @@ public class AtalkPass2Lexer extends Lexer {
 			}
 		}
 		Type getIDType(String name) {
-			SymbolTableLocalVariableItem stlvi = (SymbolTableLocalVariableItem) SymbolTable.top.get(name);
+			SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
 			Variable var = stlvi.getVariable();
+			// Variable var = SymbolTable.top.get(name).getVariable();
+			
 			return var.getType();
 		}
 		void typeCheck(int line, Type t1, Type t2) {

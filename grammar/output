@@ -1,0 +1,26 @@
+Actor:
+	name: a
+	queueLen: 2
+Receiver:
+	name: init
+	args: 
+Stack offset: 0, Global offset: 0
+Stack offset: 0, Global offset: 0
+Actor:
+	name: b
+	queueLen: 2
+State:
+	name: a
+	type: int
+	offset: 0
+	size: 4
+Receiver:
+	name: r
+	args: 
+Stack offset: 0, Global offset: 4
+Stack offset: 0, Global offset: 0
+Stack offset: 0, Global offset: 0
+------------------------------ Pass 1 finished ------
+line 10: ERR: Item b doesn't exist.
+line 10: ERR: Can't convert type int to noType
+line 10: ERR: Can't convert type noType to int

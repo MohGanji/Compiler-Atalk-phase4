@@ -1,0 +1,12 @@
+actor a<2>
+    receiver init()
+        sender << r()
+    end
+end
+
+actor b<2>
+    int a
+    receiver r()
+        a = b + 2
+    end
+end
