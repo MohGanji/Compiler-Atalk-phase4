@@ -105,12 +105,14 @@ public class AtalkPass1Lexer extends Lexer {
 	        System.out.println("line " + line + ": " + str);
 	    }
 		void printLogs() {
-			if (hasErr)
+			if (hasErr) {
+				cerr("------------------------------ Pass 1 finished ------");
 				return;
+			}
 			for (int i = 0; i < logs.size(); i++) {
 				System.out.println(logs.get(i));
 			}
-			System.out.println("------------------------------ Pass 1 finished ------");
+			cerr("------------------------------ Pass 1 finished ------");
 		}
 
 		void beginForeach() {

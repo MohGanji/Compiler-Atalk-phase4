@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -160,14 +160,15 @@ public class AtalkPass2Parser extends Parser {
 					throw new UndefinedVariableException();
 				}
 			else {
-					cerr("hast " + name);
+					// cerr("hast " + name);
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
 					SymbolTable.define();
 					putLocalVar(name, NoType.getInstance());
 				} catch (ItemAlreadyExistsException iaee) {
-					printErr(line, "ERR: variable already exists: " + iaee.getName());
+					return;
+					// printErr(line, "ERR: variable already exists: " + iaee.getName());
 				}
 				printErr(line, "ERR: Item " + name + " doesn't exist.");
 			}
@@ -179,7 +180,7 @@ public class AtalkPass2Parser extends Parser {
 				if(sti == null) {
 					throw new UndefinedActorException();
 				} else {
-					cerr("actor hast " + name);
+					// cerr("actor hast " + name);
 				}
 			} catch (UndefinedActorException uae) {
 				printErr(line, "ERR: Actor " + name + " doesn't exist.");
@@ -198,11 +199,11 @@ public class AtalkPass2Parser extends Parser {
 		}
 		Type getIDType(String name) {
 			try{
-				cerr("1" + name.toString());
+				// cerr("1" + name.toString());
 				SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-				cerr("2" + stlvi.toString());
+				// cerr("2" + stlvi.toString());
 				Variable var = stlvi.getVariable();
-				cerr ("3" + var.toString());
+				// cerr ("3" + var.toString());
 				return var.getType();
 
 			} catch (NullPointerException npe) {}
@@ -999,6 +1000,7 @@ public class AtalkPass2Parser extends Parser {
 		public TypeContext tp;
 		public Token var;
 		public ExprContext exp;
+		public Token var2;
 		public ExprContext exp2;
 		public TerminalNode NL() { return getToken(AtalkPass2Parser.NL, 0); }
 		public TypeContext type() {
@@ -1058,7 +1060,7 @@ public class AtalkPass2Parser extends Parser {
 				setState(197);
 				match(T__4);
 				setState(198);
-				match(ID);
+				((Stm_vardefContext)_localctx).var2 = match(ID);
 
 							SymbolTable.define();
 						
@@ -1072,11 +1074,11 @@ public class AtalkPass2Parser extends Parser {
 					setState(201);
 					((Stm_vardefContext)_localctx).exp2 = expr();
 
-								if (_localctx.exp2LastType.equals(NoType.getInstance())) {
+								/* if (_localctx.exp2LastType.equals(NoType.getInstance())) {
 									checkLValue((((Stm_vardefContext)_localctx).var!=null?((Stm_vardefContext)_localctx).var.getLine():0), ((Stm_vardefContext)_localctx).exp.is_lvalue);
 								} else {
 									checkLValue((((Stm_vardefContext)_localctx).var!=null?((Stm_vardefContext)_localctx).var.getLine():0), ((Stm_vardefContext)_localctx).exp2.is_lvalue);
-								}
+								} */
 								((Stm_vardefContext)_localctx).exp2LastType =  ((Stm_vardefContext)_localctx).exp2.retType;
 								typeCheck((((Stm_vardefContext)_localctx).var!=null?((Stm_vardefContext)_localctx).var.getLine():0), ((Stm_vardefContext)_localctx).tp.retType, ((Stm_vardefContext)_localctx).exp2.retType);
 							

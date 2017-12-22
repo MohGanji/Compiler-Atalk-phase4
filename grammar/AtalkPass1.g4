@@ -20,12 +20,14 @@ grammar AtalkPass1;
         System.out.println("line " + line + ": " + str);
     }
 	void printLogs() {
-		if (hasErr)
+		if (hasErr) {
+			cerr("------------------------------ Pass 1 finished ------");
 			return;
+		}
 		for (int i = 0; i < logs.size(); i++) {
 			System.out.println(logs.get(i));
 		}
-		System.out.println("------------------------------ Pass 1 finished ------");
+		cerr("------------------------------ Pass 1 finished ------");
 	}
 
 	void beginForeach() {
@@ -170,7 +172,7 @@ actor locals [SymbolTableActorItem stai]
 					$stai = putActor($name.getText(), $as.int );
 				}
 				catch (ItemAlreadyExistsException iaee){
-					printErr($name.getLine(), "ERR: Actor already exists: " + iaee.getName());
+					printErr($name.getLine(), "ERR: Actor already exists: " + $name.getText());
 				}
 				catch (NegativeActorQueueLenException naqle){
 					printErr($as.getLine(), "ERR: Actor '" + naqle.getName() + "' has invalid queue length: " + naqle.getQueueLen());
@@ -192,7 +194,7 @@ state locals [int offset]
 					print("State:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
 				}
 				catch (ItemAlreadyExistsException iaee){
-					printErr($nm.getLine(), "ERR: state already exists: " + iaee.getName());
+					printErr($nm.getLine(), "ERR: state already exists: " + $nm.getText());
 				}
             }
             (',' nm2=ID 
@@ -202,7 +204,7 @@ state locals [int offset]
 						print("State:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
 					}
 					catch (ItemAlreadyExistsException iaee){
-						printErr($nm2.getLine(), "ERR: state already exists: " + iaee.getName());
+						printErr($nm2.getLine(), "ERR: state already exists: " + $nm2.getText());
 					}
                 }
             )* NL
@@ -235,7 +237,7 @@ receiver returns [SymbolTableReceiverItem stri] locals [ArrayList<Type> types = 
 					$stri = putReceiver($name.getText(), $types);
 				}
 				catch (ItemAlreadyExistsException iaee) {
-					printErr($name.getLine(), "ERR: Receiver already exists: " + iaee.getName());
+					printErr($name.getLine(), "ERR: Receiver already exists: " + $name.getText());
 				}
 				beginScope();
 				for (int i = 0; i < $types.size(); i++) {
@@ -243,7 +245,7 @@ receiver returns [SymbolTableReceiverItem stri] locals [ArrayList<Type> types = 
 						$offset = putLocalVar($names.get(i), $types.get(i));
 						print("Argument:\n\tname: " + $names.get(i) + "\n\ttype: " + $types.get(i).toString() + "\n\toffset: " + $offset + "\n\tsize: " + $types.get(i).size());
 					} catch (ItemAlreadyExistsException iaee) {
-						printErr($name.getLine(), "ERR: variable already exists: " + iaee.getName());
+						printErr($name.getLine(), "ERR: variable already exists: " + $names.get(i));
 					}
 				}
 			}
@@ -348,18 +350,18 @@ stm_vardef locals [int offset]
             {
                 try {
 					$offset = putLocalVar($nm.getText(), $tp.typeName);
-					print("State:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
+					print("Variable:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
 				} catch (ItemAlreadyExistsException iaee) {
-					printErr($nm.getLine(), "ERR: variable already exists: " + iaee.getName());
+					printErr($nm.getLine(), "ERR: variable already exists: " + $nm.getText());
 				}
             }
             (',' nm2=ID ('=' expr)?
                 {
 					try {
 						$offset = putLocalVar($nm2.getText(), $tp.typeName);
-						print("State:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
+						print("Variable:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
 					} catch (ItemAlreadyExistsException iaee) {
-						printErr($nm2.getLine(), "ERR: variable already exists: " + iaee.getName());
+						printErr($nm2.getLine(), "ERR: variable already exists: " + $nm2.getText());
 					}
                 }
             )* NL
@@ -398,10 +400,15 @@ stm_if_elseif_else:
 	;
 
 stm_foreach:
-		'foreach' ID 'in' expr NL
+		'foreach' var=ID 'in' expr NL
 			{
 				beginForeach();
 				beginScope();
+				try {
+					putLocalVar($var.getText(), NoType.getInstance());
+				} catch (ItemAlreadyExistsException iaee) {
+					printErr($var.getLine(), "ERR: variable already exists: " + $var.getText());
+				}
 			}
 		statements
 		'end' NL

@@ -61,14 +61,15 @@ grammar AtalkPass2;
 				throw new UndefinedVariableException();
 			}
 		else {
-				cerr("hast " + name);
+				// cerr("hast " + name);
 			}
 		} catch (UndefinedVariableException uve) {
 			try {
 				SymbolTable.define();
 				putLocalVar(name, NoType.getInstance());
 			} catch (ItemAlreadyExistsException iaee) {
-				printErr(line, "ERR: variable already exists: " + iaee.getName());
+				return;
+				// printErr(line, "ERR: variable already exists: " + iaee.getName());
 			}
 			printErr(line, "ERR: Item " + name + " doesn't exist.");
 		}
@@ -80,7 +81,7 @@ grammar AtalkPass2;
 			if(sti == null) {
 				throw new UndefinedActorException();
 			} else {
-				cerr("actor hast " + name);
+				// cerr("actor hast " + name);
 			}
 		} catch (UndefinedActorException uae) {
 			printErr(line, "ERR: Actor " + name + " doesn't exist.");
@@ -99,11 +100,11 @@ grammar AtalkPass2;
 	}
 	Type getIDType(String name) {
 		try{
-			cerr("1" + name.toString());
+			// cerr("1" + name.toString());
 			SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-			cerr("2" + stlvi.toString());
+			// cerr("2" + stlvi.toString());
 			Variable var = stlvi.getVariable();
-			cerr ("3" + var.toString());
+			// cerr ("3" + var.toString());
 			return var.getType();
 
 		} catch (NullPointerException npe) {}
@@ -288,14 +289,14 @@ stm_vardef locals [Type exp2LastType = NoType.getInstance()]
 		} ('=' exp=expr {
 			typeCheck($var.line, $tp.retType, $exp.retType);
 		})?
-		(',' ID {
+		(',' var2=ID {
 			SymbolTable.define();
 		} ('=' exp2=expr {
-			if ($exp2LastType.equals(NoType.getInstance())) {
+			/* if ($exp2LastType.equals(NoType.getInstance())) {
 				checkLValue($var.line, $exp.is_lvalue);
 			} else {
 				checkLValue($var.line, $exp2.is_lvalue);
-			}
+			} */
 			$exp2LastType = $exp2.retType;
 			typeCheck($var.line, $tp.retType, $exp2.retType);
 		})?)*

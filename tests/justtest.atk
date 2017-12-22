@@ -1,0 +1,5 @@
+actor d<2>
+    receiver s()
+        d  = {ew,werw				,23,"ewf"}
+    end
+end

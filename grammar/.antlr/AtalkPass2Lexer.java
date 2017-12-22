@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -146,14 +146,15 @@ public class AtalkPass2Lexer extends Lexer {
 					throw new UndefinedVariableException();
 				}
 			else {
-					cerr("hast " + name);
+					// cerr("hast " + name);
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
 					SymbolTable.define();
 					putLocalVar(name, NoType.getInstance());
 				} catch (ItemAlreadyExistsException iaee) {
-					printErr(line, "ERR: variable already exists: " + iaee.getName());
+					return;
+					// printErr(line, "ERR: variable already exists: " + iaee.getName());
 				}
 				printErr(line, "ERR: Item " + name + " doesn't exist.");
 			}
@@ -165,7 +166,7 @@ public class AtalkPass2Lexer extends Lexer {
 				if(sti == null) {
 					throw new UndefinedActorException();
 				} else {
-					cerr("actor hast " + name);
+					// cerr("actor hast " + name);
 				}
 			} catch (UndefinedActorException uae) {
 				printErr(line, "ERR: Actor " + name + " doesn't exist.");
@@ -184,11 +185,11 @@ public class AtalkPass2Lexer extends Lexer {
 		}
 		Type getIDType(String name) {
 			try{
-				cerr("1" + name.toString());
+				// cerr("1" + name.toString());
 				SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-				cerr("2" + stlvi.toString());
+				// cerr("2" + stlvi.toString());
 				Variable var = stlvi.getVariable();
-				cerr ("3" + var.toString());
+				// cerr ("3" + var.toString());
 				return var.getType();
 
 			} catch (NullPointerException npe) {}
