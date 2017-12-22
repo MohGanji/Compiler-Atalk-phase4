@@ -39,7 +39,6 @@ grammar AtalkPass2;
 	int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 		int offset = SymbolTable.top.getOffset(Register.SP);
         try{
-			cerr("adding "+name+" "+type.toString()+" "+offset);
             SymbolTable.top.put(
                 new SymbolTableLocalVariableItem(
                     new Variable(name, type),
@@ -48,7 +47,6 @@ grammar AtalkPass2;
             );
         }
         catch (ItemAlreadyExistsException iaee){
-			cerr("shit "+name);
             name = name+"_temp";
             offset = putLocalVar(name, type);
             throw iaee;
@@ -58,10 +56,6 @@ grammar AtalkPass2;
 
 	Type checkVariableExistance(int line, String name) {
 		SymbolTableItem sti = SymbolTable.top.get(name);
-		if(sti != null)
-			cerr(sti.getKey());
-		else
-			cerr("null");
 		try {
 			if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 				throw new UndefinedVariableException();
@@ -74,7 +68,6 @@ grammar AtalkPass2;
 		} catch (UndefinedVariableException uve) {
 			try {
 				SymbolTable.define();
-				cerr("name: "+name);
 				putLocalVar(name, NoType.getInstance());
 				printErr(line, "ERR: Item " + name + " doesn't exist.");
 				return NoType.getInstance();
@@ -153,6 +146,18 @@ grammar AtalkPass2;
 				throw new InitCallsSenderException();
 		} catch (InitCallsSenderException icse){
 			printErr(line, "Init receiver can't call sender");
+		}
+	}
+	void checkWrite(int line, Type type){
+		String ret = type.toString();
+		try{
+			if( !(ret.equals("char") 
+			 || ret.equals("int") 
+			 || ret.equals("array(char)")) 
+			)
+				throw new WriteException();
+		} catch (WriteException we) {
+			printErr(line, "ERR: Write function only accepts int, char or string");
 		}
 	}
 }
@@ -323,7 +328,9 @@ stm_tell returns [boolean callsSender=false, int senderLine] locals [String rcKe
 	;
 
 stm_write:
-		'write' '(' expr ')' NL
+		'write' '(' exp=expr {
+			checkWrite($exp.line, $exp.retType);
+		} ')' NL
 	;
 
 stm_if_elseif_else:

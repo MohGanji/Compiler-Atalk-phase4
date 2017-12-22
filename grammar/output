@@ -1,2 +1,22 @@
-line 7: ERR: Receiver already exists: init
+Actor:
+	name: Program
+	queueLen: 10
+Receiver:
+	name: rec
+	args: 
+Variable:
+	name: a
+	type: char
+	offset: 0
+	size: 4
+Variable:
+	name: b
+	type: array(int)
+	offset: 4
+	size: 8
+Stack offset: 12, Global offset: 0
+Stack offset: 0, Global offset: 0
+Stack offset: 0, Global offset: 0
 ------------------------------ Pass 1 finished ------
+line 9: ERR: Write function only accepts int, char or string
+line 10: ERR: Actor d doesn't exist.
