@@ -1,5 +1,5 @@
 actor Program<10>
 	receiver init()
-		c[2]
+		c[2][3]
 	end
 end 

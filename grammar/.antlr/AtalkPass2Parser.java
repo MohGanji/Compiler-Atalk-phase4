@@ -209,6 +209,8 @@ public class AtalkPass2Parser extends Parser {
 		}
 		Type checkArrayDim(int line, Type type, int dim) {
 			try {
+				if (dim == 0)
+					return type;
 				if ((type instanceof ArrayType && !(dim <= ((ArrayType) type).dim())) || !(type instanceof ArrayType)) {
 					throw new TypeErrorException();
 				}
