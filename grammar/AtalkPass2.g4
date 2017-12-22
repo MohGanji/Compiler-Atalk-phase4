@@ -400,9 +400,8 @@ expr returns [int line, boolean is_lvalue, Type retType]
 expr_assign returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_or '=' exp2=expr_assign {
-			typeCheck($exp.line, $exp.retType, $exp2.retType);
+			$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			checkLValue($exp.line, $exp.is_lvalue);
-			$retType = $exp.retType;
 			$is_lvalue = $exp2.is_lvalue;
 			$line = $exp.line;
 		}
@@ -416,11 +415,11 @@ expr_assign returns [int line, boolean is_lvalue, Type retType]
 expr_or returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_and exp2=expr_or_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	;
@@ -428,11 +427,11 @@ expr_or returns [int line, boolean is_lvalue, Type retType]
 expr_or_tmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		'or' exp=expr_and exp2=expr_or_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = false;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	| {
@@ -445,11 +444,11 @@ expr_or_tmp returns [int line, boolean is_lvalue, Type retType]
 expr_and returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_eq exp2=expr_and_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	;
@@ -457,11 +456,11 @@ expr_and returns [int line, boolean is_lvalue, Type retType]
 expr_and_tmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		'and' exp=expr_eq exp2=expr_and_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = false;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	| {
@@ -474,11 +473,11 @@ expr_and_tmp returns [int line, boolean is_lvalue, Type retType]
 expr_eq returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_cmp exp2=expr_eq_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	;
@@ -486,11 +485,11 @@ expr_eq returns [int line, boolean is_lvalue, Type retType]
 expr_eq_tmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		('==' | '<>') exp=expr_cmp exp2=expr_eq_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = false;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	| {
@@ -503,11 +502,11 @@ expr_eq_tmp returns [int line, boolean is_lvalue, Type retType]
 expr_cmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_add exp2=expr_cmp_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	;
@@ -515,11 +514,11 @@ expr_cmp returns [int line, boolean is_lvalue, Type retType]
 expr_cmp_tmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		('<' | '>') exp=expr_add exp2=expr_cmp_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = false;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	| {
@@ -532,11 +531,11 @@ expr_cmp_tmp returns [int line, boolean is_lvalue, Type retType]
 expr_add returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_mult exp2=expr_add_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	;
@@ -544,11 +543,11 @@ expr_add returns [int line, boolean is_lvalue, Type retType]
 expr_add_tmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		('+' | '-') exp=expr_mult exp2=expr_add_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = false;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	| {
@@ -561,11 +560,11 @@ expr_add_tmp returns [int line, boolean is_lvalue, Type retType]
 expr_mult returns [int line, boolean is_lvalue, Type retType]
 	:
 		exp=expr_un exp2=expr_mult_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = $exp.is_lvalue && $exp2.is_lvalue;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	;
@@ -573,11 +572,11 @@ expr_mult returns [int line, boolean is_lvalue, Type retType]
 expr_mult_tmp returns [int line, boolean is_lvalue, Type retType]
 	:
 		('*' | '/') exp=expr_un exp2=expr_mult_tmp {
+			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
-				typeCheck($exp.line, $exp.retType, $exp2.retType);
+				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			}
 			$is_lvalue = false;
-			$retType = $exp.retType;
 			$line = $exp.line;
 		}
 	| {

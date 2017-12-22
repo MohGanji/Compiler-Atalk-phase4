@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 

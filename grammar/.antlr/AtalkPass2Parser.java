@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -1622,9 +1622,8 @@ public class AtalkPass2Parser extends Parser {
 				setState(302);
 				((Expr_assignContext)_localctx).exp2 = expr_assign();
 
-							typeCheck(((Expr_assignContext)_localctx).exp.line, ((Expr_assignContext)_localctx).exp.retType, ((Expr_assignContext)_localctx).exp2.retType);
+							((Expr_assignContext)_localctx).retType =  typeCheck(((Expr_assignContext)_localctx).exp.line, ((Expr_assignContext)_localctx).exp.retType, ((Expr_assignContext)_localctx).exp2.retType);
 							checkLValue(((Expr_assignContext)_localctx).exp.line, ((Expr_assignContext)_localctx).exp.is_lvalue);
-							((Expr_assignContext)_localctx).retType =  ((Expr_assignContext)_localctx).exp.retType;
 							((Expr_assignContext)_localctx).is_lvalue =  ((Expr_assignContext)_localctx).exp2.is_lvalue;
 							((Expr_assignContext)_localctx).line =  ((Expr_assignContext)_localctx).exp.line;
 						
@@ -1684,11 +1683,11 @@ public class AtalkPass2Parser extends Parser {
 			setState(311);
 			((Expr_orContext)_localctx).exp2 = expr_or_tmp();
 
+						((Expr_orContext)_localctx).retType =  ((Expr_orContext)_localctx).exp.retType;
 						if (!((Expr_orContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-							typeCheck(((Expr_orContext)_localctx).exp.line, ((Expr_orContext)_localctx).exp.retType, ((Expr_orContext)_localctx).exp2.retType);
+							((Expr_orContext)_localctx).retType =  typeCheck(((Expr_orContext)_localctx).exp.line, ((Expr_orContext)_localctx).exp.retType, ((Expr_orContext)_localctx).exp2.retType);
 						}
 						((Expr_orContext)_localctx).is_lvalue =  ((Expr_orContext)_localctx).exp.is_lvalue && ((Expr_orContext)_localctx).exp2.is_lvalue;
-						((Expr_orContext)_localctx).retType =  ((Expr_orContext)_localctx).exp.retType;
 						((Expr_orContext)_localctx).line =  ((Expr_orContext)_localctx).exp.line;
 					
 			}
@@ -1739,11 +1738,11 @@ public class AtalkPass2Parser extends Parser {
 				setState(316);
 				((Expr_or_tmpContext)_localctx).exp2 = expr_or_tmp();
 
+							((Expr_or_tmpContext)_localctx).retType =  ((Expr_or_tmpContext)_localctx).exp.retType;
 							if (!((Expr_or_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-								typeCheck(((Expr_or_tmpContext)_localctx).exp.line, ((Expr_or_tmpContext)_localctx).exp.retType, ((Expr_or_tmpContext)_localctx).exp2.retType);
+								((Expr_or_tmpContext)_localctx).retType =  typeCheck(((Expr_or_tmpContext)_localctx).exp.line, ((Expr_or_tmpContext)_localctx).exp.retType, ((Expr_or_tmpContext)_localctx).exp2.retType);
 							}
 							((Expr_or_tmpContext)_localctx).is_lvalue =  false;
-							((Expr_or_tmpContext)_localctx).retType =  ((Expr_or_tmpContext)_localctx).exp.retType;
 							((Expr_or_tmpContext)_localctx).line =  ((Expr_or_tmpContext)_localctx).exp.line;
 						
 				}
@@ -1807,11 +1806,11 @@ public class AtalkPass2Parser extends Parser {
 			setState(323);
 			((Expr_andContext)_localctx).exp2 = expr_and_tmp();
 
+						((Expr_andContext)_localctx).retType =  ((Expr_andContext)_localctx).exp.retType;
 						if (!((Expr_andContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-							typeCheck(((Expr_andContext)_localctx).exp.line, ((Expr_andContext)_localctx).exp.retType, ((Expr_andContext)_localctx).exp2.retType);
+							((Expr_andContext)_localctx).retType =  typeCheck(((Expr_andContext)_localctx).exp.line, ((Expr_andContext)_localctx).exp.retType, ((Expr_andContext)_localctx).exp2.retType);
 						}
 						((Expr_andContext)_localctx).is_lvalue =  ((Expr_andContext)_localctx).exp.is_lvalue && ((Expr_andContext)_localctx).exp2.is_lvalue;
-						((Expr_andContext)_localctx).retType =  ((Expr_andContext)_localctx).exp.retType;
 						((Expr_andContext)_localctx).line =  ((Expr_andContext)_localctx).exp.line;
 					
 			}
@@ -1862,11 +1861,11 @@ public class AtalkPass2Parser extends Parser {
 				setState(328);
 				((Expr_and_tmpContext)_localctx).exp2 = expr_and_tmp();
 
+							((Expr_and_tmpContext)_localctx).retType =  ((Expr_and_tmpContext)_localctx).exp.retType;
 							if (!((Expr_and_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-								typeCheck(((Expr_and_tmpContext)_localctx).exp.line, ((Expr_and_tmpContext)_localctx).exp.retType, ((Expr_and_tmpContext)_localctx).exp2.retType);
+								((Expr_and_tmpContext)_localctx).retType =  typeCheck(((Expr_and_tmpContext)_localctx).exp.line, ((Expr_and_tmpContext)_localctx).exp.retType, ((Expr_and_tmpContext)_localctx).exp2.retType);
 							}
 							((Expr_and_tmpContext)_localctx).is_lvalue =  false;
-							((Expr_and_tmpContext)_localctx).retType =  ((Expr_and_tmpContext)_localctx).exp.retType;
 							((Expr_and_tmpContext)_localctx).line =  ((Expr_and_tmpContext)_localctx).exp.line;
 						
 				}
@@ -1931,11 +1930,11 @@ public class AtalkPass2Parser extends Parser {
 			setState(335);
 			((Expr_eqContext)_localctx).exp2 = expr_eq_tmp();
 
+						((Expr_eqContext)_localctx).retType =  ((Expr_eqContext)_localctx).exp.retType;
 						if (!((Expr_eqContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-							typeCheck(((Expr_eqContext)_localctx).exp.line, ((Expr_eqContext)_localctx).exp.retType, ((Expr_eqContext)_localctx).exp2.retType);
+							((Expr_eqContext)_localctx).retType =  typeCheck(((Expr_eqContext)_localctx).exp.line, ((Expr_eqContext)_localctx).exp.retType, ((Expr_eqContext)_localctx).exp2.retType);
 						}
 						((Expr_eqContext)_localctx).is_lvalue =  ((Expr_eqContext)_localctx).exp.is_lvalue && ((Expr_eqContext)_localctx).exp2.is_lvalue;
-						((Expr_eqContext)_localctx).retType =  ((Expr_eqContext)_localctx).exp.retType;
 						((Expr_eqContext)_localctx).line =  ((Expr_eqContext)_localctx).exp.line;
 					
 			}
@@ -1996,11 +1995,11 @@ public class AtalkPass2Parser extends Parser {
 				setState(340);
 				((Expr_eq_tmpContext)_localctx).exp2 = expr_eq_tmp();
 
+							((Expr_eq_tmpContext)_localctx).retType =  ((Expr_eq_tmpContext)_localctx).exp.retType;
 							if (!((Expr_eq_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-								typeCheck(((Expr_eq_tmpContext)_localctx).exp.line, ((Expr_eq_tmpContext)_localctx).exp.retType, ((Expr_eq_tmpContext)_localctx).exp2.retType);
+								((Expr_eq_tmpContext)_localctx).retType =  typeCheck(((Expr_eq_tmpContext)_localctx).exp.line, ((Expr_eq_tmpContext)_localctx).exp.retType, ((Expr_eq_tmpContext)_localctx).exp2.retType);
 							}
 							((Expr_eq_tmpContext)_localctx).is_lvalue =  false;
-							((Expr_eq_tmpContext)_localctx).retType =  ((Expr_eq_tmpContext)_localctx).exp.retType;
 							((Expr_eq_tmpContext)_localctx).line =  ((Expr_eq_tmpContext)_localctx).exp.line;
 						
 				}
@@ -2066,11 +2065,11 @@ public class AtalkPass2Parser extends Parser {
 			setState(347);
 			((Expr_cmpContext)_localctx).exp2 = expr_cmp_tmp();
 
+						((Expr_cmpContext)_localctx).retType =  ((Expr_cmpContext)_localctx).exp.retType;
 						if (!((Expr_cmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-							typeCheck(((Expr_cmpContext)_localctx).exp.line, ((Expr_cmpContext)_localctx).exp.retType, ((Expr_cmpContext)_localctx).exp2.retType);
+							((Expr_cmpContext)_localctx).retType =  typeCheck(((Expr_cmpContext)_localctx).exp.line, ((Expr_cmpContext)_localctx).exp.retType, ((Expr_cmpContext)_localctx).exp2.retType);
 						}
 						((Expr_cmpContext)_localctx).is_lvalue =  ((Expr_cmpContext)_localctx).exp.is_lvalue && ((Expr_cmpContext)_localctx).exp2.is_lvalue;
-						((Expr_cmpContext)_localctx).retType =  ((Expr_cmpContext)_localctx).exp.retType;
 						((Expr_cmpContext)_localctx).line =  ((Expr_cmpContext)_localctx).exp.line;
 					
 			}
@@ -2131,11 +2130,11 @@ public class AtalkPass2Parser extends Parser {
 				setState(352);
 				((Expr_cmp_tmpContext)_localctx).exp2 = expr_cmp_tmp();
 
+							((Expr_cmp_tmpContext)_localctx).retType =  ((Expr_cmp_tmpContext)_localctx).exp.retType;
 							if (!((Expr_cmp_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-								typeCheck(((Expr_cmp_tmpContext)_localctx).exp.line, ((Expr_cmp_tmpContext)_localctx).exp.retType, ((Expr_cmp_tmpContext)_localctx).exp2.retType);
+								((Expr_cmp_tmpContext)_localctx).retType =  typeCheck(((Expr_cmp_tmpContext)_localctx).exp.line, ((Expr_cmp_tmpContext)_localctx).exp.retType, ((Expr_cmp_tmpContext)_localctx).exp2.retType);
 							}
 							((Expr_cmp_tmpContext)_localctx).is_lvalue =  false;
-							((Expr_cmp_tmpContext)_localctx).retType =  ((Expr_cmp_tmpContext)_localctx).exp.retType;
 							((Expr_cmp_tmpContext)_localctx).line =  ((Expr_cmp_tmpContext)_localctx).exp.line;
 						
 				}
@@ -2203,11 +2202,11 @@ public class AtalkPass2Parser extends Parser {
 			setState(359);
 			((Expr_addContext)_localctx).exp2 = expr_add_tmp();
 
+						((Expr_addContext)_localctx).retType =  ((Expr_addContext)_localctx).exp.retType;
 						if (!((Expr_addContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-							typeCheck(((Expr_addContext)_localctx).exp.line, ((Expr_addContext)_localctx).exp.retType, ((Expr_addContext)_localctx).exp2.retType);
+							((Expr_addContext)_localctx).retType =  typeCheck(((Expr_addContext)_localctx).exp.line, ((Expr_addContext)_localctx).exp.retType, ((Expr_addContext)_localctx).exp2.retType);
 						}
 						((Expr_addContext)_localctx).is_lvalue =  ((Expr_addContext)_localctx).exp.is_lvalue && ((Expr_addContext)_localctx).exp2.is_lvalue;
-						((Expr_addContext)_localctx).retType =  ((Expr_addContext)_localctx).exp.retType;
 						((Expr_addContext)_localctx).line =  ((Expr_addContext)_localctx).exp.line;
 					
 			}
@@ -2268,11 +2267,11 @@ public class AtalkPass2Parser extends Parser {
 				setState(364);
 				((Expr_add_tmpContext)_localctx).exp2 = expr_add_tmp();
 
+							((Expr_add_tmpContext)_localctx).retType =  ((Expr_add_tmpContext)_localctx).exp.retType;
 							if (!((Expr_add_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-								typeCheck(((Expr_add_tmpContext)_localctx).exp.line, ((Expr_add_tmpContext)_localctx).exp.retType, ((Expr_add_tmpContext)_localctx).exp2.retType);
+								((Expr_add_tmpContext)_localctx).retType =  typeCheck(((Expr_add_tmpContext)_localctx).exp.line, ((Expr_add_tmpContext)_localctx).exp.retType, ((Expr_add_tmpContext)_localctx).exp2.retType);
 							}
 							((Expr_add_tmpContext)_localctx).is_lvalue =  false;
-							((Expr_add_tmpContext)_localctx).retType =  ((Expr_add_tmpContext)_localctx).exp.retType;
 							((Expr_add_tmpContext)_localctx).line =  ((Expr_add_tmpContext)_localctx).exp.line;
 						
 				}
@@ -2342,11 +2341,11 @@ public class AtalkPass2Parser extends Parser {
 			setState(371);
 			((Expr_multContext)_localctx).exp2 = expr_mult_tmp();
 
+						((Expr_multContext)_localctx).retType =  ((Expr_multContext)_localctx).exp.retType;
 						if (!((Expr_multContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-							typeCheck(((Expr_multContext)_localctx).exp.line, ((Expr_multContext)_localctx).exp.retType, ((Expr_multContext)_localctx).exp2.retType);
+							((Expr_multContext)_localctx).retType =  typeCheck(((Expr_multContext)_localctx).exp.line, ((Expr_multContext)_localctx).exp.retType, ((Expr_multContext)_localctx).exp2.retType);
 						}
 						((Expr_multContext)_localctx).is_lvalue =  ((Expr_multContext)_localctx).exp.is_lvalue && ((Expr_multContext)_localctx).exp2.is_lvalue;
-						((Expr_multContext)_localctx).retType =  ((Expr_multContext)_localctx).exp.retType;
 						((Expr_multContext)_localctx).line =  ((Expr_multContext)_localctx).exp.line;
 					
 			}
@@ -2407,11 +2406,11 @@ public class AtalkPass2Parser extends Parser {
 				setState(376);
 				((Expr_mult_tmpContext)_localctx).exp2 = expr_mult_tmp();
 
+							((Expr_mult_tmpContext)_localctx).retType =  ((Expr_mult_tmpContext)_localctx).exp.retType;
 							if (!((Expr_mult_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
-								typeCheck(((Expr_mult_tmpContext)_localctx).exp.line, ((Expr_mult_tmpContext)_localctx).exp.retType, ((Expr_mult_tmpContext)_localctx).exp2.retType);
+								((Expr_mult_tmpContext)_localctx).retType =  typeCheck(((Expr_mult_tmpContext)_localctx).exp.line, ((Expr_mult_tmpContext)_localctx).exp.retType, ((Expr_mult_tmpContext)_localctx).exp2.retType);
 							}
 							((Expr_mult_tmpContext)_localctx).is_lvalue =  false;
-							((Expr_mult_tmpContext)_localctx).retType =  ((Expr_mult_tmpContext)_localctx).exp.retType;
 							((Expr_mult_tmpContext)_localctx).line =  ((Expr_mult_tmpContext)_localctx).exp.line;
 						
 				}
