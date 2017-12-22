@@ -1,5 +1,5 @@
 actor a<2>
-    receiver init(int q)
+    receiver init()
         sender << r()
     end
 end
