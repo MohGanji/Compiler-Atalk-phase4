@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
+// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -180,16 +180,22 @@ public class AtalkPass1Parser extends Parser {
 			return offset;
 	    }
 	    
-	    SymbolTableReceiverItem putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
+	    SymbolTableReceiverItem putReceiver(int line, String name, ArrayList<Type> args) {
 			SymbolTableReceiverItem stri = new SymbolTableReceiverItem(name, args);
-	        try{
-	            SymbolTable.top.put(stri);
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            stri = putReceiver(name, args);
-	            throw iaee;
-	        }
+			boolean f = true;
+			String nm = name;
+			while(f){
+				try{
+					stri = new SymbolTableReceiverItem(nm, args);
+					SymbolTable.top.put(stri);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if(nm.equals(name))
+						printErr(line, "ERR: Receiver already exists: " + name);
+					nm = nm+"_temp";
+				}
+			}
 			return stri;
 	    }
 
@@ -619,21 +625,17 @@ public class AtalkPass1Parser extends Parser {
 			setState(135);
 			match(NL);
 
-							try{
-								print("Receiver:\n\tname: " + ((ReceiverContext)_localctx).name.getText());
-								String args = "\targs: ";
-								for (int i =0; i < _localctx.types.size(); i++) {
-									if (i != 0) {
-										args += ", ";
-									}
-									args += _localctx.types.get(i).toString();
+							print("Receiver:\n\tname: " + ((ReceiverContext)_localctx).name.getText());
+							String args = "\targs: ";
+							for (int i =0; i < _localctx.types.size(); i++) {
+								if (i != 0) {
+									args += ", ";
 								}
-								print(args);
-								((ReceiverContext)_localctx).stri =  putReceiver(((ReceiverContext)_localctx).name.getText(), _localctx.types);
+								args += _localctx.types.get(i).toString();
 							}
-							catch (ItemAlreadyExistsException iaee) {
-								printErr(((ReceiverContext)_localctx).name.getLine(), "ERR: Receiver already exists: " + ((ReceiverContext)_localctx).name.getText());
-							}
+							print(args);
+							((ReceiverContext)_localctx).stri =  putReceiver(((ReceiverContext)_localctx).name.getLine(), ((ReceiverContext)_localctx).name.getText(), _localctx.types);
+							
 							beginScope();
 							for (int i = 0; i < _localctx.types.size(); i++) {
 								try {

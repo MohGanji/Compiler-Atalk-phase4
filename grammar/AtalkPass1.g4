@@ -81,16 +81,22 @@ grammar AtalkPass1;
 		return offset;
     }
     
-    SymbolTableReceiverItem putReceiver(String name, ArrayList<Type> args) throws ItemAlreadyExistsException {
+    SymbolTableReceiverItem putReceiver(int line, String name, ArrayList<Type> args) {
 		SymbolTableReceiverItem stri = new SymbolTableReceiverItem(name, args);
-        try{
-            SymbolTable.top.put(stri);
-        }
-        catch (ItemAlreadyExistsException iaee){
-            name = name+"_temp";
-            stri = putReceiver(name, args);
-            throw iaee;
-        }
+		boolean f = true;
+		String nm = name;
+		while(f){
+			try{
+				stri = new SymbolTableReceiverItem(nm, args);
+				SymbolTable.top.put(stri);
+				f = false;
+			}
+			catch (ItemAlreadyExistsException iaee){
+				if(nm.equals(name))
+					printErr(line, "ERR: Receiver already exists: " + name);
+				nm = nm+"_temp";
+			}
+		}
 		return stri;
     }
 
@@ -224,21 +230,17 @@ receiver returns [SymbolTableReceiverItem stri] locals [ArrayList<Type> types = 
 			}
 		)*)? ')' NL 
 			{
-				try{
-					print("Receiver:\n\tname: " + $name.getText());
-					String args = "\targs: ";
-					for (int i =0; i < $types.size(); i++) {
-						if (i != 0) {
-							args += ", ";
-						}
-						args += $types.get(i).toString();
+				print("Receiver:\n\tname: " + $name.getText());
+				String args = "\targs: ";
+				for (int i =0; i < $types.size(); i++) {
+					if (i != 0) {
+						args += ", ";
 					}
-					print(args);
-					$stri = putReceiver($name.getText(), $types);
+					args += $types.get(i).toString();
 				}
-				catch (ItemAlreadyExistsException iaee) {
-					printErr($name.getLine(), "ERR: Receiver already exists: " + $name.getText());
-				}
+				print(args);
+				$stri = putReceiver($name.getLine(), $name.getText(), $types);
+				
 				beginScope();
 				for (int i = 0; i < $types.size(); i++) {
 					try {

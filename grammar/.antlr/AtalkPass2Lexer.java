@@ -124,6 +124,7 @@ public class AtalkPass2Lexer extends Lexer {
 		int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
 			int offset = SymbolTable.top.getOffset(Register.SP);
 	        try{
+				cerr("adding "+name+" "+type.toString()+" "+offset);
 	            SymbolTable.top.put(
 	                new SymbolTableLocalVariableItem(
 	                    new Variable(name, type),
@@ -132,6 +133,7 @@ public class AtalkPass2Lexer extends Lexer {
 	            );
 	        }
 	        catch (ItemAlreadyExistsException iaee){
+				cerr("shit "+name);
 	            name = name+"_temp";
 	            offset = putLocalVar(name, type);
 	            throw iaee;
@@ -141,6 +143,10 @@ public class AtalkPass2Lexer extends Lexer {
 
 		Type checkVariableExistance(int line, String name) {
 			SymbolTableItem sti = SymbolTable.top.get(name);
+			if(sti != null)
+				cerr(sti.getKey());
+			else
+				cerr("null");
 			try {
 				if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 					throw new UndefinedVariableException();
@@ -153,6 +159,7 @@ public class AtalkPass2Lexer extends Lexer {
 			} catch (UndefinedVariableException uve) {
 				try {
 					SymbolTable.define();
+					cerr("name: "+name);
 					putLocalVar(name, NoType.getInstance());
 					printErr(line, "ERR: Item " + name + " doesn't exist.");
 					return NoType.getInstance();
