@@ -61,7 +61,7 @@ grammar AtalkPass1;
 			}
 			catch (ItemAlreadyExistsException iaee){
 				if (nm.equals(name))
-					printErr(line, "ERR: state already exists: " + name);
+					printErr(line, "ERR: Variable already exists: " + name);
 				nm = nm+"_temp";
 			}
 		}
@@ -84,7 +84,7 @@ grammar AtalkPass1;
 			}
 			catch (ItemAlreadyExistsException iaee){
 				if (nm.equals(name))
-					printErr(line, "ERR: state already exists: " + name);
+					printErr(line, "ERR: State already exists: " + name);
 				nm = nm+"_temp";
 			}
 		}

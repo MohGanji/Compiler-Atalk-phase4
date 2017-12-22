@@ -146,7 +146,7 @@ public class AtalkPass1Lexer extends Lexer {
 				}
 				catch (ItemAlreadyExistsException iaee){
 					if (nm.equals(name))
-						printErr(line, "ERR: state already exists: " + name);
+						printErr(line, "ERR: Variable already exists: " + name);
 					nm = nm+"_temp";
 				}
 			}
@@ -169,7 +169,7 @@ public class AtalkPass1Lexer extends Lexer {
 				}
 				catch (ItemAlreadyExistsException iaee){
 					if (nm.equals(name))
-						printErr(line, "ERR: state already exists: " + name);
+						printErr(line, "ERR: State already exists: " + name);
 					nm = nm+"_temp";
 				}
 			}
