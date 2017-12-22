@@ -1,6 +1,6 @@
 actor Program<10>
   receiver rec()
-    #pppp << rccccc(2)
+    pppp << rccccc(2)
   end
 end
 actor pppp<2>
