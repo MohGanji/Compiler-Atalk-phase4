@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -147,7 +147,6 @@ public class AtalkPass2Lexer extends Lexer {
 				}
 				else {
 					Variable var = ((SymbolTableVariableItem) sti).getVariable();
-					// cerr("hast " + name);
 					return var.getType();			
 				}
 			} catch (UndefinedVariableException uve) {
@@ -194,13 +193,19 @@ public class AtalkPass2Lexer extends Lexer {
 				printErr(line, "ERR: Can't convert type " + t2.toString() + " to " + t1.toString());
 			}
 		}
-		void checkArrayDim(int line, Type type, int dim) {
+		Type checkArrayDim(int line, Type type, int dim) {
 			try {
-				if (type instanceof ArrayType && !(dim <= ((ArrayType) type).dim())) {
+				if ((type instanceof ArrayType && !(dim <= ((ArrayType) type).dim())) || !(type instanceof ArrayType)) {
 					throw new TypeErrorException();
 				}
+				Type returnType = ((ArrayType) type).type();
+				for (int i = 1; i < dim; i++) {
+					returnType = ((ArrayType) returnType).type();
+				}
+				return returnType;
 			} catch (TypeErrorException tee) {
-				printErr(line, "ERR: Array " + type.toString() + " dimensions count is less than " + dim);
+				printErr(line, "ERR: " + type.toString() + " object doesn't support item assignment");
+				return NoType.getInstance();
 			}
 		}
 		void checkLValue(int line, boolean is_lvalue) {

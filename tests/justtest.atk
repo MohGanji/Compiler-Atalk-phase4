@@ -1,5 +1,5 @@
 actor Program<10>
-	receiver init(int a)
-		f = a
+	receiver init()
+		c[2]
 	end
 end 
