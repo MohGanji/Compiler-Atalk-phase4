@@ -1,0 +1,10 @@
+actor vahid<2>
+    receiver welkj()
+        c  = {r1,r2,r3}
+        if 2
+            c  = {r1,r2,r3}
+        elseif 2
+            int w23
+        end
+    end
+end

@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -162,21 +162,26 @@ public class AtalkPass1Parser extends Parser {
 			return offset;
 	    }
 
-		int putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+		int putGlobalVar(int line, String name, Type type) {
 			int offset = SymbolTable.top.getOffset(Register.GP);
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableGlobalVariableItem (
-	                    new Variable(name, type),
-	                    offset
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            offset = putGlobalVar(name, type);
-	            throw iaee;
-	        }
+			boolean f = true;
+			String nm = name;
+			while(f) {
+				try {
+					SymbolTable.top.put(
+						new SymbolTableGlobalVariableItem (
+							new Variable(nm, type),
+							offset
+						)
+					);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if (nm.equals(name))
+						printErr(line, "ERR: state already exists: " + name);
+					nm = nm+"_temp";
+				}
+			}
 			return offset;
 	    }
 	    
@@ -199,25 +204,29 @@ public class AtalkPass1Parser extends Parser {
 			return stri;
 	    }
 
-	    SymbolTableActorItem putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
-														NegativeActorQueueLenException {
-			SymbolTableActorItem stai;
-	        try{
+	    SymbolTableActorItem putActor(int line, String name, int queueLen) {
+			try {
 				if(queueLen <= 0){
 					throw new NegativeActorQueueLenException(name, queueLen);
 				}
-				stai = new SymbolTableActorItem(name, queueLen);
-	            SymbolTable.top.put(stai);
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            stai = putActor(name, queueLen);
-	            throw iaee;
-	        }
-			catch (NegativeActorQueueLenException naqle){
-				stai = new SymbolTableActorItem(name, 0);
-				SymbolTable.top.put(stai);
-				throw naqle;
+			} catch (NegativeActorQueueLenException naqle){
+				queueLen = 0;
+				printErr(line, "ERR: Actor '" + name + "' has invalid queue length: " + queueLen);
+			}
+			SymbolTableActorItem stai = new SymbolTableActorItem(name, queueLen);
+			boolean f = true;
+			String nm = name;
+			while(f){
+				try {
+					stai = new SymbolTableActorItem(nm, queueLen);
+					SymbolTable.top.put(stai);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if(nm.equals(name))
+						printErr(line, "ERR: Actor already exists: " + name);
+					nm = nm+"_temp";
+				}
 			}
 			return stai;
 	    }
@@ -384,15 +393,7 @@ public class AtalkPass1Parser extends Parser {
 			match(NL);
 			 print("Actor:\n\tname: " + ((ActorContext)_localctx).name.getText() + "\n\tqueueLen: " + ((ActorContext)_localctx).as.getText()); 
 
-							try{
-								((ActorContext)_localctx).stai =  putActor(((ActorContext)_localctx).name.getText(), (((ActorContext)_localctx).as!=null?Integer.valueOf(((ActorContext)_localctx).as.getText()):0) );
-							}
-							catch (ItemAlreadyExistsException iaee){
-								printErr(((ActorContext)_localctx).name.getLine(), "ERR: Actor already exists: " + ((ActorContext)_localctx).name.getText());
-							}
-							catch (NegativeActorQueueLenException naqle){
-								printErr(((ActorContext)_localctx).as.getLine(), "ERR: Actor '" + naqle.getName() + "' has invalid queue length: " + naqle.getQueueLen());
-							}
+							((ActorContext)_localctx).stai =  putActor(((ActorContext)_localctx).name.getLine(), ((ActorContext)_localctx).name.getText(), (((ActorContext)_localctx).as!=null?Integer.valueOf(((ActorContext)_localctx).as.getText()):0) );
 			                beginScope();
 			            
 			setState(96);
@@ -488,13 +489,8 @@ public class AtalkPass1Parser extends Parser {
 			setState(104);
 			((StateContext)_localctx).nm = match(ID);
 
-							try{
-								((StateContext)_localctx).offset =  putGlobalVar(((StateContext)_localctx).nm.getText(), ((StateContext)_localctx).tp.typeName);
-								print("State:\n\tname: " + ((StateContext)_localctx).nm.getText() + "\n\ttype: " + ((StateContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((StateContext)_localctx).tp.typeName.size());
-							}
-							catch (ItemAlreadyExistsException iaee){
-								printErr(((StateContext)_localctx).nm.getLine(), "ERR: state already exists: " + ((StateContext)_localctx).nm.getText());
-							}
+							((StateContext)_localctx).offset =  putGlobalVar(((StateContext)_localctx).nm.getLine(), ((StateContext)_localctx).nm.getText(), ((StateContext)_localctx).tp.typeName);
+							print("State:\n\tname: " + ((StateContext)_localctx).nm.getText() + "\n\ttype: " + ((StateContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((StateContext)_localctx).tp.typeName.size());
 			            
 			setState(111);
 			_errHandler.sync(this);
@@ -507,13 +503,8 @@ public class AtalkPass1Parser extends Parser {
 				setState(107);
 				((StateContext)_localctx).nm2 = match(ID);
 
-									try{
-										((StateContext)_localctx).offset =  putGlobalVar(((StateContext)_localctx).nm2.getText(), ((StateContext)_localctx).tp.typeName);
-										print("State:\n\tname: " + ((StateContext)_localctx).nm2.getText() + "\n\ttype: " + ((StateContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((StateContext)_localctx).tp.typeName.size());
-									}
-									catch (ItemAlreadyExistsException iaee){
-										printErr(((StateContext)_localctx).nm2.getLine(), "ERR: state already exists: " + ((StateContext)_localctx).nm2.getText());
-									}
+									((StateContext)_localctx).offset =  putGlobalVar(((StateContext)_localctx).nm2.getLine(), ((StateContext)_localctx).nm2.getText(), ((StateContext)_localctx).tp.typeName);
+									print("State:\n\tname: " + ((StateContext)_localctx).nm2.getText() + "\n\ttype: " + ((StateContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((StateContext)_localctx).tp.typeName.size());
 				                
 				}
 				}
