@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -148,21 +148,26 @@ public class AtalkPass1Lexer extends Lexer {
 			return offset;
 	    }
 
-		int putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+		int putGlobalVar(int line, String name, Type type) {
 			int offset = SymbolTable.top.getOffset(Register.GP);
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableGlobalVariableItem (
-	                    new Variable(name, type),
-	                    offset
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            offset = putGlobalVar(name, type);
-	            throw iaee;
-	        }
+			boolean f = true;
+			String nm = name;
+			while(f) {
+				try {
+					SymbolTable.top.put(
+						new SymbolTableGlobalVariableItem (
+							new Variable(nm, type),
+							offset
+						)
+					);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if (nm.equals(name))
+						printErr(line, "ERR: state already exists: " + name);
+					nm = nm+"_temp";
+				}
+			}
 			return offset;
 	    }
 	    
@@ -185,25 +190,29 @@ public class AtalkPass1Lexer extends Lexer {
 			return stri;
 	    }
 
-	    SymbolTableActorItem putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
-														NegativeActorQueueLenException {
-			SymbolTableActorItem stai;
-	        try{
+	    SymbolTableActorItem putActor(int line, String name, int queueLen) {
+			try {
 				if(queueLen <= 0){
 					throw new NegativeActorQueueLenException(name, queueLen);
 				}
-				stai = new SymbolTableActorItem(name, queueLen);
-	            SymbolTable.top.put(stai);
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            stai = putActor(name, queueLen);
-	            throw iaee;
-	        }
-			catch (NegativeActorQueueLenException naqle){
-				stai = new SymbolTableActorItem(name, 0);
-				SymbolTable.top.put(stai);
-				throw naqle;
+			} catch (NegativeActorQueueLenException naqle){
+				queueLen = 0;
+				printErr(line, "ERR: Actor '" + name + "' has invalid queue length: " + queueLen);
+			}
+			SymbolTableActorItem stai = new SymbolTableActorItem(name, queueLen);
+			boolean f = true;
+			String nm = name;
+			while(f){
+				try {
+					stai = new SymbolTableActorItem(nm, queueLen);
+					SymbolTable.top.put(stai);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if(nm.equals(name))
+						printErr(line, "ERR: Actor already exists: " + name);
+					nm = nm+"_temp";
+				}
 			}
 			return stai;
 	    }

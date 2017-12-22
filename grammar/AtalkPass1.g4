@@ -63,21 +63,26 @@ grammar AtalkPass1;
 		return offset;
     }
 
-	int putGlobalVar(String name, Type type) throws ItemAlreadyExistsException {
+	int putGlobalVar(int line, String name, Type type) {
 		int offset = SymbolTable.top.getOffset(Register.GP);
-        try{
-            SymbolTable.top.put(
-                new SymbolTableGlobalVariableItem (
-                    new Variable(name, type),
-                    offset
-                )
-            );
-        }
-        catch (ItemAlreadyExistsException iaee){
-            name = name+"_temp";
-            offset = putGlobalVar(name, type);
-            throw iaee;
-        }
+		boolean f = true;
+		String nm = name;
+		while(f) {
+			try {
+				SymbolTable.top.put(
+					new SymbolTableGlobalVariableItem (
+						new Variable(nm, type),
+						offset
+					)
+				);
+				f = false;
+			}
+			catch (ItemAlreadyExistsException iaee){
+				if (nm.equals(name))
+					printErr(line, "ERR: state already exists: " + name);
+				nm = nm+"_temp";
+			}
+		}
 		return offset;
     }
     
@@ -100,25 +105,29 @@ grammar AtalkPass1;
 		return stri;
     }
 
-    SymbolTableActorItem putActor(String name, int queueLen) throws ItemAlreadyExistsException, 
-													NegativeActorQueueLenException {
-		SymbolTableActorItem stai;
-        try{
+    SymbolTableActorItem putActor(int line, String name, int queueLen) {
+		try {
 			if(queueLen <= 0){
 				throw new NegativeActorQueueLenException(name, queueLen);
 			}
-			stai = new SymbolTableActorItem(name, queueLen);
-            SymbolTable.top.put(stai);
-        }
-        catch (ItemAlreadyExistsException iaee){
-            name = name+"_temp";
-            stai = putActor(name, queueLen);
-            throw iaee;
-        }
-		catch (NegativeActorQueueLenException naqle){
-			stai = new SymbolTableActorItem(name, 0);
-			SymbolTable.top.put(stai);
-			throw naqle;
+		} catch (NegativeActorQueueLenException naqle){
+			queueLen = 0;
+			printErr(line, "ERR: Actor '" + name + "' has invalid queue length: " + queueLen);
+		}
+		SymbolTableActorItem stai = new SymbolTableActorItem(name, queueLen);
+		boolean f = true;
+		String nm = name;
+		while(f){
+			try {
+				stai = new SymbolTableActorItem(nm, queueLen);
+				SymbolTable.top.put(stai);
+				f = false;
+			}
+			catch (ItemAlreadyExistsException iaee){
+				if(nm.equals(name))
+					printErr(line, "ERR: Actor already exists: " + name);
+				nm = nm+"_temp";
+			}
 		}
 		return stai;
     }
@@ -174,15 +183,7 @@ actor locals [SymbolTableActorItem stai]
     : 'actor' name=ID '<' as=CONST_NUM '>' NL
 		{ print("Actor:\n\tname: " + $name.getText() + "\n\tqueueLen: " + $as.getText()); }
             {
-				try{
-					$stai = putActor($name.getText(), $as.int );
-				}
-				catch (ItemAlreadyExistsException iaee){
-					printErr($name.getLine(), "ERR: Actor already exists: " + $name.getText());
-				}
-				catch (NegativeActorQueueLenException naqle){
-					printErr($as.getLine(), "ERR: Actor '" + naqle.getName() + "' has invalid queue length: " + naqle.getQueueLen());
-				}
+				$stai = putActor($name.getLine(), $name.getText(), $as.int );
                 beginScope();
             }
         (state | rc=receiver { $stai.addReceiver($rc.stri); } | NL)*
@@ -195,23 +196,13 @@ state locals [int offset]
 	:
 		tp=type nm=ID
             {
-				try{
-					$offset = putGlobalVar($nm.getText(), $tp.typeName);
-					print("State:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
-				}
-				catch (ItemAlreadyExistsException iaee){
-					printErr($nm.getLine(), "ERR: state already exists: " + $nm.getText());
-				}
+				$offset = putGlobalVar($nm.getLine(), $nm.getText(), $tp.typeName);
+				print("State:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
             }
             (',' nm2=ID 
                 {
-					try{
-						$offset = putGlobalVar($nm2.getText(), $tp.typeName);
-						print("State:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
-					}
-					catch (ItemAlreadyExistsException iaee){
-						printErr($nm2.getLine(), "ERR: state already exists: " + $nm2.getText());
-					}
+					$offset = putGlobalVar($nm2.getLine(), $nm2.getText(), $tp.typeName);
+					print("State:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
                 }
             )* NL
 	;

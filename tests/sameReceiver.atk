@@ -7,4 +7,11 @@ actor Program<10>
 	receiver init(int[10][10] a,int b, char c)
 		sender << kooft()
 	end
+	receiver init(int[10][10] a,int b, char c)
+		sender << kooft()
+	end
+	receiver init(int[10][10] a,int b, char c)
+		sender << kooft()
+	end
+	
 end 
