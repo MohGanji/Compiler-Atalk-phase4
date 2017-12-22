@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -156,7 +156,7 @@ public class AtalkPass2Lexer extends Lexer {
 					printErr(line, "ERR: Item " + name + " doesn't exist.");
 					return NoType.getInstance();
 				} catch (ItemAlreadyExistsException iaee) {
-					printErr(line, "ERR: variable already exists: " + iaee.getName());
+					// printErr(line, "ERR: variable already exists: " + iaee.getName());
 					return NoType.getInstance();
 				}
 			}
@@ -203,7 +203,7 @@ public class AtalkPass2Lexer extends Lexer {
 				Type returnType = ((ArrayType) type).type();
 				for (int i = 1; i < dim; i++) {
 					returnType = ((ArrayType) returnType).type();
-				}
+				} 
 				return returnType;
 			} catch (TypeErrorException tee) {
 				printErr(line, "ERR: " + type.toString() + " object doesn't support item assignment");

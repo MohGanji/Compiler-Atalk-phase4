@@ -2,21 +2,51 @@ Actor:
 	name: Program
 	queueLen: 10
 Receiver:
-	name: rec
-	args: 
-Variable:
+	name: init
+	args: array(array(int)), int, char
+Argument:
 	name: a
-	type: char
+	type: array(array(int))
 	offset: 0
-	size: 4
-Variable:
+	size: 400
+Argument:
 	name: b
-	type: array(int)
-	offset: 4
-	size: 8
-Stack offset: 12, Global offset: 0
+	type: int
+	offset: 400
+	size: 4
+Argument:
+	name: c
+	type: char
+	offset: 404
+	size: 4
+Stack offset: 408, Global offset: 0
+Stack offset: 0, Global offset: 0
+Actor:
+	name: drogram
+	queueLen: 10
+Receiver:
+	name: init
+	args: array(array(int)), int, char
+Argument:
+	name: a
+	type: array(array(int))
+	offset: 0
+	size: 400
+Argument:
+	name: b
+	type: int
+	offset: 400
+	size: 4
+Argument:
+	name: c
+	type: char
+	offset: 404
+	size: 4
+Stack offset: 408, Global offset: 0
 Stack offset: 0, Global offset: 0
 Stack offset: 0, Global offset: 0
 ------------------------------ Pass 1 finished ------
-line 9: ERR: Write function only accepts int, char or string
-line 10: ERR: Actor d doesn't exist.
+line 7: ERR: Can't convert type int to array(char)
+line 7: ERR: Can't convert type array(char) to int
+line 17: ERR: Can't convert type int to array(char)
+line 17: ERR: Can't convert type array(char) to int

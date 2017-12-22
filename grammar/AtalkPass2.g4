@@ -71,7 +71,7 @@ grammar AtalkPass2;
 				printErr(line, "ERR: Item " + name + " doesn't exist.");
 				return NoType.getInstance();
 			} catch (ItemAlreadyExistsException iaee) {
-				printErr(line, "ERR: variable already exists: " + iaee.getName());
+				// printErr(line, "ERR: variable already exists: " + iaee.getName());
 				return NoType.getInstance();
 			}
 		}
@@ -118,7 +118,7 @@ grammar AtalkPass2;
 			Type returnType = ((ArrayType) type).type();
 			for (int i = 1; i < dim; i++) {
 				returnType = ((ArrayType) returnType).type();
-			}
+			} 
 			return returnType;
 		} catch (TypeErrorException tee) {
 			printErr(line, "ERR: " + type.toString() + " object doesn't support item assignment");
@@ -197,8 +197,8 @@ state
 
 receiver locals [boolean hasInit = false]
 	: 
-		'receiver' rec=ID '(' (type arg1=ID
-		(',' type arg2=ID
+		'receiver' rec=ID '(' (type arg1=ID {SymbolTable.define();}
+		(',' type arg2=ID {SymbolTable.define();}
 		)*)? ')' NL { 
 				if($rec.getText().equals("init") && $arg1 == null){
 					$hasInit = true;	
