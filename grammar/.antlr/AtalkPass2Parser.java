@@ -198,13 +198,15 @@ public class AtalkPass2Parser extends Parser {
 				printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 			}
 		}
-		void typeCheck(int line, Type t1, Type t2) {
+		Type typeCheck(int line, Type t1, Type t2) {
 			try {
 				if (!t1.equals(t2)) {
 					throw new TypeErrorException();
 				}
+				return t1;
 			} catch (TypeErrorException tee) {
 				printErr(line, "ERR: Can't convert type " + t2.toString() + " to " + t1.toString());
+				return NoType.getInstance();
 			}
 		}
 		Type checkArrayDim(int line, Type type, int dim) {
