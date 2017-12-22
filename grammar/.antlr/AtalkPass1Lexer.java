@@ -130,21 +130,26 @@ public class AtalkPass1Lexer extends Lexer {
 			foreachs --;
 		}
 
-	    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+	    int putLocalVar(int line, String name, Type type) {
 			int offset = SymbolTable.top.getOffset(Register.SP);
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableLocalVariableItem(
-	                    new Variable(name, type),
-	                    offset
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            offset = putLocalVar(name, type);
-	            throw iaee;
-	        }
+			boolean f = true;
+			String nm = name;
+			while (f) {
+				try{
+					SymbolTable.top.put(
+						new SymbolTableLocalVariableItem(
+							new Variable(nm, type),
+							offset
+						)
+					);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if (nm.equals(name))
+						printErr(line, "ERR: state already exists: " + name);
+					nm = nm+"_temp";
+				}
+			}
 			return offset;
 	    }
 
@@ -152,7 +157,7 @@ public class AtalkPass1Lexer extends Lexer {
 			int offset = SymbolTable.top.getOffset(Register.GP);
 			boolean f = true;
 			String nm = name;
-			while(f) {
+			while (f) {
 				try {
 					SymbolTable.top.put(
 						new SymbolTableGlobalVariableItem (

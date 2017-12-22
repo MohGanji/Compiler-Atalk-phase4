@@ -45,21 +45,26 @@ grammar AtalkPass1;
 		foreachs --;
 	}
 
-    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+    int putLocalVar(int line, String name, Type type) {
 		int offset = SymbolTable.top.getOffset(Register.SP);
-        try{
-            SymbolTable.top.put(
-                new SymbolTableLocalVariableItem(
-                    new Variable(name, type),
-                    offset
-                )
-            );
-        }
-        catch (ItemAlreadyExistsException iaee){
-            name = name+"_temp";
-            offset = putLocalVar(name, type);
-            throw iaee;
-        }
+		boolean f = true;
+		String nm = name;
+		while (f) {
+			try{
+				SymbolTable.top.put(
+					new SymbolTableLocalVariableItem(
+						new Variable(nm, type),
+						offset
+					)
+				);
+				f = false;
+			}
+			catch (ItemAlreadyExistsException iaee){
+				if (nm.equals(name))
+					printErr(line, "ERR: state already exists: " + name);
+				nm = nm+"_temp";
+			}
+		}
 		return offset;
     }
 
@@ -67,7 +72,7 @@ grammar AtalkPass1;
 		int offset = SymbolTable.top.getOffset(Register.GP);
 		boolean f = true;
 		String nm = name;
-		while(f) {
+		while (f) {
 			try {
 				SymbolTable.top.put(
 					new SymbolTableGlobalVariableItem (
@@ -234,12 +239,8 @@ receiver returns [SymbolTableReceiverItem stri] locals [ArrayList<Type> types = 
 				
 				beginScope();
 				for (int i = 0; i < $types.size(); i++) {
-					try {
-						$offset = putLocalVar($names.get(i), $types.get(i));
-						print("Argument:\n\tname: " + $names.get(i) + "\n\ttype: " + $types.get(i).toString() + "\n\toffset: " + $offset + "\n\tsize: " + $types.get(i).size());
-					} catch (ItemAlreadyExistsException iaee) {
-						printErr($name.getLine(), "ERR: variable already exists: " + $names.get(i));
-					}
+					$offset = putLocalVar($name.getLine(), $names.get(i), $types.get(i));
+					print("Argument:\n\tname: " + $names.get(i) + "\n\ttype: " + $types.get(i).toString() + "\n\toffset: " + $offset + "\n\tsize: " + $types.get(i).size());
 				}
 			}
 		statements 
@@ -341,21 +342,13 @@ stm_vardef locals [int offset]
 	:
 		tp=type nm=ID ('=' expr)?
             {
-                try {
-					$offset = putLocalVar($nm.getText(), $tp.typeName);
-					print("Variable:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
-				} catch (ItemAlreadyExistsException iaee) {
-					printErr($nm.getLine(), "ERR: variable already exists: " + $nm.getText());
-				}
+                $offset = putLocalVar($nm.getLine(), $nm.getText(), $tp.typeName);
+				print("Variable:\n\tname: " + $nm.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
             }
             (',' nm2=ID ('=' expr)?
                 {
-					try {
-						$offset = putLocalVar($nm2.getText(), $tp.typeName);
-						print("Variable:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
-					} catch (ItemAlreadyExistsException iaee) {
-						printErr($nm2.getLine(), "ERR: variable already exists: " + $nm2.getText());
-					}
+					$offset = putLocalVar($nm2.getLine(), $nm2.getText(), $tp.typeName);
+					print("Variable:\n\tname: " + $nm2.getText() + "\n\ttype: " + $tp.typeName.toString() + "\n\toffset: " + $offset + "\n\tsize: " + $tp.typeName.size());
                 }
             )* NL
 	;
@@ -397,11 +390,7 @@ stm_foreach:
 			{
 				beginForeach();
 				beginScope();
-				try {
-					putLocalVar($var.getText(), NoType.getInstance());
-				} catch (ItemAlreadyExistsException iaee) {
-					printErr($var.getLine(), "ERR: variable already exists: " + $var.getText());
-				}
+				putLocalVar($var.getLine(), $var.getText(), NoType.getInstance());
 			}
 		statements
 		'end' NL

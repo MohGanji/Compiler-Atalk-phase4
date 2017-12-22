@@ -144,21 +144,26 @@ public class AtalkPass1Parser extends Parser {
 			foreachs --;
 		}
 
-	    int putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
+	    int putLocalVar(int line, String name, Type type) {
 			int offset = SymbolTable.top.getOffset(Register.SP);
-	        try{
-	            SymbolTable.top.put(
-	                new SymbolTableLocalVariableItem(
-	                    new Variable(name, type),
-	                    offset
-	                )
-	            );
-	        }
-	        catch (ItemAlreadyExistsException iaee){
-	            name = name+"_temp";
-	            offset = putLocalVar(name, type);
-	            throw iaee;
-	        }
+			boolean f = true;
+			String nm = name;
+			while (f) {
+				try{
+					SymbolTable.top.put(
+						new SymbolTableLocalVariableItem(
+							new Variable(nm, type),
+							offset
+						)
+					);
+					f = false;
+				}
+				catch (ItemAlreadyExistsException iaee){
+					if (nm.equals(name))
+						printErr(line, "ERR: state already exists: " + name);
+					nm = nm+"_temp";
+				}
+			}
 			return offset;
 	    }
 
@@ -166,7 +171,7 @@ public class AtalkPass1Parser extends Parser {
 			int offset = SymbolTable.top.getOffset(Register.GP);
 			boolean f = true;
 			String nm = name;
-			while(f) {
+			while (f) {
 				try {
 					SymbolTable.top.put(
 						new SymbolTableGlobalVariableItem (
@@ -629,12 +634,8 @@ public class AtalkPass1Parser extends Parser {
 							
 							beginScope();
 							for (int i = 0; i < _localctx.types.size(); i++) {
-								try {
-									((ReceiverContext)_localctx).offset =  putLocalVar(_localctx.names.get(i), _localctx.types.get(i));
-									print("Argument:\n\tname: " + _localctx.names.get(i) + "\n\ttype: " + _localctx.types.get(i).toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + _localctx.types.get(i).size());
-								} catch (ItemAlreadyExistsException iaee) {
-									printErr(((ReceiverContext)_localctx).name.getLine(), "ERR: variable already exists: " + _localctx.names.get(i));
-								}
+								((ReceiverContext)_localctx).offset =  putLocalVar(((ReceiverContext)_localctx).name.getLine(), _localctx.names.get(i), _localctx.types.get(i));
+								print("Argument:\n\tname: " + _localctx.names.get(i) + "\n\ttype: " + _localctx.types.get(i).toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + _localctx.types.get(i).size());
 							}
 						
 			setState(137);
@@ -1099,12 +1100,8 @@ public class AtalkPass1Parser extends Parser {
 			}
 
 
-			                try {
-								((Stm_vardefContext)_localctx).offset =  putLocalVar(((Stm_vardefContext)_localctx).nm.getText(), ((Stm_vardefContext)_localctx).tp.typeName);
-								print("Variable:\n\tname: " + ((Stm_vardefContext)_localctx).nm.getText() + "\n\ttype: " + ((Stm_vardefContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((Stm_vardefContext)_localctx).tp.typeName.size());
-							} catch (ItemAlreadyExistsException iaee) {
-								printErr(((Stm_vardefContext)_localctx).nm.getLine(), "ERR: variable already exists: " + ((Stm_vardefContext)_localctx).nm.getText());
-							}
+			                ((Stm_vardefContext)_localctx).offset =  putLocalVar(((Stm_vardefContext)_localctx).nm.getLine(), ((Stm_vardefContext)_localctx).nm.getText(), ((Stm_vardefContext)_localctx).tp.typeName);
+							print("Variable:\n\tname: " + ((Stm_vardefContext)_localctx).nm.getText() + "\n\ttype: " + ((Stm_vardefContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((Stm_vardefContext)_localctx).tp.typeName.size());
 			            
 			setState(210);
 			_errHandler.sync(this);
@@ -1129,12 +1126,8 @@ public class AtalkPass1Parser extends Parser {
 				}
 
 
-									try {
-										((Stm_vardefContext)_localctx).offset =  putLocalVar(((Stm_vardefContext)_localctx).nm2.getText(), ((Stm_vardefContext)_localctx).tp.typeName);
-										print("Variable:\n\tname: " + ((Stm_vardefContext)_localctx).nm2.getText() + "\n\ttype: " + ((Stm_vardefContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((Stm_vardefContext)_localctx).tp.typeName.size());
-									} catch (ItemAlreadyExistsException iaee) {
-										printErr(((Stm_vardefContext)_localctx).nm2.getLine(), "ERR: variable already exists: " + ((Stm_vardefContext)_localctx).nm2.getText());
-									}
+									((Stm_vardefContext)_localctx).offset =  putLocalVar(((Stm_vardefContext)_localctx).nm2.getLine(), ((Stm_vardefContext)_localctx).nm2.getText(), ((Stm_vardefContext)_localctx).tp.typeName);
+									print("Variable:\n\tname: " + ((Stm_vardefContext)_localctx).nm2.getText() + "\n\ttype: " + ((Stm_vardefContext)_localctx).tp.typeName.toString() + "\n\toffset: " + _localctx.offset + "\n\tsize: " + ((Stm_vardefContext)_localctx).tp.typeName.size());
 				                
 				}
 				}
@@ -1422,11 +1415,7 @@ public class AtalkPass1Parser extends Parser {
 
 							beginForeach();
 							beginScope();
-							try {
-								putLocalVar(((Stm_foreachContext)_localctx).var.getText(), NoType.getInstance());
-							} catch (ItemAlreadyExistsException iaee) {
-								printErr(((Stm_foreachContext)_localctx).var.getLine(), "ERR: variable already exists: " + ((Stm_foreachContext)_localctx).var.getText());
-							}
+							putLocalVar(((Stm_foreachContext)_localctx).var.getLine(), ((Stm_foreachContext)_localctx).var.getText(), NoType.getInstance());
 						
 			setState(270);
 			statements();
