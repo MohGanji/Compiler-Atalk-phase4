@@ -123,7 +123,7 @@ grammar AtalkPass2;
 			} 
 			return returnType;
 		} catch (TypeErrorException tee) {
-			printErr(line, "ERR: " + type.toString() + " object doesn't support item assignment");
+			printErr(line, "ERR: " + type.toString() + " object doesn't support index access");
 			return NoType.getInstance();
 		}
 	}

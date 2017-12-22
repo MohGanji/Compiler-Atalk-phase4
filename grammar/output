@@ -1,52 +1,122 @@
 Actor:
-	name: Program
-	queueLen: 10
+	name: Adder
+	queueLen: 34
+State:
+	name: addsCount
+	type: int
+	offset: 0
+	size: 4
+State:
+	name: myVar
+	type: int
+	offset: 4
+	size: 4
+State:
+	name: addsArray
+	type: array(array(char))
+	offset: 8
+	size: 60
+State:
+	name: addsArrayInt
+	type: array(array(int))
+	offset: 68
+	size: 24
+State:
+	name: salam
+	type: char
+	offset: 92
+	size: 4
+State:
+	name: chetori
+	type: char
+	offset: 96
+	size: 4
+State:
+	name: jallal
+	type: char
+	offset: 100
+	size: 4
 Receiver:
 	name: init
-	args: array(array(int)), int, char
-Argument:
-	name: a
-	type: array(array(int))
-	offset: 0
-	size: 400
-Argument:
-	name: b
-	type: int
-	offset: 400
-	size: 4
-Argument:
-	name: c
-	type: char
-	offset: 404
-	size: 4
-Stack offset: 408, Global offset: 0
-Stack offset: 0, Global offset: 0
-Actor:
-	name: drogram
-	queueLen: 10
+	args: 
+Stack offset: 0, Global offset: 104
 Receiver:
-	name: init
-	args: array(array(int)), int, char
+	name: add
+	args: int, int
 Argument:
-	name: a
-	type: array(array(int))
+	name: x
+	type: int
 	offset: 0
-	size: 400
+	size: 4
 Argument:
+	name: y
+	type: int
+	offset: 4
+	size: 4
+Variable:
+	name: z
+	type: int
+	offset: 8
+	size: 4
+Variable:
 	name: b
 	type: int
-	offset: 400
+	offset: 12
 	size: 4
+Variable:
+	name: jallal
+	type: int
+	offset: 16
+	size: 4
+Variable:
+	name: jallal
+	type: array(array(int))
+	offset: 20
+	size: 24
+Stack offset: 44, Global offset: 104
+Variable:
+	name: jallal
+	type: array(array(char))
+	offset: 20
+	size: 16
+Stack offset: 36, Global offset: 104
+Stack offset: 20, Global offset: 104
+Stack offset: 16, Global offset: 104
+Stack offset: 0, Global offset: 104
+Receiver:
+	name: add
+	args: array(array(array(int))), array(array(char))
 Argument:
-	name: c
-	type: char
-	offset: 404
+	name: x
+	type: array(array(array(int)))
+	offset: 0
+	size: 24
+Argument:
+	name: y
+	type: array(array(char))
+	offset: 24
+	size: 1152
+Variable:
+	name: a
+	type: int
+	offset: 1176
 	size: 4
-Stack offset: 408, Global offset: 0
-Stack offset: 0, Global offset: 0
-Stack offset: 0, Global offset: 0
+Variable:
+	name: c
+	type: int
+	offset: 1180
+	size: 4
+Stack offset: 1184, Global offset: 104
+Stack offset: 0, Global offset: 104
+Stack offset: 0, Global offset: 104
 ------------------------------ Pass 1 finished ------
-line 7: ERR: Can't convert type int to array(char)
-line 7: ERR: Can't convert type array(char) to int
-line 17: ERR: Can't convert type int to array(char)
-line 17: ERR: Can't convert type array(char) to int
+line 20: ERR: Item t doesn't exist.
+line 20: ERR: Can't convert type int to noType
+line 21: ERR: Can't convert type int to noType
+line 24: ERR: Foreach iterative must be an array
+line 26: ERR: Can't convert type int to noType
+line 26: ERR: Can't convert type noType to int
+line 27: ERR: Can't convert type int to noType
+line 28: ERR: Can't convert type int to noType
+line 41: ERR: Can't convert type array(array(char)) to array(array(array(int)))
+line 41: ERR: Write function only accepts int, char or string
