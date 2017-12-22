@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -153,27 +153,29 @@ public class AtalkPass2Parser extends Parser {
 			return offset;
 	    }
 
-		void checkVariableExistance(int line, String name) {
+		Type checkVariableExistance(int line, String name) {
 			SymbolTableItem sti = SymbolTable.top.get(name);
 			try {
 				if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 					throw new UndefinedVariableException();
 				}
-			else {
+				else {
+					Variable var = ((SymbolTableVariableItem) sti).getVariable();
 					// cerr("hast " + name);
+					return var.getType();			
 				}
 			} catch (UndefinedVariableException uve) {
 				try {
 					SymbolTable.define();
 					putLocalVar(name, NoType.getInstance());
+					printErr(line, "ERR: Item " + name + " doesn't exist.");
+					return NoType.getInstance();
 				} catch (ItemAlreadyExistsException iaee) {
-					return;
-					// printErr(line, "ERR: variable already exists: " + iaee.getName());
+					printErr(line, "ERR: variable already exists: " + iaee.getName());
+					return NoType.getInstance();
 				}
-				printErr(line, "ERR: Item " + name + " doesn't exist.");
 			}
 		}
-
 		void checkActorExistance(int line, String name) {
 			SymbolTableItem sti = SymbolTable.top.get(name);
 			try {
@@ -196,19 +198,6 @@ public class AtalkPass2Parser extends Parser {
 			} catch (UndefinedReceiverException ure) {
 				printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 			}
-		}
-		Type getIDType(String name) {
-			try{
-				// cerr("1" + name.toString());
-				SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-				// cerr("2" + stlvi.toString());
-				Variable var = stlvi.getVariable();
-				// cerr ("3" + var.toString());
-				return var.getType();
-
-			} catch (NullPointerException npe) {}
-			// Variable var = SymbolTable.top.get(name).getVariable();
-			return IntType.getInstance();
 		}
 		void typeCheck(int line, Type t1, Type t2) {
 			try {
@@ -2656,6 +2645,7 @@ public class AtalkPass2Parser extends Parser {
 		public boolean is_lvalue;
 		public Type retType;
 		public int arrayLength = 0;
+		public boolean exists;
 		public Token l;
 		public Token l2;
 		public Token str;
@@ -2728,9 +2718,8 @@ public class AtalkPass2Parser extends Parser {
 				setState(408);
 				((Expr_otherContext)_localctx).var = match(ID);
 
-							checkVariableExistance((((Expr_otherContext)_localctx).var!=null?((Expr_otherContext)_localctx).var.getLine():0), ((Expr_otherContext)_localctx).var.getText());
+							((Expr_otherContext)_localctx).retType =  checkVariableExistance((((Expr_otherContext)_localctx).var!=null?((Expr_otherContext)_localctx).var.getLine():0), ((Expr_otherContext)_localctx).var.getText());
 							((Expr_otherContext)_localctx).is_lvalue =  true;
-							((Expr_otherContext)_localctx).retType =  getIDType(((Expr_otherContext)_localctx).var.getText());
 							((Expr_otherContext)_localctx).line =  (((Expr_otherContext)_localctx).var!=null?((Expr_otherContext)_localctx).var.getLine():0);
 						
 				}

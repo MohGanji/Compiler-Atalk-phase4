@@ -54,27 +54,29 @@ grammar AtalkPass2;
 		return offset;
     }
 
-	void checkVariableExistance(int line, String name) {
+	Type checkVariableExistance(int line, String name) {
 		SymbolTableItem sti = SymbolTable.top.get(name);
 		try {
 			if(sti == null || !(sti instanceof SymbolTableVariableItem)) {
 				throw new UndefinedVariableException();
 			}
-		else {
+			else {
+				Variable var = ((SymbolTableVariableItem) sti).getVariable();
 				// cerr("hast " + name);
+				return var.getType();			
 			}
 		} catch (UndefinedVariableException uve) {
 			try {
 				SymbolTable.define();
 				putLocalVar(name, NoType.getInstance());
+				printErr(line, "ERR: Item " + name + " doesn't exist.");
+				return NoType.getInstance();
 			} catch (ItemAlreadyExistsException iaee) {
-				return;
-				// printErr(line, "ERR: variable already exists: " + iaee.getName());
+				printErr(line, "ERR: variable already exists: " + iaee.getName());
+				return NoType.getInstance();
 			}
-			printErr(line, "ERR: Item " + name + " doesn't exist.");
 		}
 	}
-
 	void checkActorExistance(int line, String name) {
 		SymbolTableItem sti = SymbolTable.top.get(name);
 		try {
@@ -97,19 +99,6 @@ grammar AtalkPass2;
 		} catch (UndefinedReceiverException ure) {
 			printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 		}
-	}
-	Type getIDType(String name) {
-		try{
-			// cerr("1" + name.toString());
-			SymbolTableVariableItem stlvi = (SymbolTableVariableItem) SymbolTable.top.get(name);
-			// cerr("2" + stlvi.toString());
-			Variable var = stlvi.getVariable();
-			// cerr ("3" + var.toString());
-			return var.getType();
-
-		} catch (NullPointerException npe) {}
-		// Variable var = SymbolTable.top.get(name).getVariable();
-		return IntType.getInstance();
 	}
 	void typeCheck(int line, Type t1, Type t2) {
 		try {
@@ -616,7 +605,7 @@ expr_mem_tmp returns [int dim]
 		}
 	;
 
-expr_other returns [int line, boolean is_lvalue, Type retType] locals [int arrayLength = 0]
+expr_other returns [int line, boolean is_lvalue, Type retType] locals [int arrayLength = 0, boolean exists]
 	:
 		l=CONST_NUM {
 			$is_lvalue = false;
@@ -633,9 +622,8 @@ expr_other returns [int line, boolean is_lvalue, Type retType] locals [int array
 			$retType = new ArrayType(CharType.getInstance(), $str.getText().length()); $line = $str.line;
 		}
 	|	var=ID {
-			checkVariableExistance($var.line, $var.getText());
+			$retType = checkVariableExistance($var.line, $var.getText());
 			$is_lvalue = true;
-			$retType = getIDType($var.getText());
 			$line = $var.line;
 		}
 	|	'{' exp=expr {
