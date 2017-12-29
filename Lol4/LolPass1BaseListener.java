@@ -1,4 +1,4 @@
-// Generated from C:/Users/vrasa/IdeaProjects/Lol\LolPass1.g4 by ANTLR 4.5.3
+// Generated from LolPass1.g4 by ANTLR 4.7
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

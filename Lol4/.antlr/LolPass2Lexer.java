@@ -1,4 +1,4 @@
-// Generated from LolPass1.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/Lol4/LolPass2.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class LolPass1Lexer extends Lexer {
+public class LolPass2Lexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -78,59 +78,25 @@ public class LolPass1Lexer extends Lexer {
 	        System.out.println(str);
 	    }
 
-	    void putLocalVar(String name, Type type) throws ItemAlreadyExistsException {
-	        SymbolTable.top.put(
-	            new SymbolTableLocalVariableItem(
-	                new Variable(name, type),
-	                SymbolTable.top.getOffset(Register.SP)
-	            )
-	        );
-	    }
-
-	    void putStaticVar(String name, Type type) throws ItemAlreadyExistsException {
-	        SymbolTable.top.put(
-	            new SymbolTableStaticVariableItem(
-	                new Variable(name, type),
-	                SymbolTable.top.getOffset(Register.GP)
-	            )
-	        );
-	    }
-
 	    void beginScope() {
-	    	int localOffset = 0;
-	    	int globalOffset = 0;
-	    	
-	    	if(SymbolTable.top != null) {
-	        	localOffset = SymbolTable.top.getOffset(Register.SP);
-	        	globalOffset = SymbolTable.top.getOffset(Register.GP);
-	    	}
-
-	        SymbolTable.push(new SymbolTable(SymbolTable.top));
-
-	        SymbolTable.top.setOffset(Register.SP, localOffset);
-	        SymbolTable.top.setOffset(Register.GP, globalOffset);
+	        SymbolTable.push();
 	    }
-	    
+
 	    void endScope() {
 	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
-	        
-	        if(SymbolTable.top.getPreSymbolTable() != null) {
-	            SymbolTable.top.getPreSymbolTable().setOffset(
-	                Register.GP,
-	                SymbolTable.top.getOffset(Register.GP)
-	            );
-	        }
 	        SymbolTable.pop();
 	    }
 
+	    Translator mips = new Translator();
 
-	public LolPass1Lexer(CharStream input) {
+
+	public LolPass2Lexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "LolPass1.g4"; }
+	public String getGrammarFileName() { return "LolPass2.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

@@ -1,4 +1,4 @@
-// Generated from C:/Users/vrasa/IdeaProjects/Lol\LolPass1.g4 by ANTLR 4.5.3
+// Generated from LolPass1.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class LolPass1Parser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.5.3", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -230,6 +230,7 @@ public class LolPass1Parser extends Parser {
 		enterRule(_localctx, 2, RULE_statement);
 		try {
 			setState(43);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__2:
 				enterOuterAlt(_localctx, 1);
@@ -520,6 +521,7 @@ public class LolPass1Parser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(70);
+				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case T__5:
 					{
@@ -636,6 +638,7 @@ public class LolPass1Parser extends Parser {
 		int _la;
 		try {
 			setState(85);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__7:
 			case T__8:
@@ -646,7 +649,10 @@ public class LolPass1Parser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==T__7 || _la==T__8) ) {
 					((Expr_add_tmpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(81);
@@ -749,6 +755,7 @@ public class LolPass1Parser extends Parser {
 		int _la;
 		try {
 			setState(95);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__9:
 			case T__10:
@@ -759,7 +766,10 @@ public class LolPass1Parser extends Parser {
 				_la = _input.LA(1);
 				if ( !(_la==T__9 || _la==T__10) ) {
 					((Expr_mult_tmpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-				} else {
+				}
+				else {
+					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+					_errHandler.reportMatch(this);
 					consume();
 				}
 				setState(91);
@@ -817,6 +827,7 @@ public class LolPass1Parser extends Parser {
 		enterRule(_localctx, 22, RULE_expr_other);
 		try {
 			setState(103);
+			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CONST_INT:
 				enterOuterAlt(_localctx, 1);
@@ -859,7 +870,7 @@ public class LolPass1Parser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\22l\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22l\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
 		"\f\t\f\4\r\t\r\3\2\3\2\7\2\35\n\2\f\2\16\2 \13\2\3\2\3\2\3\3\3\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3.\n\3\3\4\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3"+
@@ -867,19 +878,19 @@ public class LolPass1Parser extends Parser {
 		"\5\bI\n\b\3\b\3\b\3\b\5\bN\n\b\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\5\nX\n"+
 		"\n\3\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f\5\fb\n\f\3\r\3\r\3\r\3\r\3\r\3\r"+
 		"\5\rj\n\r\3\r\2\2\16\2\4\6\b\n\f\16\20\22\24\26\30\2\4\3\2\n\13\3\2\f"+
-		"\rj\2\32\3\2\2\2\4-\3\2\2\2\6/\3\2\2\2\b\64\3\2\2\2\n8\3\2\2\2\f;\3\2"+
-		"\2\2\16M\3\2\2\2\20O\3\2\2\2\22W\3\2\2\2\24Y\3\2\2\2\26a\3\2\2\2\30i\3"+
-		"\2\2\2\32\36\b\2\1\2\33\35\5\4\3\2\34\33\3\2\2\2\35 \3\2\2\2\36\34\3\2"+
-		"\2\2\36\37\3\2\2\2\37!\3\2\2\2 \36\3\2\2\2!\"\b\2\1\2\"\3\3\2\2\2#$\5"+
-		"\b\5\2$%\7\3\2\2%.\3\2\2\2&\'\5\6\4\2\'(\7\3\2\2(.\3\2\2\2)*\5\16\b\2"+
-		"*+\7\3\2\2+.\3\2\2\2,.\5\f\7\2-#\3\2\2\2-&\3\2\2\2-)\3\2\2\2-,\3\2\2\2"+
-		".\5\3\2\2\2/\60\7\4\2\2\60\61\5\n\6\2\61\62\7\21\2\2\62\63\b\4\1\2\63"+
-		"\7\3\2\2\2\64\65\5\n\6\2\65\66\7\21\2\2\66\67\b\5\1\2\67\t\3\2\2\289\7"+
-		"\5\2\29:\b\6\1\2:\13\3\2\2\2;<\b\7\1\2<@\7\6\2\2=?\5\4\3\2>=\3\2\2\2?"+
-		"B\3\2\2\2@>\3\2\2\2@A\3\2\2\2AC\3\2\2\2B@\3\2\2\2CD\7\7\2\2DE\b\7\1\2"+
-		"E\r\3\2\2\2FI\7\b\2\2GI\5\20\t\2HF\3\2\2\2HG\3\2\2\2IJ\3\2\2\2JK\7\t\2"+
-		"\2KN\5\16\b\2LN\5\20\t\2MH\3\2\2\2ML\3\2\2\2N\17\3\2\2\2OP\5\24\13\2P"+
-		"Q\5\22\n\2Q\21\3\2\2\2RS\t\2\2\2ST\5\24\13\2TU\5\22\n\2UX\3\2\2\2VX\3"+
+		"\r\2j\2\32\3\2\2\2\4-\3\2\2\2\6/\3\2\2\2\b\64\3\2\2\2\n8\3\2\2\2\f;\3"+
+		"\2\2\2\16M\3\2\2\2\20O\3\2\2\2\22W\3\2\2\2\24Y\3\2\2\2\26a\3\2\2\2\30"+
+		"i\3\2\2\2\32\36\b\2\1\2\33\35\5\4\3\2\34\33\3\2\2\2\35 \3\2\2\2\36\34"+
+		"\3\2\2\2\36\37\3\2\2\2\37!\3\2\2\2 \36\3\2\2\2!\"\b\2\1\2\"\3\3\2\2\2"+
+		"#$\5\b\5\2$%\7\3\2\2%.\3\2\2\2&\'\5\6\4\2\'(\7\3\2\2(.\3\2\2\2)*\5\16"+
+		"\b\2*+\7\3\2\2+.\3\2\2\2,.\5\f\7\2-#\3\2\2\2-&\3\2\2\2-)\3\2\2\2-,\3\2"+
+		"\2\2.\5\3\2\2\2/\60\7\4\2\2\60\61\5\n\6\2\61\62\7\21\2\2\62\63\b\4\1\2"+
+		"\63\7\3\2\2\2\64\65\5\n\6\2\65\66\7\21\2\2\66\67\b\5\1\2\67\t\3\2\2\2"+
+		"89\7\5\2\29:\b\6\1\2:\13\3\2\2\2;<\b\7\1\2<@\7\6\2\2=?\5\4\3\2>=\3\2\2"+
+		"\2?B\3\2\2\2@>\3\2\2\2@A\3\2\2\2AC\3\2\2\2B@\3\2\2\2CD\7\7\2\2DE\b\7\1"+
+		"\2E\r\3\2\2\2FI\7\b\2\2GI\5\20\t\2HF\3\2\2\2HG\3\2\2\2IJ\3\2\2\2JK\7\t"+
+		"\2\2KN\5\16\b\2LN\5\20\t\2MH\3\2\2\2ML\3\2\2\2N\17\3\2\2\2OP\5\24\13\2"+
+		"PQ\5\22\n\2Q\21\3\2\2\2RS\t\2\2\2ST\5\24\13\2TU\5\22\n\2UX\3\2\2\2VX\3"+
 		"\2\2\2WR\3\2\2\2WV\3\2\2\2X\23\3\2\2\2YZ\5\30\r\2Z[\5\26\f\2[\25\3\2\2"+
 		"\2\\]\t\3\2\2]^\5\30\r\2^_\5\26\f\2_b\3\2\2\2`b\3\2\2\2a\\\3\2\2\2a`\3"+
 		"\2\2\2b\27\3\2\2\2cj\7\20\2\2dj\7\21\2\2ef\7\16\2\2fg\5\16\b\2gh\7\17"+

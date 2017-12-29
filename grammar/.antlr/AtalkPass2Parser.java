@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -269,6 +269,24 @@ public class AtalkPass2Parser extends Parser {
 			}
 		}
 
+		Translator mips = new Translator();
+
+		void p4addVarToStack(String name, boolean left) {
+			SymbolTableItem item = SymbolTable.top.get(name);
+			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+			
+			if (var.getBaseRegister() == Register.SP){
+				cerr("ok");
+				System.out.println(left);
+				if (left == false) mips.addToStack(name, var.getOffset()*-1);
+				else mips.addAddressToStack(name, var.getOffset()*-1);
+			}
+			else {
+				if (left == false) mips.addGlobalToStack(var.getOffset());
+				else mips.addGlobalAddressToStack(name, var.getOffset());
+			}
+		}
+
 	public AtalkPass2Parser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
@@ -329,6 +347,7 @@ public class AtalkPass2Parser extends Parser {
 
 					endScope();
 					printLogs();
+					mips.makeOutput();
 				
 			}
 		}
@@ -1047,6 +1066,10 @@ public class AtalkPass2Parser extends Parser {
 			((Stm_vardefContext)_localctx).var = match(ID);
 
 						SymbolTable.define();
+						mips.addToStack(0);
+						// SymbolTableItem item = SymbolTable.top.get(((Stm_vardefContext)_localctx).var.getText());
+						// SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+						// mips.addAddressToStack(((Stm_vardefContext)_localctx).var.getText(), var.getOffset()*-1);
 					
 			setState(197);
 			_errHandler.sync(this);
@@ -1059,6 +1082,7 @@ public class AtalkPass2Parser extends Parser {
 				((Stm_vardefContext)_localctx).exp = expr();
 
 							typeCheck((((Stm_vardefContext)_localctx).var!=null?((Stm_vardefContext)_localctx).var.getLine():0), ((Stm_vardefContext)_localctx).tp.retType, ((Stm_vardefContext)_localctx).exp.retType);
+							mips.assignCommand();
 						
 				}
 			}
@@ -1275,6 +1299,9 @@ public class AtalkPass2Parser extends Parser {
 			match(T__7);
 			setState(249);
 			match(NL);
+
+						mips.write();
+					
 			}
 		}
 		catch (RecognitionException re) {
@@ -1320,64 +1347,64 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(251);
-			match(T__18);
 			setState(252);
-			((Stm_if_elseif_elseContext)_localctx).exp = expr();
+			match(T__18);
 			setState(253);
+			((Stm_if_elseif_elseContext)_localctx).exp = expr();
+			setState(254);
 			match(NL);
 
 							typeCheck(((Stm_if_elseif_elseContext)_localctx).exp.line, IntType.getInstance(), ((Stm_if_elseif_elseContext)_localctx).exp.retType);
 							beginScope();
 						
-			setState(255);
+			setState(256);
 			statements();
-			setState(264);
+			setState(265);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__19) {
 				{
 				{
-				setState(256);
-				match(T__19);
 				setState(257);
-				((Stm_if_elseif_elseContext)_localctx).exp2 = expr();
+				match(T__19);
 				setState(258);
+				((Stm_if_elseif_elseContext)_localctx).exp2 = expr();
+				setState(259);
 				match(NL);
 
 								typeCheck(((Stm_if_elseif_elseContext)_localctx).exp2.line, IntType.getInstance(), ((Stm_if_elseif_elseContext)_localctx).exp2.retType);
 								endScope();
 								beginScope();
 							
-				setState(260);
+				setState(261);
 				statements();
 				}
 				}
-				setState(266);
+				setState(267);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(271);
+			setState(272);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==T__20) {
 				{
-				setState(267);
-				match(T__20);
 				setState(268);
+				match(T__20);
+				setState(269);
 				match(NL);
 
 								endScope();
 								beginScope();
 							
-				setState(270);
+				setState(271);
 				statements();
 				}
 			}
 
-			setState(273);
-			match(T__3);
 			setState(274);
+			match(T__3);
+			setState(275);
 			match(NL);
 			 endScope(); 
 			}
@@ -1419,25 +1446,25 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(277);
-			match(T__21);
 			setState(278);
-			((Stm_foreachContext)_localctx).var = match(ID);
+			match(T__21);
 			setState(279);
-			match(T__22);
+			((Stm_foreachContext)_localctx).var = match(ID);
 			setState(280);
-			((Stm_foreachContext)_localctx).exp = expr();
+			match(T__22);
 			setState(281);
+			((Stm_foreachContext)_localctx).exp = expr();
+			setState(282);
 			match(NL);
 
 							checkForeach((((Stm_foreachContext)_localctx).var!=null?((Stm_foreachContext)_localctx).var.getLine():0), ((Stm_foreachContext)_localctx).exp.retType);
 							beginScope();
 						
-			setState(283);
-			statements();
 			setState(284);
-			match(T__3);
+			statements();
 			setState(285);
+			match(T__3);
+			setState(286);
 			match(NL);
 			 endScope(); 
 			}
@@ -1467,9 +1494,9 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(288);
-			match(T__23);
 			setState(289);
+			match(T__23);
+			setState(290);
 			match(NL);
 			}
 		}
@@ -1498,9 +1525,9 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(291);
-			match(T__24);
 			setState(292);
+			match(T__24);
+			setState(293);
 			match(NL);
 			}
 		}
@@ -1532,9 +1559,9 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(294);
-			expr();
 			setState(295);
+			expr();
+			setState(296);
 			match(NL);
 			}
 		}
@@ -1569,7 +1596,7 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(297);
+			setState(298);
 			((ExprContext)_localctx).exp = expr_assign();
 
 						((ExprContext)_localctx).line =  ((ExprContext)_localctx).exp.line;
@@ -1611,31 +1638,32 @@ public class AtalkPass2Parser extends Parser {
 		Expr_assignContext _localctx = new Expr_assignContext(_ctx, getState());
 		enterRule(_localctx, 34, RULE_expr_assign);
 		try {
-			setState(308);
+			setState(309);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,21,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(300);
-				((Expr_assignContext)_localctx).exp = expr_or();
 				setState(301);
-				match(T__13);
+				((Expr_assignContext)_localctx).exp = expr_or(true);
 				setState(302);
+				match(T__13);
+				setState(303);
 				((Expr_assignContext)_localctx).exp2 = expr_assign();
 
 							((Expr_assignContext)_localctx).retType =  typeCheck(((Expr_assignContext)_localctx).exp.line, ((Expr_assignContext)_localctx).exp.retType, ((Expr_assignContext)_localctx).exp2.retType);
 							checkLValue(((Expr_assignContext)_localctx).exp.line, ((Expr_assignContext)_localctx).exp.is_lvalue);
 							((Expr_assignContext)_localctx).is_lvalue =  ((Expr_assignContext)_localctx).exp2.is_lvalue;
 							((Expr_assignContext)_localctx).line =  ((Expr_assignContext)_localctx).exp.line;
+							mips.assignCommand();
 						
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(305);
-				((Expr_assignContext)_localctx).exp = expr_or();
+				setState(306);
+				((Expr_assignContext)_localctx).exp = expr_or(false);
 
 							((Expr_assignContext)_localctx).line =  ((Expr_assignContext)_localctx).exp.line;
 							((Expr_assignContext)_localctx).is_lvalue =  ((Expr_assignContext)_localctx).exp.is_lvalue;
@@ -1657,6 +1685,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_orContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -1668,22 +1697,24 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_or_tmpContext expr_or_tmp() {
 			return getRuleContext(Expr_or_tmpContext.class,0);
 		}
-		public Expr_orContext(ParserRuleContext parent, int invokingState) {
+		public Expr_orContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_orContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_or; }
 	}
 
-	public final Expr_orContext expr_or() throws RecognitionException {
-		Expr_orContext _localctx = new Expr_orContext(_ctx, getState());
+	public final Expr_orContext expr_or(boolean left) throws RecognitionException {
+		Expr_orContext _localctx = new Expr_orContext(_ctx, getState(), left);
 		enterRule(_localctx, 36, RULE_expr_or);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(310);
-			((Expr_orContext)_localctx).exp = expr_and();
 			setState(311);
-			((Expr_orContext)_localctx).exp2 = expr_or_tmp();
+			((Expr_orContext)_localctx).exp = expr_and(_localctx.left);
+			setState(312);
+			((Expr_orContext)_localctx).exp2 = expr_or_tmp(_localctx.left);
 
 						((Expr_orContext)_localctx).retType =  ((Expr_orContext)_localctx).exp.retType;
 						if (!((Expr_orContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -1706,6 +1737,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_or_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -1717,28 +1749,30 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_or_tmpContext expr_or_tmp() {
 			return getRuleContext(Expr_or_tmpContext.class,0);
 		}
-		public Expr_or_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_or_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_or_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_or_tmp; }
 	}
 
-	public final Expr_or_tmpContext expr_or_tmp() throws RecognitionException {
-		Expr_or_tmpContext _localctx = new Expr_or_tmpContext(_ctx, getState());
+	public final Expr_or_tmpContext expr_or_tmp(boolean left) throws RecognitionException {
+		Expr_or_tmpContext _localctx = new Expr_or_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 38, RULE_expr_or_tmp);
 		try {
-			setState(320);
+			setState(321);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__25:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(314);
-				match(T__25);
 				setState(315);
-				((Expr_or_tmpContext)_localctx).exp = expr_and();
+				match(T__25);
 				setState(316);
-				((Expr_or_tmpContext)_localctx).exp2 = expr_or_tmp();
+				((Expr_or_tmpContext)_localctx).exp = expr_and(_localctx.left);
+				setState(317);
+				((Expr_or_tmpContext)_localctx).exp2 = expr_or_tmp(_localctx.left);
 
 							((Expr_or_tmpContext)_localctx).retType =  ((Expr_or_tmpContext)_localctx).exp.retType;
 							if (!((Expr_or_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -1780,6 +1814,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_andContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -1791,22 +1826,24 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_and_tmpContext expr_and_tmp() {
 			return getRuleContext(Expr_and_tmpContext.class,0);
 		}
-		public Expr_andContext(ParserRuleContext parent, int invokingState) {
+		public Expr_andContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_andContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_and; }
 	}
 
-	public final Expr_andContext expr_and() throws RecognitionException {
-		Expr_andContext _localctx = new Expr_andContext(_ctx, getState());
+	public final Expr_andContext expr_and(boolean left) throws RecognitionException {
+		Expr_andContext _localctx = new Expr_andContext(_ctx, getState(), left);
 		enterRule(_localctx, 40, RULE_expr_and);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(322);
-			((Expr_andContext)_localctx).exp = expr_eq();
 			setState(323);
-			((Expr_andContext)_localctx).exp2 = expr_and_tmp();
+			((Expr_andContext)_localctx).exp = expr_eq(_localctx.left);
+			setState(324);
+			((Expr_andContext)_localctx).exp2 = expr_and_tmp(_localctx.left);
 
 						((Expr_andContext)_localctx).retType =  ((Expr_andContext)_localctx).exp.retType;
 						if (!((Expr_andContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -1829,6 +1866,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_and_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -1840,28 +1878,30 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_and_tmpContext expr_and_tmp() {
 			return getRuleContext(Expr_and_tmpContext.class,0);
 		}
-		public Expr_and_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_and_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_and_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_and_tmp; }
 	}
 
-	public final Expr_and_tmpContext expr_and_tmp() throws RecognitionException {
-		Expr_and_tmpContext _localctx = new Expr_and_tmpContext(_ctx, getState());
+	public final Expr_and_tmpContext expr_and_tmp(boolean left) throws RecognitionException {
+		Expr_and_tmpContext _localctx = new Expr_and_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 42, RULE_expr_and_tmp);
 		try {
-			setState(332);
+			setState(333);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__26:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(326);
-				match(T__26);
 				setState(327);
-				((Expr_and_tmpContext)_localctx).exp = expr_eq();
+				match(T__26);
 				setState(328);
-				((Expr_and_tmpContext)_localctx).exp2 = expr_and_tmp();
+				((Expr_and_tmpContext)_localctx).exp = expr_eq(_localctx.left);
+				setState(329);
+				((Expr_and_tmpContext)_localctx).exp2 = expr_and_tmp(_localctx.left);
 
 							((Expr_and_tmpContext)_localctx).retType =  ((Expr_and_tmpContext)_localctx).exp.retType;
 							if (!((Expr_and_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -1904,6 +1944,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_eqContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -1915,22 +1956,24 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_eq_tmpContext expr_eq_tmp() {
 			return getRuleContext(Expr_eq_tmpContext.class,0);
 		}
-		public Expr_eqContext(ParserRuleContext parent, int invokingState) {
+		public Expr_eqContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_eqContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_eq; }
 	}
 
-	public final Expr_eqContext expr_eq() throws RecognitionException {
-		Expr_eqContext _localctx = new Expr_eqContext(_ctx, getState());
+	public final Expr_eqContext expr_eq(boolean left) throws RecognitionException {
+		Expr_eqContext _localctx = new Expr_eqContext(_ctx, getState(), left);
 		enterRule(_localctx, 44, RULE_expr_eq);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(334);
-			((Expr_eqContext)_localctx).exp = expr_cmp();
 			setState(335);
-			((Expr_eqContext)_localctx).exp2 = expr_eq_tmp();
+			((Expr_eqContext)_localctx).exp = expr_cmp(_localctx.left);
+			setState(336);
+			((Expr_eqContext)_localctx).exp2 = expr_eq_tmp(_localctx.left);
 
 						((Expr_eqContext)_localctx).retType =  ((Expr_eqContext)_localctx).exp.retType;
 						if (!((Expr_eqContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -1953,6 +1996,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_eq_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -1964,25 +2008,27 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_eq_tmpContext expr_eq_tmp() {
 			return getRuleContext(Expr_eq_tmpContext.class,0);
 		}
-		public Expr_eq_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_eq_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_eq_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_eq_tmp; }
 	}
 
-	public final Expr_eq_tmpContext expr_eq_tmp() throws RecognitionException {
-		Expr_eq_tmpContext _localctx = new Expr_eq_tmpContext(_ctx, getState());
+	public final Expr_eq_tmpContext expr_eq_tmp(boolean left) throws RecognitionException {
+		Expr_eq_tmpContext _localctx = new Expr_eq_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 46, RULE_expr_eq_tmp);
 		int _la;
 		try {
-			setState(344);
+			setState(345);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__27:
 			case T__28:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(338);
+				setState(339);
 				_la = _input.LA(1);
 				if ( !(_la==T__27 || _la==T__28) ) {
 				_errHandler.recoverInline(this);
@@ -1992,10 +2038,10 @@ public class AtalkPass2Parser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(339);
-				((Expr_eq_tmpContext)_localctx).exp = expr_cmp();
 				setState(340);
-				((Expr_eq_tmpContext)_localctx).exp2 = expr_eq_tmp();
+				((Expr_eq_tmpContext)_localctx).exp = expr_cmp(_localctx.left);
+				setState(341);
+				((Expr_eq_tmpContext)_localctx).exp2 = expr_eq_tmp(_localctx.left);
 
 							((Expr_eq_tmpContext)_localctx).retType =  ((Expr_eq_tmpContext)_localctx).exp.retType;
 							if (!((Expr_eq_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2039,6 +2085,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_cmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2050,22 +2097,24 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_cmp_tmpContext expr_cmp_tmp() {
 			return getRuleContext(Expr_cmp_tmpContext.class,0);
 		}
-		public Expr_cmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_cmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_cmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_cmp; }
 	}
 
-	public final Expr_cmpContext expr_cmp() throws RecognitionException {
-		Expr_cmpContext _localctx = new Expr_cmpContext(_ctx, getState());
+	public final Expr_cmpContext expr_cmp(boolean left) throws RecognitionException {
+		Expr_cmpContext _localctx = new Expr_cmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 48, RULE_expr_cmp);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(346);
-			((Expr_cmpContext)_localctx).exp = expr_add();
 			setState(347);
-			((Expr_cmpContext)_localctx).exp2 = expr_cmp_tmp();
+			((Expr_cmpContext)_localctx).exp = expr_add(_localctx.left);
+			setState(348);
+			((Expr_cmpContext)_localctx).exp2 = expr_cmp_tmp(_localctx.left);
 
 						((Expr_cmpContext)_localctx).retType =  ((Expr_cmpContext)_localctx).exp.retType;
 						if (!((Expr_cmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2088,6 +2137,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_cmp_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2099,25 +2149,27 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_cmp_tmpContext expr_cmp_tmp() {
 			return getRuleContext(Expr_cmp_tmpContext.class,0);
 		}
-		public Expr_cmp_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_cmp_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_cmp_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_cmp_tmp; }
 	}
 
-	public final Expr_cmp_tmpContext expr_cmp_tmp() throws RecognitionException {
-		Expr_cmp_tmpContext _localctx = new Expr_cmp_tmpContext(_ctx, getState());
+	public final Expr_cmp_tmpContext expr_cmp_tmp(boolean left) throws RecognitionException {
+		Expr_cmp_tmpContext _localctx = new Expr_cmp_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 50, RULE_expr_cmp_tmp);
 		int _la;
 		try {
-			setState(356);
+			setState(357);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__1:
 			case T__2:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(350);
+				setState(351);
 				_la = _input.LA(1);
 				if ( !(_la==T__1 || _la==T__2) ) {
 				_errHandler.recoverInline(this);
@@ -2127,10 +2179,10 @@ public class AtalkPass2Parser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(351);
-				((Expr_cmp_tmpContext)_localctx).exp = expr_add();
 				setState(352);
-				((Expr_cmp_tmpContext)_localctx).exp2 = expr_cmp_tmp();
+				((Expr_cmp_tmpContext)_localctx).exp = expr_add(_localctx.left);
+				setState(353);
+				((Expr_cmp_tmpContext)_localctx).exp2 = expr_cmp_tmp(_localctx.left);
 
 							((Expr_cmp_tmpContext)_localctx).retType =  ((Expr_cmp_tmpContext)_localctx).exp.retType;
 							if (!((Expr_cmp_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2176,6 +2228,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_addContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2187,22 +2240,24 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_add_tmpContext expr_add_tmp() {
 			return getRuleContext(Expr_add_tmpContext.class,0);
 		}
-		public Expr_addContext(ParserRuleContext parent, int invokingState) {
+		public Expr_addContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_addContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_add; }
 	}
 
-	public final Expr_addContext expr_add() throws RecognitionException {
-		Expr_addContext _localctx = new Expr_addContext(_ctx, getState());
+	public final Expr_addContext expr_add(boolean left) throws RecognitionException {
+		Expr_addContext _localctx = new Expr_addContext(_ctx, getState(), left);
 		enterRule(_localctx, 52, RULE_expr_add);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(358);
-			((Expr_addContext)_localctx).exp = expr_mult();
 			setState(359);
-			((Expr_addContext)_localctx).exp2 = expr_add_tmp();
+			((Expr_addContext)_localctx).exp = expr_mult(_localctx.left);
+			setState(360);
+			((Expr_addContext)_localctx).exp2 = expr_add_tmp(_localctx.left);
 
 						((Expr_addContext)_localctx).retType =  ((Expr_addContext)_localctx).exp.retType;
 						if (!((Expr_addContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2225,6 +2280,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_add_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2236,25 +2292,27 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_add_tmpContext expr_add_tmp() {
 			return getRuleContext(Expr_add_tmpContext.class,0);
 		}
-		public Expr_add_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_add_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_add_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_add_tmp; }
 	}
 
-	public final Expr_add_tmpContext expr_add_tmp() throws RecognitionException {
-		Expr_add_tmpContext _localctx = new Expr_add_tmpContext(_ctx, getState());
+	public final Expr_add_tmpContext expr_add_tmp(boolean left) throws RecognitionException {
+		Expr_add_tmpContext _localctx = new Expr_add_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 54, RULE_expr_add_tmp);
 		int _la;
 		try {
-			setState(368);
+			setState(369);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__29:
 			case T__30:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(362);
+				setState(363);
 				_la = _input.LA(1);
 				if ( !(_la==T__29 || _la==T__30) ) {
 				_errHandler.recoverInline(this);
@@ -2264,10 +2322,10 @@ public class AtalkPass2Parser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(363);
-				((Expr_add_tmpContext)_localctx).exp = expr_mult();
 				setState(364);
-				((Expr_add_tmpContext)_localctx).exp2 = expr_add_tmp();
+				((Expr_add_tmpContext)_localctx).exp = expr_mult(_localctx.left);
+				setState(365);
+				((Expr_add_tmpContext)_localctx).exp2 = expr_add_tmp(_localctx.left);
 
 							((Expr_add_tmpContext)_localctx).retType =  ((Expr_add_tmpContext)_localctx).exp.retType;
 							if (!((Expr_add_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2315,6 +2373,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_multContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2326,22 +2385,24 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_mult_tmpContext expr_mult_tmp() {
 			return getRuleContext(Expr_mult_tmpContext.class,0);
 		}
-		public Expr_multContext(ParserRuleContext parent, int invokingState) {
+		public Expr_multContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_multContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_mult; }
 	}
 
-	public final Expr_multContext expr_mult() throws RecognitionException {
-		Expr_multContext _localctx = new Expr_multContext(_ctx, getState());
+	public final Expr_multContext expr_mult(boolean left) throws RecognitionException {
+		Expr_multContext _localctx = new Expr_multContext(_ctx, getState(), left);
 		enterRule(_localctx, 56, RULE_expr_mult);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(370);
-			((Expr_multContext)_localctx).exp = expr_un();
 			setState(371);
-			((Expr_multContext)_localctx).exp2 = expr_mult_tmp();
+			((Expr_multContext)_localctx).exp = expr_un(_localctx.left);
+			setState(372);
+			((Expr_multContext)_localctx).exp2 = expr_mult_tmp(_localctx.left);
 
 						((Expr_multContext)_localctx).retType =  ((Expr_multContext)_localctx).exp.retType;
 						if (!((Expr_multContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2364,6 +2425,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_mult_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2375,25 +2437,27 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_mult_tmpContext expr_mult_tmp() {
 			return getRuleContext(Expr_mult_tmpContext.class,0);
 		}
-		public Expr_mult_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_mult_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_mult_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_mult_tmp; }
 	}
 
-	public final Expr_mult_tmpContext expr_mult_tmp() throws RecognitionException {
-		Expr_mult_tmpContext _localctx = new Expr_mult_tmpContext(_ctx, getState());
+	public final Expr_mult_tmpContext expr_mult_tmp(boolean left) throws RecognitionException {
+		Expr_mult_tmpContext _localctx = new Expr_mult_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 58, RULE_expr_mult_tmp);
 		int _la;
 		try {
-			setState(380);
+			setState(381);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__31:
 			case T__32:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(374);
+				setState(375);
 				_la = _input.LA(1);
 				if ( !(_la==T__31 || _la==T__32) ) {
 				_errHandler.recoverInline(this);
@@ -2403,10 +2467,10 @@ public class AtalkPass2Parser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(375);
-				((Expr_mult_tmpContext)_localctx).exp = expr_un();
 				setState(376);
-				((Expr_mult_tmpContext)_localctx).exp2 = expr_mult_tmp();
+				((Expr_mult_tmpContext)_localctx).exp = expr_un(_localctx.left);
+				setState(377);
+				((Expr_mult_tmpContext)_localctx).exp2 = expr_mult_tmp(_localctx.left);
 
 							((Expr_mult_tmpContext)_localctx).retType =  ((Expr_mult_tmpContext)_localctx).exp.retType;
 							if (!((Expr_mult_tmpContext)_localctx).exp2.retType.equals(NoType.getInstance())) {
@@ -2456,6 +2520,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_unContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2467,25 +2532,27 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_memContext expr_mem() {
 			return getRuleContext(Expr_memContext.class,0);
 		}
-		public Expr_unContext(ParserRuleContext parent, int invokingState) {
+		public Expr_unContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_unContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_un; }
 	}
 
-	public final Expr_unContext expr_un() throws RecognitionException {
-		Expr_unContext _localctx = new Expr_unContext(_ctx, getState());
+	public final Expr_unContext expr_un(boolean left) throws RecognitionException {
+		Expr_unContext _localctx = new Expr_unContext(_ctx, getState(), left);
 		enterRule(_localctx, 60, RULE_expr_un);
 		int _la;
 		try {
-			setState(389);
+			setState(390);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__30:
 			case T__33:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(382);
+				setState(383);
 				_la = _input.LA(1);
 				if ( !(_la==T__30 || _la==T__33) ) {
 				_errHandler.recoverInline(this);
@@ -2495,8 +2562,8 @@ public class AtalkPass2Parser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(383);
-				((Expr_unContext)_localctx).exp = expr_un();
+				setState(384);
+				((Expr_unContext)_localctx).exp = expr_un(_localctx.left);
 
 							((Expr_unContext)_localctx).is_lvalue =  false;
 							((Expr_unContext)_localctx).retType =  ((Expr_unContext)_localctx).exp.retType;
@@ -2513,8 +2580,8 @@ public class AtalkPass2Parser extends Parser {
 			case ID:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(386);
-				((Expr_unContext)_localctx).exp2 = expr_mem();
+				setState(387);
+				((Expr_unContext)_localctx).exp2 = expr_mem(_localctx.left);
 
 							((Expr_unContext)_localctx).is_lvalue =  ((Expr_unContext)_localctx).exp2.is_lvalue;
 							((Expr_unContext)_localctx).retType =  ((Expr_unContext)_localctx).exp2.retType;
@@ -2538,6 +2605,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_memContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2549,27 +2617,29 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_mem_tmpContext expr_mem_tmp() {
 			return getRuleContext(Expr_mem_tmpContext.class,0);
 		}
-		public Expr_memContext(ParserRuleContext parent, int invokingState) {
+		public Expr_memContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_memContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_mem; }
 	}
 
-	public final Expr_memContext expr_mem() throws RecognitionException {
-		Expr_memContext _localctx = new Expr_memContext(_ctx, getState());
+	public final Expr_memContext expr_mem(boolean left) throws RecognitionException {
+		Expr_memContext _localctx = new Expr_memContext(_ctx, getState(), left);
 		enterRule(_localctx, 62, RULE_expr_mem);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(391);
-			((Expr_memContext)_localctx).exp = expr_other();
+			setState(392);
+			((Expr_memContext)_localctx).exp = expr_other(_localctx.left);
 
 						((Expr_memContext)_localctx).is_lvalue =  ((Expr_memContext)_localctx).exp.is_lvalue;
 						((Expr_memContext)_localctx).retType =  ((Expr_memContext)_localctx).exp.retType;
 						((Expr_memContext)_localctx).line =  ((Expr_memContext)_localctx).exp.line;
 					
-			setState(393);
-			((Expr_memContext)_localctx).expmt = expr_mem_tmp();
+			setState(394);
+			((Expr_memContext)_localctx).expmt = expr_mem_tmp(_localctx.left);
 
 						((Expr_memContext)_localctx).retType =  checkArrayDim(_localctx.line, _localctx.retType, ((Expr_memContext)_localctx).expmt.dim);
 					
@@ -2587,6 +2657,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_mem_tmpContext extends ParserRuleContext {
+		public boolean left;
 		public int dim;
 		public Expr_mem_tmpContext expmt;
 		public ExprContext expr() {
@@ -2595,30 +2666,32 @@ public class AtalkPass2Parser extends Parser {
 		public Expr_mem_tmpContext expr_mem_tmp() {
 			return getRuleContext(Expr_mem_tmpContext.class,0);
 		}
-		public Expr_mem_tmpContext(ParserRuleContext parent, int invokingState) {
+		public Expr_mem_tmpContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_mem_tmpContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_mem_tmp; }
 	}
 
-	public final Expr_mem_tmpContext expr_mem_tmp() throws RecognitionException {
-		Expr_mem_tmpContext _localctx = new Expr_mem_tmpContext(_ctx, getState());
+	public final Expr_mem_tmpContext expr_mem_tmp(boolean left) throws RecognitionException {
+		Expr_mem_tmpContext _localctx = new Expr_mem_tmpContext(_ctx, getState(), left);
 		enterRule(_localctx, 64, RULE_expr_mem_tmp);
 		try {
-			setState(403);
+			setState(404);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__9:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(396);
-				match(T__9);
 				setState(397);
-				expr();
+				match(T__9);
 				setState(398);
-				match(T__10);
+				expr();
 				setState(399);
-				((Expr_mem_tmpContext)_localctx).expmt = expr_mem_tmp();
+				match(T__10);
+				setState(400);
+				((Expr_mem_tmpContext)_localctx).expmt = expr_mem_tmp(_localctx.left);
 
 							((Expr_mem_tmpContext)_localctx).dim =  ((Expr_mem_tmpContext)_localctx).expmt.dim + 1;
 						
@@ -2663,6 +2736,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static class Expr_otherContext extends ParserRuleContext {
+		public boolean left;
 		public int line;
 		public boolean is_lvalue;
 		public Type retType;
@@ -2685,36 +2759,39 @@ public class AtalkPass2Parser extends Parser {
 		public ExprContext expr(int i) {
 			return getRuleContext(ExprContext.class,i);
 		}
-		public Expr_otherContext(ParserRuleContext parent, int invokingState) {
+		public Expr_otherContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Expr_otherContext(ParserRuleContext parent, int invokingState, boolean left) {
 			super(parent, invokingState);
+			this.left = left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_other; }
 	}
 
-	public final Expr_otherContext expr_other() throws RecognitionException {
-		Expr_otherContext _localctx = new Expr_otherContext(_ctx, getState());
+	public final Expr_otherContext expr_other(boolean left) throws RecognitionException {
+		Expr_otherContext _localctx = new Expr_otherContext(_ctx, getState(), left);
 		enterRule(_localctx, 66, RULE_expr_other);
 		int _la;
 		try {
-			setState(438);
+			setState(439);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case CONST_NUM:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(405);
+				setState(406);
 				((Expr_otherContext)_localctx).l = match(CONST_NUM);
 
 							((Expr_otherContext)_localctx).is_lvalue =  false;
 							((Expr_otherContext)_localctx).retType =  IntType.getInstance();
 							((Expr_otherContext)_localctx).line =  (((Expr_otherContext)_localctx).l!=null?((Expr_otherContext)_localctx).l.getLine():0);
+							mips.addToStack((((Expr_otherContext)_localctx).l!=null?Integer.valueOf(((Expr_otherContext)_localctx).l.getText()):0));
 						
 				}
 				break;
 			case CONST_CHAR:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(407);
+				setState(408);
 				((Expr_otherContext)_localctx).l2 = match(CONST_CHAR);
 
 							((Expr_otherContext)_localctx).is_lvalue =  false;
@@ -2726,7 +2803,7 @@ public class AtalkPass2Parser extends Parser {
 			case CONST_STR:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(409);
+				setState(410);
 				((Expr_otherContext)_localctx).str = match(CONST_STR);
 
 							((Expr_otherContext)_localctx).is_lvalue =  false;
@@ -2737,34 +2814,36 @@ public class AtalkPass2Parser extends Parser {
 			case ID:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(411);
+				setState(412);
 				((Expr_otherContext)_localctx).var = match(ID);
 
 							((Expr_otherContext)_localctx).retType =  checkVariableExistance((((Expr_otherContext)_localctx).var!=null?((Expr_otherContext)_localctx).var.getLine():0), ((Expr_otherContext)_localctx).var.getText());
 							((Expr_otherContext)_localctx).is_lvalue =  true;
 							((Expr_otherContext)_localctx).line =  (((Expr_otherContext)_localctx).var!=null?((Expr_otherContext)_localctx).var.getLine():0);
+							
+							p4addVarToStack(((Expr_otherContext)_localctx).var.getText(), _localctx.left);
 						
 				}
 				break;
 			case T__34:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(413);
-				match(T__34);
 				setState(414);
+				match(T__34);
+				setState(415);
 				((Expr_otherContext)_localctx).exp = expr();
 
 							((Expr_otherContext)_localctx).arrayLength =  1;
 						
-				setState(422);
+				setState(423);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==T__4) {
 					{
 					{
-					setState(416);
-					match(T__4);
 					setState(417);
+					match(T__4);
+					setState(418);
 					((Expr_otherContext)_localctx).exp2 = expr();
 
 								((Expr_otherContext)_localctx).line =  ((Expr_otherContext)_localctx).exp.line;
@@ -2773,11 +2852,11 @@ public class AtalkPass2Parser extends Parser {
 							
 					}
 					}
-					setState(424);
+					setState(425);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
-				setState(425);
+				setState(426);
 				match(T__35);
 
 							((Expr_otherContext)_localctx).is_lvalue =  false; ((Expr_otherContext)_localctx).retType =  new ArrayType(((Expr_otherContext)_localctx).exp.retType, _localctx.arrayLength);
@@ -2787,13 +2866,13 @@ public class AtalkPass2Parser extends Parser {
 			case T__36:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(428);
-				match(T__36);
 				setState(429);
-				match(T__6);
+				match(T__36);
 				setState(430);
-				((Expr_otherContext)_localctx).alen = match(CONST_NUM);
+				match(T__6);
 				setState(431);
+				((Expr_otherContext)_localctx).alen = match(CONST_NUM);
+				setState(432);
 				match(T__7);
 
 							((Expr_otherContext)_localctx).is_lvalue =  false;
@@ -2805,11 +2884,11 @@ public class AtalkPass2Parser extends Parser {
 			case T__6:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(433);
-				match(T__6);
 				setState(434);
-				((Expr_otherContext)_localctx).exp = expr();
+				match(T__6);
 				setState(435);
+				((Expr_otherContext)_localctx).exp = expr();
+				setState(436);
 				match(T__7);
 
 							((Expr_otherContext)_localctx).is_lvalue =  ((Expr_otherContext)_localctx).exp.is_lvalue;
@@ -2834,7 +2913,7 @@ public class AtalkPass2Parser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3.\u01bb\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3.\u01bc\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -2852,29 +2931,29 @@ public class AtalkPass2Parser extends Parser {
 		"\n\3\n\3\n\3\13\3\13\3\13\3\13\3\13\3\13\5\13\u00e0\n\13\3\13\3\13\3\13"+
 		"\3\13\3\13\3\13\3\13\3\13\3\13\3\13\7\13\u00ec\n\13\f\13\16\13\u00ef\13"+
 		"\13\5\13\u00f1\n\13\3\13\3\13\3\13\3\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3"+
-		"\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\7\r\u0109\n\r\f\r\16\r\u010c"+
-		"\13\r\3\r\3\r\3\r\3\r\5\r\u0112\n\r\3\r\3\r\3\r\3\r\3\16\3\16\3\16\3\16"+
-		"\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3\20\3\20\3\20\3\21"+
-		"\3\21\3\21\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\5\23"+
-		"\u0137\n\23\3\24\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\5\25\u0143"+
-		"\n\25\3\26\3\26\3\26\3\26\3\27\3\27\3\27\3\27\3\27\3\27\5\27\u014f\n\27"+
-		"\3\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u015b\n\31\3\32"+
-		"\3\32\3\32\3\32\3\33\3\33\3\33\3\33\3\33\3\33\5\33\u0167\n\33\3\34\3\34"+
-		"\3\34\3\34\3\35\3\35\3\35\3\35\3\35\3\35\5\35\u0173\n\35\3\36\3\36\3\36"+
-		"\3\36\3\37\3\37\3\37\3\37\3\37\3\37\5\37\u017f\n\37\3 \3 \3 \3 \3 \3 "+
-		"\3 \5 \u0188\n \3!\3!\3!\3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\3\"\5\"\u0196\n"+
-		"\"\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\7#\u01a7\n#\f#\16#\u01aa"+
-		"\13#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\5#\u01b9\n#\3#\2\2$\2\4\6"+
-		"\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BD\2\b\3\3"+
-		"++\3\2\36\37\3\2\4\5\3\2 !\3\2\"#\4\2!!$$\2\u01c6\2F\3\2\2\2\4P\3\2\2"+
-		"\2\6d\3\2\2\2\bo\3\2\2\2\n\u00a0\3\2\2\2\f\u00a2\3\2\2\2\16\u00b0\3\2"+
-		"\2\2\20\u00be\3\2\2\2\22\u00c0\3\2\2\2\24\u00df\3\2\2\2\26\u00f6\3\2\2"+
-		"\2\30\u00fd\3\2\2\2\32\u0117\3\2\2\2\34\u0122\3\2\2\2\36\u0125\3\2\2\2"+
-		" \u0128\3\2\2\2\"\u012b\3\2\2\2$\u0136\3\2\2\2&\u0138\3\2\2\2(\u0142\3"+
-		"\2\2\2*\u0144\3\2\2\2,\u014e\3\2\2\2.\u0150\3\2\2\2\60\u015a\3\2\2\2\62"+
-		"\u015c\3\2\2\2\64\u0166\3\2\2\2\66\u0168\3\2\2\28\u0172\3\2\2\2:\u0174"+
-		"\3\2\2\2<\u017e\3\2\2\2>\u0187\3\2\2\2@\u0189\3\2\2\2B\u0195\3\2\2\2D"+
-		"\u01b8\3\2\2\2FK\b\2\1\2GJ\5\4\3\2HJ\7+\2\2IG\3\2\2\2IH\3\2\2\2JM\3\2"+
+		"\f\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\7\r\u010a\n\r\f\r\16\r"+
+		"\u010d\13\r\3\r\3\r\3\r\3\r\5\r\u0113\n\r\3\r\3\r\3\r\3\r\3\16\3\16\3"+
+		"\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3\20\3\20\3"+
+		"\20\3\21\3\21\3\21\3\22\3\22\3\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3"+
+		"\23\5\23\u0138\n\23\3\24\3\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25"+
+		"\5\25\u0144\n\25\3\26\3\26\3\26\3\26\3\27\3\27\3\27\3\27\3\27\3\27\5\27"+
+		"\u0150\n\27\3\30\3\30\3\30\3\30\3\31\3\31\3\31\3\31\3\31\3\31\5\31\u015c"+
+		"\n\31\3\32\3\32\3\32\3\32\3\33\3\33\3\33\3\33\3\33\3\33\5\33\u0168\n\33"+
+		"\3\34\3\34\3\34\3\34\3\35\3\35\3\35\3\35\3\35\3\35\5\35\u0174\n\35\3\36"+
+		"\3\36\3\36\3\36\3\37\3\37\3\37\3\37\3\37\3\37\5\37\u0180\n\37\3 \3 \3"+
+		" \3 \3 \3 \3 \5 \u0189\n \3!\3!\3!\3!\3!\3\"\3\"\3\"\3\"\3\"\3\"\3\"\5"+
+		"\"\u0197\n\"\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\7#\u01a8\n#"+
+		"\f#\16#\u01ab\13#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\3#\5#\u01ba\n#\3"+
+		"#\2\2$\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<"+
+		">@BD\2\b\3\3++\3\2\36\37\3\2\4\5\3\2 !\3\2\"#\4\2!!$$\2\u01c7\2F\3\2\2"+
+		"\2\4P\3\2\2\2\6d\3\2\2\2\bo\3\2\2\2\n\u00a0\3\2\2\2\f\u00a2\3\2\2\2\16"+
+		"\u00b0\3\2\2\2\20\u00be\3\2\2\2\22\u00c0\3\2\2\2\24\u00df\3\2\2\2\26\u00f6"+
+		"\3\2\2\2\30\u00fe\3\2\2\2\32\u0118\3\2\2\2\34\u0123\3\2\2\2\36\u0126\3"+
+		"\2\2\2 \u0129\3\2\2\2\"\u012c\3\2\2\2$\u0137\3\2\2\2&\u0139\3\2\2\2(\u0143"+
+		"\3\2\2\2*\u0145\3\2\2\2,\u014f\3\2\2\2.\u0151\3\2\2\2\60\u015b\3\2\2\2"+
+		"\62\u015d\3\2\2\2\64\u0167\3\2\2\2\66\u0169\3\2\2\28\u0173\3\2\2\2:\u0175"+
+		"\3\2\2\2<\u017f\3\2\2\2>\u0188\3\2\2\2@\u018a\3\2\2\2B\u0196\3\2\2\2D"+
+		"\u01b9\3\2\2\2FK\b\2\1\2GJ\5\4\3\2HJ\7+\2\2IG\3\2\2\2IH\3\2\2\2JM\3\2"+
 		"\2\2KI\3\2\2\2KL\3\2\2\2LN\3\2\2\2MK\3\2\2\2NO\b\2\1\2O\3\3\2\2\2PQ\7"+
 		"\3\2\2QR\7,\2\2RS\b\3\1\2ST\7\4\2\2TU\7(\2\2UV\7\5\2\2VW\7+\2\2W]\b\3"+
 		"\1\2X\\\5\6\4\2Y\\\5\b\5\2Z\\\7+\2\2[X\3\2\2\2[Y\3\2\2\2[Z\3\2\2\2\\_"+
@@ -2924,67 +3003,67 @@ public class AtalkPass2Parser extends Parser {
 		"\u00f1\3\2\2\2\u00f1\u00f2\3\2\2\2\u00f2\u00f3\7\n\2\2\u00f3\u00f4\7+"+
 		"\2\2\u00f4\u00f5\b\13\1\2\u00f5\25\3\2\2\2\u00f6\u00f7\7\24\2\2\u00f7"+
 		"\u00f8\7\t\2\2\u00f8\u00f9\5\"\22\2\u00f9\u00fa\b\f\1\2\u00fa\u00fb\7"+
-		"\n\2\2\u00fb\u00fc\7+\2\2\u00fc\27\3\2\2\2\u00fd\u00fe\7\25\2\2\u00fe"+
-		"\u00ff\5\"\22\2\u00ff\u0100\7+\2\2\u0100\u0101\b\r\1\2\u0101\u010a\5\16"+
-		"\b\2\u0102\u0103\7\26\2\2\u0103\u0104\5\"\22\2\u0104\u0105\7+\2\2\u0105"+
-		"\u0106\b\r\1\2\u0106\u0107\5\16\b\2\u0107\u0109\3\2\2\2\u0108\u0102\3"+
-		"\2\2\2\u0109\u010c\3\2\2\2\u010a\u0108\3\2\2\2\u010a\u010b\3\2\2\2\u010b"+
-		"\u0111\3\2\2\2\u010c\u010a\3\2\2\2\u010d\u010e\7\27\2\2\u010e\u010f\7"+
-		"+\2\2\u010f\u0110\b\r\1\2\u0110\u0112\5\16\b\2\u0111\u010d\3\2\2\2\u0111"+
-		"\u0112\3\2\2\2\u0112\u0113\3\2\2\2\u0113\u0114\7\6\2\2\u0114\u0115\7+"+
-		"\2\2\u0115\u0116\b\r\1\2\u0116\31\3\2\2\2\u0117\u0118\7\30\2\2\u0118\u0119"+
-		"\7,\2\2\u0119\u011a\7\31\2\2\u011a\u011b\5\"\22\2\u011b\u011c\7+\2\2\u011c"+
-		"\u011d\b\16\1\2\u011d\u011e\5\16\b\2\u011e\u011f\7\6\2\2\u011f\u0120\7"+
-		"+\2\2\u0120\u0121\b\16\1\2\u0121\33\3\2\2\2\u0122\u0123\7\32\2\2\u0123"+
-		"\u0124\7+\2\2\u0124\35\3\2\2\2\u0125\u0126\7\33\2\2\u0126\u0127\7+\2\2"+
-		"\u0127\37\3\2\2\2\u0128\u0129\5\"\22\2\u0129\u012a\7+\2\2\u012a!\3\2\2"+
-		"\2\u012b\u012c\5$\23\2\u012c\u012d\b\22\1\2\u012d#\3\2\2\2\u012e\u012f"+
-		"\5&\24\2\u012f\u0130\7\20\2\2\u0130\u0131\5$\23\2\u0131\u0132\b\23\1\2"+
-		"\u0132\u0137\3\2\2\2\u0133\u0134\5&\24\2\u0134\u0135\b\23\1\2\u0135\u0137"+
-		"\3\2\2\2\u0136\u012e\3\2\2\2\u0136\u0133\3\2\2\2\u0137%\3\2\2\2\u0138"+
-		"\u0139\5*\26\2\u0139\u013a\5(\25\2\u013a\u013b\b\24\1\2\u013b\'\3\2\2"+
-		"\2\u013c\u013d\7\34\2\2\u013d\u013e\5*\26\2\u013e\u013f\5(\25\2\u013f"+
-		"\u0140\b\25\1\2\u0140\u0143\3\2\2\2\u0141\u0143\b\25\1\2\u0142\u013c\3"+
-		"\2\2\2\u0142\u0141\3\2\2\2\u0143)\3\2\2\2\u0144\u0145\5.\30\2\u0145\u0146"+
-		"\5,\27\2\u0146\u0147\b\26\1\2\u0147+\3\2\2\2\u0148\u0149\7\35\2\2\u0149"+
-		"\u014a\5.\30\2\u014a\u014b\5,\27\2\u014b\u014c\b\27\1\2\u014c\u014f\3"+
-		"\2\2\2\u014d\u014f\b\27\1\2\u014e\u0148\3\2\2\2\u014e\u014d\3\2\2\2\u014f"+
-		"-\3\2\2\2\u0150\u0151\5\62\32\2\u0151\u0152\5\60\31\2\u0152\u0153\b\30"+
-		"\1\2\u0153/\3\2\2\2\u0154\u0155\t\3\2\2\u0155\u0156\5\62\32\2\u0156\u0157"+
-		"\5\60\31\2\u0157\u0158\b\31\1\2\u0158\u015b\3\2\2\2\u0159\u015b\b\31\1"+
-		"\2\u015a\u0154\3\2\2\2\u015a\u0159\3\2\2\2\u015b\61\3\2\2\2\u015c\u015d"+
-		"\5\66\34\2\u015d\u015e\5\64\33\2\u015e\u015f\b\32\1\2\u015f\63\3\2\2\2"+
-		"\u0160\u0161\t\4\2\2\u0161\u0162\5\66\34\2\u0162\u0163\5\64\33\2\u0163"+
-		"\u0164\b\33\1\2\u0164\u0167\3\2\2\2\u0165\u0167\b\33\1\2\u0166\u0160\3"+
-		"\2\2\2\u0166\u0165\3\2\2\2\u0167\65\3\2\2\2\u0168\u0169\5:\36\2\u0169"+
-		"\u016a\58\35\2\u016a\u016b\b\34\1\2\u016b\67\3\2\2\2\u016c\u016d\t\5\2"+
-		"\2\u016d\u016e\5:\36\2\u016e\u016f\58\35\2\u016f\u0170\b\35\1\2\u0170"+
-		"\u0173\3\2\2\2\u0171\u0173\b\35\1\2\u0172\u016c\3\2\2\2\u0172\u0171\3"+
-		"\2\2\2\u01739\3\2\2\2\u0174\u0175\5> \2\u0175\u0176\5<\37\2\u0176\u0177"+
-		"\b\36\1\2\u0177;\3\2\2\2\u0178\u0179\t\6\2\2\u0179\u017a\5> \2\u017a\u017b"+
-		"\5<\37\2\u017b\u017c\b\37\1\2\u017c\u017f\3\2\2\2\u017d\u017f\b\37\1\2"+
-		"\u017e\u0178\3\2\2\2\u017e\u017d\3\2\2\2\u017f=\3\2\2\2\u0180\u0181\t"+
-		"\7\2\2\u0181\u0182\5> \2\u0182\u0183\b \1\2\u0183\u0188\3\2\2\2\u0184"+
-		"\u0185\5@!\2\u0185\u0186\b \1\2\u0186\u0188\3\2\2\2\u0187\u0180\3\2\2"+
-		"\2\u0187\u0184\3\2\2\2\u0188?\3\2\2\2\u0189\u018a\5D#\2\u018a\u018b\b"+
-		"!\1\2\u018b\u018c\5B\"\2\u018c\u018d\b!\1\2\u018dA\3\2\2\2\u018e\u018f"+
-		"\7\f\2\2\u018f\u0190\5\"\22\2\u0190\u0191\7\r\2\2\u0191\u0192\5B\"\2\u0192"+
-		"\u0193\b\"\1\2\u0193\u0196\3\2\2\2\u0194\u0196\b\"\1\2\u0195\u018e\3\2"+
-		"\2\2\u0195\u0194\3\2\2\2\u0196C\3\2\2\2\u0197\u0198\7(\2\2\u0198\u01b9"+
-		"\b#\1\2\u0199\u019a\7)\2\2\u019a\u01b9\b#\1\2\u019b\u019c\7*\2\2\u019c"+
-		"\u01b9\b#\1\2\u019d\u019e\7,\2\2\u019e\u01b9\b#\1\2\u019f\u01a0\7%\2\2"+
-		"\u01a0\u01a1\5\"\22\2\u01a1\u01a8\b#\1\2\u01a2\u01a3\7\7\2\2\u01a3\u01a4"+
-		"\5\"\22\2\u01a4\u01a5\b#\1\2\u01a5\u01a7\3\2\2\2\u01a6\u01a2\3\2\2\2\u01a7"+
-		"\u01aa\3\2\2\2\u01a8\u01a6\3\2\2\2\u01a8\u01a9\3\2\2\2\u01a9\u01ab\3\2"+
-		"\2\2\u01aa\u01a8\3\2\2\2\u01ab\u01ac\7&\2\2\u01ac\u01ad\b#\1\2\u01ad\u01b9"+
-		"\3\2\2\2\u01ae\u01af\7\'\2\2\u01af\u01b0\7\t\2\2\u01b0\u01b1\7(\2\2\u01b1"+
-		"\u01b2\7\n\2\2\u01b2\u01b9\b#\1\2\u01b3\u01b4\7\t\2\2\u01b4\u01b5\5\""+
-		"\22\2\u01b5\u01b6\7\n\2\2\u01b6\u01b7\b#\1\2\u01b7\u01b9\3\2\2\2\u01b8"+
-		"\u0197\3\2\2\2\u01b8\u0199\3\2\2\2\u01b8\u019b\3\2\2\2\u01b8\u019d\3\2"+
-		"\2\2\u01b8\u019f\3\2\2\2\u01b8\u01ae\3\2\2\2\u01b8\u01b3\3\2\2\2\u01b9"+
-		"E\3\2\2\2\"IK[]j|\177\u0091\u009c\u00a0\u00ae\u00b0\u00be\u00c7\u00d0"+
-		"\u00d4\u00df\u00ed\u00f0\u010a\u0111\u0136\u0142\u014e\u015a\u0166\u0172"+
-		"\u017e\u0187\u0195\u01a8\u01b8";
+		"\n\2\2\u00fb\u00fc\7+\2\2\u00fc\u00fd\b\f\1\2\u00fd\27\3\2\2\2\u00fe\u00ff"+
+		"\7\25\2\2\u00ff\u0100\5\"\22\2\u0100\u0101\7+\2\2\u0101\u0102\b\r\1\2"+
+		"\u0102\u010b\5\16\b\2\u0103\u0104\7\26\2\2\u0104\u0105\5\"\22\2\u0105"+
+		"\u0106\7+\2\2\u0106\u0107\b\r\1\2\u0107\u0108\5\16\b\2\u0108\u010a\3\2"+
+		"\2\2\u0109\u0103\3\2\2\2\u010a\u010d\3\2\2\2\u010b\u0109\3\2\2\2\u010b"+
+		"\u010c\3\2\2\2\u010c\u0112\3\2\2\2\u010d\u010b\3\2\2\2\u010e\u010f\7\27"+
+		"\2\2\u010f\u0110\7+\2\2\u0110\u0111\b\r\1\2\u0111\u0113\5\16\b\2\u0112"+
+		"\u010e\3\2\2\2\u0112\u0113\3\2\2\2\u0113\u0114\3\2\2\2\u0114\u0115\7\6"+
+		"\2\2\u0115\u0116\7+\2\2\u0116\u0117\b\r\1\2\u0117\31\3\2\2\2\u0118\u0119"+
+		"\7\30\2\2\u0119\u011a\7,\2\2\u011a\u011b\7\31\2\2\u011b\u011c\5\"\22\2"+
+		"\u011c\u011d\7+\2\2\u011d\u011e\b\16\1\2\u011e\u011f\5\16\b\2\u011f\u0120"+
+		"\7\6\2\2\u0120\u0121\7+\2\2\u0121\u0122\b\16\1\2\u0122\33\3\2\2\2\u0123"+
+		"\u0124\7\32\2\2\u0124\u0125\7+\2\2\u0125\35\3\2\2\2\u0126\u0127\7\33\2"+
+		"\2\u0127\u0128\7+\2\2\u0128\37\3\2\2\2\u0129\u012a\5\"\22\2\u012a\u012b"+
+		"\7+\2\2\u012b!\3\2\2\2\u012c\u012d\5$\23\2\u012d\u012e\b\22\1\2\u012e"+
+		"#\3\2\2\2\u012f\u0130\5&\24\2\u0130\u0131\7\20\2\2\u0131\u0132\5$\23\2"+
+		"\u0132\u0133\b\23\1\2\u0133\u0138\3\2\2\2\u0134\u0135\5&\24\2\u0135\u0136"+
+		"\b\23\1\2\u0136\u0138\3\2\2\2\u0137\u012f\3\2\2\2\u0137\u0134\3\2\2\2"+
+		"\u0138%\3\2\2\2\u0139\u013a\5*\26\2\u013a\u013b\5(\25\2\u013b\u013c\b"+
+		"\24\1\2\u013c\'\3\2\2\2\u013d\u013e\7\34\2\2\u013e\u013f\5*\26\2\u013f"+
+		"\u0140\5(\25\2\u0140\u0141\b\25\1\2\u0141\u0144\3\2\2\2\u0142\u0144\b"+
+		"\25\1\2\u0143\u013d\3\2\2\2\u0143\u0142\3\2\2\2\u0144)\3\2\2\2\u0145\u0146"+
+		"\5.\30\2\u0146\u0147\5,\27\2\u0147\u0148\b\26\1\2\u0148+\3\2\2\2\u0149"+
+		"\u014a\7\35\2\2\u014a\u014b\5.\30\2\u014b\u014c\5,\27\2\u014c\u014d\b"+
+		"\27\1\2\u014d\u0150\3\2\2\2\u014e\u0150\b\27\1\2\u014f\u0149\3\2\2\2\u014f"+
+		"\u014e\3\2\2\2\u0150-\3\2\2\2\u0151\u0152\5\62\32\2\u0152\u0153\5\60\31"+
+		"\2\u0153\u0154\b\30\1\2\u0154/\3\2\2\2\u0155\u0156\t\3\2\2\u0156\u0157"+
+		"\5\62\32\2\u0157\u0158\5\60\31\2\u0158\u0159\b\31\1\2\u0159\u015c\3\2"+
+		"\2\2\u015a\u015c\b\31\1\2\u015b\u0155\3\2\2\2\u015b\u015a\3\2\2\2\u015c"+
+		"\61\3\2\2\2\u015d\u015e\5\66\34\2\u015e\u015f\5\64\33\2\u015f\u0160\b"+
+		"\32\1\2\u0160\63\3\2\2\2\u0161\u0162\t\4\2\2\u0162\u0163\5\66\34\2\u0163"+
+		"\u0164\5\64\33\2\u0164\u0165\b\33\1\2\u0165\u0168\3\2\2\2\u0166\u0168"+
+		"\b\33\1\2\u0167\u0161\3\2\2\2\u0167\u0166\3\2\2\2\u0168\65\3\2\2\2\u0169"+
+		"\u016a\5:\36\2\u016a\u016b\58\35\2\u016b\u016c\b\34\1\2\u016c\67\3\2\2"+
+		"\2\u016d\u016e\t\5\2\2\u016e\u016f\5:\36\2\u016f\u0170\58\35\2\u0170\u0171"+
+		"\b\35\1\2\u0171\u0174\3\2\2\2\u0172\u0174\b\35\1\2\u0173\u016d\3\2\2\2"+
+		"\u0173\u0172\3\2\2\2\u01749\3\2\2\2\u0175\u0176\5> \2\u0176\u0177\5<\37"+
+		"\2\u0177\u0178\b\36\1\2\u0178;\3\2\2\2\u0179\u017a\t\6\2\2\u017a\u017b"+
+		"\5> \2\u017b\u017c\5<\37\2\u017c\u017d\b\37\1\2\u017d\u0180\3\2\2\2\u017e"+
+		"\u0180\b\37\1\2\u017f\u0179\3\2\2\2\u017f\u017e\3\2\2\2\u0180=\3\2\2\2"+
+		"\u0181\u0182\t\7\2\2\u0182\u0183\5> \2\u0183\u0184\b \1\2\u0184\u0189"+
+		"\3\2\2\2\u0185\u0186\5@!\2\u0186\u0187\b \1\2\u0187\u0189\3\2\2\2\u0188"+
+		"\u0181\3\2\2\2\u0188\u0185\3\2\2\2\u0189?\3\2\2\2\u018a\u018b\5D#\2\u018b"+
+		"\u018c\b!\1\2\u018c\u018d\5B\"\2\u018d\u018e\b!\1\2\u018eA\3\2\2\2\u018f"+
+		"\u0190\7\f\2\2\u0190\u0191\5\"\22\2\u0191\u0192\7\r\2\2\u0192\u0193\5"+
+		"B\"\2\u0193\u0194\b\"\1\2\u0194\u0197\3\2\2\2\u0195\u0197\b\"\1\2\u0196"+
+		"\u018f\3\2\2\2\u0196\u0195\3\2\2\2\u0197C\3\2\2\2\u0198\u0199\7(\2\2\u0199"+
+		"\u01ba\b#\1\2\u019a\u019b\7)\2\2\u019b\u01ba\b#\1\2\u019c\u019d\7*\2\2"+
+		"\u019d\u01ba\b#\1\2\u019e\u019f\7,\2\2\u019f\u01ba\b#\1\2\u01a0\u01a1"+
+		"\7%\2\2\u01a1\u01a2\5\"\22\2\u01a2\u01a9\b#\1\2\u01a3\u01a4\7\7\2\2\u01a4"+
+		"\u01a5\5\"\22\2\u01a5\u01a6\b#\1\2\u01a6\u01a8\3\2\2\2\u01a7\u01a3\3\2"+
+		"\2\2\u01a8\u01ab\3\2\2\2\u01a9\u01a7\3\2\2\2\u01a9\u01aa\3\2\2\2\u01aa"+
+		"\u01ac\3\2\2\2\u01ab\u01a9\3\2\2\2\u01ac\u01ad\7&\2\2\u01ad\u01ae\b#\1"+
+		"\2\u01ae\u01ba\3\2\2\2\u01af\u01b0\7\'\2\2\u01b0\u01b1\7\t\2\2\u01b1\u01b2"+
+		"\7(\2\2\u01b2\u01b3\7\n\2\2\u01b3\u01ba\b#\1\2\u01b4\u01b5\7\t\2\2\u01b5"+
+		"\u01b6\5\"\22\2\u01b6\u01b7\7\n\2\2\u01b7\u01b8\b#\1\2\u01b8\u01ba\3\2"+
+		"\2\2\u01b9\u0198\3\2\2\2\u01b9\u019a\3\2\2\2\u01b9\u019c\3\2\2\2\u01b9"+
+		"\u019e\3\2\2\2\u01b9\u01a0\3\2\2\2\u01b9\u01af\3\2\2\2\u01b9\u01b4\3\2"+
+		"\2\2\u01baE\3\2\2\2\"IK[]j|\177\u0091\u009c\u00a0\u00ae\u00b0\u00be\u00c7"+
+		"\u00d0\u00d4\u00df\u00ed\u00f0\u010b\u0112\u0137\u0143\u014f\u015b\u0167"+
+		"\u0173\u017f\u0188\u0196\u01a9\u01b9";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

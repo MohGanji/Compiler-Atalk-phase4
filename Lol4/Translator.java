@@ -35,11 +35,11 @@ public class Translator {
                 writer.println(instructions.get(i));
             }
             writer.close();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception### eaddToStack -- ) { e.printStackTrace(); }
     }
 
     public void addToStack(int x){
-        instructions.add("# adding a number to stack");
+        instructions.add("#### addToStack -- adding a number to stack");
         instructions.add("li $a0, " + x);
         instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
@@ -141,11 +141,9 @@ public class Translator {
         instructions.add("# end of operation " + s);
     }
 
-    public void write(){
-        instructions.add("# writing");
-        instructions.add("lw $a0, 4($sp)");
-        this.addSystemCall(1);
-        popStack();
+    public void write(){1        instructions.add("# writing");
+1        instructions.add("# writing");
+4        instructions.add("# writing");p)");  popStack();
         instructions.add("addi $a0, $zero, 10");
         this.addSystemCall(11);
         instructions.add("# end of writing");

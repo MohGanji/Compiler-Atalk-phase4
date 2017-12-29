@@ -1,4 +1,4 @@
-// Generated from LolPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/Lol4/LolPass2.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -112,14 +112,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_program; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterProgram(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitProgram(this);
-		}
 	}
 
 	public final ProgramContext program() throws RecognitionException {
@@ -182,14 +174,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterStatement(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitStatement(this);
-		}
 	}
 
 	public final StatementContext statement() throws RecognitionException {
@@ -262,14 +246,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_static_vardef; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterStatic_vardef(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitStatic_vardef(this);
-		}
 	}
 
 	public final Static_vardefContext static_vardef() throws RecognitionException {
@@ -314,14 +290,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_vardef; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterVardef(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitVardef(this);
-		}
 	}
 
 	public final VardefContext vardef() throws RecognitionException {
@@ -357,14 +325,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_type; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterType(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitType(this);
-		}
 	}
 
 	public final TypeContext type() throws RecognitionException {
@@ -400,14 +360,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_block; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterBlock(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitBlock(this);
-		}
 	}
 
 	public final BlockContext block() throws RecognitionException {
@@ -464,14 +416,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expr; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitExpr(this);
-		}
 	}
 
 	public final ExprContext expr() throws RecognitionException {
@@ -562,14 +506,6 @@ public class LolPass2Parser extends Parser {
 			this.is_left = is_left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_add; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterExpr_add(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitExpr_add(this);
-		}
 	}
 
 	public final Expr_addContext expr_add(boolean is_left) throws RecognitionException {
@@ -609,14 +545,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expr_add_tmp; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterExpr_add_tmp(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitExpr_add_tmp(this);
-		}
 	}
 
 	public final Expr_add_tmpContext expr_add_tmp() throws RecognitionException {
@@ -692,14 +620,6 @@ public class LolPass2Parser extends Parser {
 			this.is_left = is_left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_mult; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterExpr_mult(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitExpr_mult(this);
-		}
 	}
 
 	public final Expr_multContext expr_mult(boolean is_left) throws RecognitionException {
@@ -739,14 +659,6 @@ public class LolPass2Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expr_mult_tmp; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterExpr_mult_tmp(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitExpr_mult_tmp(this);
-		}
 	}
 
 	public final Expr_mult_tmpContext expr_mult_tmp() throws RecognitionException {
@@ -824,14 +736,6 @@ public class LolPass2Parser extends Parser {
 			this.is_left = is_left;
 		}
 		@Override public int getRuleIndex() { return RULE_expr_other; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).enterExpr_other(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LolPass2Listener ) ((LolPass2Listener)listener).exitExpr_other(this);
-		}
 	}
 
 	public final Expr_otherContext expr_other(boolean is_left) throws RecognitionException {

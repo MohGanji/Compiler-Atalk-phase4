@@ -1,4 +1,4 @@
-// Generated from /home/m0hammad/Git/Uni/Compiler-Atalk-phase3/grammar/AtalkPass2.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/grammar/AtalkPass2.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -252,6 +252,24 @@ public class AtalkPass2Lexer extends Lexer {
 					throw new WriteException();
 			} catch (WriteException we) {
 				printErr(line, "ERR: Write function only accepts int, char or string");
+			}
+		}
+
+		Translator mips = new Translator();
+
+		void p4addVarToStack(String name, boolean left) {
+			SymbolTableItem item = SymbolTable.top.get(name);
+			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+			
+			if (var.getBaseRegister() == Register.SP){
+				cerr("ok");
+				System.out.println(left);
+				if (left == false) mips.addToStack(name, var.getOffset()*-1);
+				else mips.addAddressToStack(name, var.getOffset()*-1);
+			}
+			else {
+				if (left == false) mips.addGlobalToStack(var.getOffset());
+				else mips.addGlobalAddressToStack(name, var.getOffset());
 			}
 		}
 
