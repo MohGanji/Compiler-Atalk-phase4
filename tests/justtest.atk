@@ -1,7 +1,30 @@
 actor Program<10>
 	receiver init()
-		int a
-		a = 2
+		int a = 2 > 3
 		write(a)
+		int b = 2 < 3
+		write(b)
+		int c = a + 3
+		write(c)
+		int d = c * 3
+		write(d)
+		int e = d / c
+		write(e)
+		c = 2 - 3
+		write(c)
+		a = 2 and 3
+		write(a)
+		b = 2 or 3
+		write(b)
+		d = not 7
+		write(d)
+		d = not 1
+		write(d)
+		d = not 16
+		write(d)
+		e = 2 <> 3
+		write(e)
+		c = 2 == 3
+		write(c)
 	end
-end 
+end

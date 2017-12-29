@@ -319,9 +319,13 @@ stm_vardef locals [Type exp2LastType = NoType.getInstance()]
 			// SymbolTableItem item = SymbolTable.top.get($var.getText());
 			// SymbolTableVariableItem var = (SymbolTableVariableItem) item;
 			// mips.addAddressToStack($var.getText(), var.getOffset()*-1);
-		} ('=' exp=expr {
+		} ('=' {
+			mips.popStack();
+			SymbolTableVariableItem v = (SymbolTableVariableItem) SymbolTable.top.get($var.getText());
+			mips.addAddressToStack($var.getText(), v.getOffset()*-1);
+		} exp=expr {
 			typeCheck($var.line, $tp.retType, $exp.retType);
-			mips.assignCommand();
+			mips.assignCommand(true);
 		})?
 		(',' var2=ID {
 			SymbolTable.define();
@@ -432,7 +436,7 @@ expr_assign returns [int line, boolean is_lvalue, Type retType]
 			checkLValue($exp.line, $exp.is_lvalue);
 			$is_lvalue = $exp2.is_lvalue;
 			$line = $exp.line;
-			mips.assignCommand();
+			mips.assignCommand(false);
 		}
 	|	exp=expr_or [false] {
 			$line = $exp.line;
@@ -455,7 +459,9 @@ expr_or [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_or_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		'or' exp=expr_and [$left] exp2=expr_or_tmp [$left] {
+		op='or' exp=expr_and [$left] {
+			mips.operationCommand($op.text);
+		} exp2=expr_or_tmp [$left] {
 			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
 				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
@@ -484,7 +490,9 @@ expr_and [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_and_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		'and' exp=expr_eq [$left] exp2=expr_and_tmp [$left] {
+		op='and' exp=expr_eq [$left] {
+			mips.operationCommand($op.text);
+		} exp2=expr_and_tmp [$left] {
 			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
 				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
@@ -513,7 +521,9 @@ expr_eq [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_eq_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		('==' | '<>') exp=expr_cmp [$left] exp2=expr_eq_tmp [$left] {
+		op=('==' | '<>') exp=expr_cmp [$left] {
+			mips.operationCommand($op.text);
+		} exp2=expr_eq_tmp [$left] {
 			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
 				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
@@ -542,7 +552,9 @@ expr_cmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_cmp_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		('<' | '>') exp=expr_add [$left] exp2=expr_cmp_tmp [$left] {
+		op=('<' | '>') exp=expr_add [$left] {
+			mips.operationCommand($op.text);
+		} exp2=expr_cmp_tmp [$left] {
 			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
 				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
@@ -571,7 +583,9 @@ expr_add [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_add_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		('+' | '-') exp=expr_mult [$left] exp2=expr_add_tmp [$left] {
+		op=('+' | '-') exp=expr_mult [$left] {
+			mips.operationCommand($op.text);
+		} exp2=expr_add_tmp [$left] {
 			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
 				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
@@ -600,7 +614,9 @@ expr_mult [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_mult_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		('*' | '/') exp=expr_un [$left] exp2=expr_mult_tmp [$left] {
+		op=('*' | '/') exp=expr_un [$left] {
+			mips.operationCommand($op.text);
+		} exp2=expr_mult_tmp [$left] {
 			$retType = $exp.retType;
 			if (!$exp2.retType.equals(NoType.getInstance())) {
 				$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
@@ -617,7 +633,8 @@ expr_mult_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 
 expr_un [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
-		('not' | '-') exp=expr_un [$left] {
+		op=('not' | '-') exp=expr_un [$left] {
+			mips.operationCommand("not");
 			$is_lvalue = false;
 			$retType = $exp.retType;
 			$line = $exp.line;

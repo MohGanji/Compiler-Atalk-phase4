@@ -83,7 +83,7 @@ public class Translator {
         instructions.add("# end syscall");
     }
 
-    public void assignCommand(){
+    public void assignCommand(boolean def){
         instructions.add("# start of assign");
         instructions.add("lw $a0, 4($sp)");
         popStack();
@@ -92,7 +92,8 @@ public class Translator {
         instructions.add("sw $a0, 0($a1)");
         instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
-        popStack();
+        if (!def)
+            popStack();
         instructions.add("# end of assign");
     }
 
@@ -131,6 +132,68 @@ public class Translator {
             instructions.add("lw $a1, 4($sp)");
             popStack();
             instructions.add("sub $a0, $a1, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals("not")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("not $a0, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals("<")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("lw $a1, 4($sp)");
+            popStack();
+            instructions.add("slt $a0, $a0, $a1");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals(">")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("lw $a1, 4($sp)");
+            popStack();
+            instructions.add("slt $a0, $a1, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals("<>")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("lw $a1, 4($sp)");
+            popStack();
+            instructions.add("sub $a0, $a1, $a0");
+            instructions.add("not $a0, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals("==")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("lw $a1, 4($sp)");
+            popStack();
+            instructions.add("sub $a0, $a1, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals("or")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("lw $a1, 4($sp)");
+            popStack();
+            instructions.add("or $a0, $a1, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        else if (s.equals("and")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("lw $a1, 4($sp)");
+            popStack();
+            instructions.add("and $a0, $a1, $a0");
             instructions.add("sw $a0, 0($sp)");
             instructions.add("addiu $sp, $sp, -4");
         }
