@@ -35,7 +35,7 @@ public class Translator {
     }
 
     public void addStringToStack(String s) {
-        for (int i = s.length()-1; i >= 0; i--) {
+        for (int i = 0; i < s.length(); i++) {
             this.addVariableToStack(s.charAt(i));
         }
     }
@@ -111,6 +111,8 @@ public class Translator {
             instructions.add("sw $a0, 0($a1)");
             instructions.add("sw $a0, " + 4*size + "($sp)");
         }
+        // writeOne(CharType.getInstance(), 1);
+        
 
         // instructions.add("sw $a0, 0($sp)");
         // instructions.add("addiu $sp, $sp, -4");
@@ -222,27 +224,31 @@ public class Translator {
         instructions.add("# end of operation " + s);
     }
 
-    public void writeOne(Type type) {
+    public void writeOne(Type type, int offset) {
         instructions.add("# writeone");
-        instructions.add("lw $a0, 4($sp)");
+        instructions.add("lw $a0, " + 4*offset + "($sp)");
         if (type.equals(CharType.getInstance()))
             this.addSystemCall(11);
         else
             this.addSystemCall(1);
-        popStack();
+        // popStack();
         instructions.add("# end writeone");
     }
 
     public void write(Type type){
         instructions.add("# writing");
+        int size = 1;
 
         if (type.toString().equals("array(char)")) {
-            for (int i = 0; i < ((ArrayType) type).len(); i++) {
-                this.writeOne(CharType.getInstance());
+            size = ((ArrayType) type).len();
+            for (int i = 0; i < size; i++) {
+                this.writeOne(CharType.getInstance(), size - i);
             }
         } else {
-            this.writeOne(type);
+            this.writeOne(type, size);
         }
+
+        popStack(size * 4);
         
         instructions.add("addi $a0, $zero, 10");
         this.addSystemCall(11);

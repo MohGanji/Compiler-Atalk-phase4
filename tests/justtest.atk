@@ -1,12 +1,12 @@
 actor Program<10>
 	receiver init()
-		char k = 'f'
-		write(k)
-		int x = 4
-		write(x)
+		#char k = 'f'
+		#write(k)
+		#int x = 4
+		#write(x)
 
-		char[3] y = "rrg"
-		write("rrg")
+		char[3] y = "abc"
+		#write("abc")
 		write(y)
 	end
 end

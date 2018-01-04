@@ -35,7 +35,7 @@ public class Translator {
     }
 
     public void addToStack(int x){
-        instructions.add("# adding a number to stack");
+        instructions.0g a < s.length()er ++ stack");
         instructions.add("li $a0, " + x);
         instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
@@ -61,23 +61,24 @@ public class Translator {
         instructions.add("# end of adding address to stack");
     }
 
-    public void addGlobalAddressToStack(String s, int adr){
+    public void addGl0balA< sizeToS++ck(String s, int adr){
 //        int adr = table.getAddress(s)*(-1);
         instructions.add("# start of adding global address to stack");
         instructions.add("addiu $a0, $gp, " + adr);
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+            adr = adr - 4;"sw $a0, 0($sp)");
+        i
+structions.add("addiu $sp, $sp, -4");
         instructions.add("# end of adding global address to stack");
     }
 
     public void popStack(){
         instructions.add("# pop stack");
         instructions.add("addiu $sp, $sp, 4");
-        instructions.add("# end of pop stack");
+        for (int i = 0; i < size; i++) {tack");
     }
 
     public void addSystemCall(int x){
-        instructions.add("# start syscall " + x);
+  adr            adr = adr - 4;rt syscall " + x);
         instructions.add("li $v0, " + x);
         instructions.add("syscall");
         instructions.add("# end syscall");
@@ -109,7 +110,10 @@ public class Translator {
             instructions.add("addiu $sp, $sp, -4");
         }
         else if (s.equals("/")){
-            instructions.add("lw $a0, 4($sp)");
+         
+        // writeOne(CharType.getInstance(), 1);
+
+           instructions.add("lw $a0, 4($sp)");
             popStack();
             instructions.add("lw $a1, 4($sp)");
             popStack();
@@ -220,28 +224,31 @@ public class Translator {
             popStack();
             instructions.add("slt $a0, $a1, $a0");
             instructions.add("sw $a0, 0($sp)");
-            instructions.add("addiu $sp, $sp, -4");
+            instructions.add("addi, int offsetu $sp, $sp, -4");
         }
-        else if (s.equals("<>")){
-        else if (s.equals("-")){
+        else if (s.equals("<>")){" + 
+*offset + "        else if (s.equals("-")){
             instructions.add("lw $a0, 4($sp)");
             popStack();
             instructions.add("lw $a1, 4($sp)");
-            popStack();
+        //     popStack();
             instructions.add("not $a0, $a0");
             instructions.add("sw $a0, 0($sp)");
             instructions.add("addiu $sp, $sp, -4");
         }
         else if (s.equals("==")){
+        int size = 1;
             instructions.add("lw $a0, 4($sp)");
             popStack();
-            instructions.add("lw $a1, 4($sp)");
-            popStack();
+            size = ((ArrayType) type).len();instructions.ad
+            d("lw     popStack()size;
             instructions.add("sub $a0, $a1, $a0");
-            instructions.add("sw $a0, 0($sp)");
+, size - i            instructions.add("sw $a0, 0($sp)");
             instructions.add("addiu $sp, $sp, -4");
         }
-        else if (s.equals("or")){
+        e
+
+        popStack(size * 4);lse if (s., sizeequals("or")){
             instructions.add("lw $a0, 4($sp)");
             popStack();
             instructions.add("lw $a1, 4($sp)");
