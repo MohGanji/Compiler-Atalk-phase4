@@ -270,11 +270,11 @@ public class AtalkPass2Lexer extends Lexer {
 			}
 			
 			if (var.getBaseRegister() == Register.SP){
-				if (left == false) mips.addVariableToStack(name, var.getOffset()*-1);
+				if (left == false) mips.addVariableToStack(name, var.getOffset()*-1, size);
 				else mips.addVariableAddressToStack(name, var.getOffset()*-1, size);
 			}
 			else {
-				if (left == false) mips.addGlobalToStack(var.getOffset());
+				if (left == false) mips.addGlobalToStack(var.getOffset(), size);
 				else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 			}
 		}

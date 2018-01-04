@@ -284,11 +284,11 @@ public class AtalkPass2Parser extends Parser {
 			}
 			
 			if (var.getBaseRegister() == Register.SP){
-				if (left == false) mips.addVariableToStack(name, var.getOffset()*-1);
+				if (left == false) mips.addVariableToStack(name, var.getOffset()*-1, size);
 				else mips.addVariableAddressToStack(name, var.getOffset()*-1, size);
 			}
 			else {
-				if (left == false) mips.addGlobalToStack(var.getOffset());
+				if (left == false) mips.addGlobalToStack(var.getOffset(), size);
 				else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 			}
 		}
@@ -1075,7 +1075,14 @@ public class AtalkPass2Parser extends Parser {
 			((Stm_vardefContext)_localctx).var = match(ID);
 
 						SymbolTable.define();
-						mips.addVariableToStack(0);
+
+						SymbolTableVariableItem v = (SymbolTableVariableItem) SymbolTable.top.get(((Stm_vardefContext)_localctx).var.getText());
+						((Stm_vardefContext)_localctx).size =  1;
+						if (v.getVariable().getType() instanceof ArrayType) {
+							((Stm_vardefContext)_localctx).size =  ((ArrayType) v.getVariable().getType()).len();
+						}
+
+						mips.addVariableToStack(0, _localctx.size);
 					
 			setState(198);
 			_errHandler.sync(this);
@@ -1085,12 +1092,7 @@ public class AtalkPass2Parser extends Parser {
 				setState(193);
 				match(T__13);
 
-							mips.popStack();
-							SymbolTableVariableItem v = (SymbolTableVariableItem) SymbolTable.top.get(((Stm_vardefContext)_localctx).var.getText());
-							((Stm_vardefContext)_localctx).size =  1;
-							if (v.getVariable().getType() instanceof ArrayType) {
-								((Stm_vardefContext)_localctx).size =  ((ArrayType) v.getVariable().getType()).len();
-							}
+							mips.popStack(_localctx.size * 4);
 							mips.addVariableAddressToStack(((Stm_vardefContext)_localctx).var.getText(), v.getOffset()*-1, _localctx.size);
 						
 				setState(195);
@@ -2837,7 +2839,7 @@ public class AtalkPass2Parser extends Parser {
 							((Expr_otherContext)_localctx).is_lvalue =  false;
 							((Expr_otherContext)_localctx).retType =  IntType.getInstance();
 							((Expr_otherContext)_localctx).line =  (((Expr_otherContext)_localctx).l!=null?((Expr_otherContext)_localctx).l.getLine():0);
-							mips.addVariableToStack((((Expr_otherContext)_localctx).l!=null?Integer.valueOf(((Expr_otherContext)_localctx).l.getText()):0));
+							mips.addVariableToStack((((Expr_otherContext)_localctx).l!=null?Integer.valueOf(((Expr_otherContext)_localctx).l.getText()):0), 1);
 						
 				}
 				break;
@@ -2850,7 +2852,7 @@ public class AtalkPass2Parser extends Parser {
 							((Expr_otherContext)_localctx).is_lvalue =  false;
 							((Expr_otherContext)_localctx).retType =  CharType.getInstance();
 							((Expr_otherContext)_localctx).line =  (((Expr_otherContext)_localctx).l2!=null?((Expr_otherContext)_localctx).l2.getLine():0);
-							mips.addVariableToStack(((Expr_otherContext)_localctx).l2.getText().charAt(1));
+							mips.addVariableToStack(((Expr_otherContext)_localctx).l2.getText().charAt(1), 1);
 						
 				}
 				break;

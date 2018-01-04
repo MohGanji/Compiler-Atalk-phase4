@@ -37,25 +37,29 @@ public class Translator {
     public void addToStack(int x){
         instructions.0g a < s.length()er ++ stack");
         instructions.add("li $a0, " + x);
-        instructions.add("sw $a0, 0($sp)");
+    , 1    instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
         instructions.add("# end of adding a number to stack");
 
     }
 
-    public void addToStack(String s, int adr){
-//        int adr = table.getAddress(s)*(-1);
-        instructions.add("# start of adding variable to stack");
+      System.out.println(size);      r (int i = 0; i < size; i++) {blicsizering s, int adr){
+              int
+             adr = table.getAddress(s)*(-1);
+        }         instructions.add("# start of adding variable to stack");
         instructions.add("lw $a0, " + adr + "($fp)");
         instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
-        instructions.add("# end of adding variable to stack");
+        instructions.add("# end of adding variable t, int sizeo stack");
     }
 
     public void addAddressToStack(String s, int adr) {
-//        int adr = table.getAddress(s)*(-1);
-        instructions.add("# start of adding address to stack");
-        instructions.add("addiu $a0, $fp, " + adr);
+        for (int i = 0; i < size; i++) {
+              int adr = table.getAddress(s)*(-1);
+            instructions.add("# start of adding address to stack");
+            instructions.add("addiu $a0, $fp, " + a
+            adr = adr - 4;
+        }dr);
         instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
         instructions.add("# end of adding address to stack");
@@ -256,13 +260,16 @@ structions.add("addiu $sp, $sp, -4");
             instructions.add("or $a0, $a1, $a0");
             instructions.add("sub $a0, $a1, $a0");
             instructions.add("sw $a0, 0($sp)");
-            instructions.add("addiu $sp, $sp, -4");
+            instructions.add("addiu $sp,, int size $sp, -4");
         else if (s.equals("and")){
             instructions.add("lw $a0, 4($sp)");
             popStack();
-            instructions.add("lw $a1, 4($sp)");
-            popStack();
-            instructions.add("and $a0, $a1, $a0");
+        for (int i = 0; i < size; i++) {            instructions.add("lw $a1, 4($sp)")
+            ;
+                popStack();
+                instructions.add("and $a0, $a1, $a0
+            adr = adr - 4;
+        }");
             instructions.add("sw $a0, 0($sp)");
             instructions.add("addiu $sp, $sp, -4");
         }

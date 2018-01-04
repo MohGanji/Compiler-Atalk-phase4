@@ -185,11 +185,11 @@ grammar AtalkPass2;
 		}
 		
 		if (var.getBaseRegister() == Register.SP){
-			if (left == false) mips.addVariableToStack(name, var.getOffset()*-1);
+			if (left == false) mips.addVariableToStack(name, var.getOffset()*-1, size);
 			else mips.addVariableAddressToStack(name, var.getOffset()*-1, size);
 		}
 		else {
-			if (left == false) mips.addGlobalToStack(var.getOffset());
+			if (left == false) mips.addGlobalToStack(var.getOffset(), size);
 			else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 		}
 	}
@@ -323,14 +323,16 @@ stm_vardef locals [Type exp2LastType = NoType.getInstance(), int size]
 	:
 		tp=type var=ID {
 			SymbolTable.define();
-			mips.addVariableToStack(0);
-		} ('=' {
-			mips.popStack();
+
 			SymbolTableVariableItem v = (SymbolTableVariableItem) SymbolTable.top.get($var.getText());
 			$size = 1;
 			if (v.getVariable().getType() instanceof ArrayType) {
 				$size = ((ArrayType) v.getVariable().getType()).len();
 			}
+
+			mips.addVariableToStack(0, $size);
+		} ('=' {
+			mips.popStack($size * 4);
 			mips.addVariableAddressToStack($var.getText(), v.getOffset()*-1, $size);
 		} exp=expr {
 			typeCheck($var.line, $tp.retType, $exp.retType);
@@ -688,13 +690,13 @@ expr_other [boolean left] returns [int line, boolean is_lvalue, Type retType] lo
 			$is_lvalue = false;
 			$retType = IntType.getInstance();
 			$line = $l.line;
-			mips.addVariableToStack($l.int);
+			mips.addVariableToStack($l.int, 1);
 		}
 	|	l2=CONST_CHAR {
 			$is_lvalue = false;
 			$retType = CharType.getInstance();
 			$line = $l2.line;
-			mips.addVariableToStack($l2.getText().charAt(1));
+			mips.addVariableToStack($l2.getText().charAt(1), 1);
 		}
 	|	str=CONST_STR {
 			$is_lvalue = false;

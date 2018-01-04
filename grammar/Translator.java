@@ -36,25 +36,30 @@ public class Translator {
 
     public void addStringToStack(String s) {
         for (int i = 0; i < s.length(); i++) {
-            this.addVariableToStack(s.charAt(i));
+            this.addVariableToStack(s.charAt(i), 1);
         }
     }
 
-    public void addVariableToStack(int x){
+    public void addVariableToStack(int x, int size){
         instructions.add("#### addVariableToStack -- adding a number to stack");
-        instructions.add("li $a0, " + x);
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+        for (int i = 0; i < size; i++) {
+            instructions.add("li $a0, " + x);
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
         instructions.add("#### addVariableToStack -- end of adding a number to stack");
 
     }
 
-    public void addVariableToStack(String s, int adr){
+    public void addVariableToStack(String s, int adr, int size){
 //        int adr = table.getAddress(s)*(-1);
         instructions.add("# start of adding variable to stack");
-        instructions.add("lw $a0, " + adr + "($fp)");
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+        for (int i = 0; i < size; i++) {
+            instructions.add("lw $a0, " + adr + "($fp)");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+            adr = adr - 4;
+        }
         instructions.add("# end of adding variable to stack");
     }
 
@@ -256,12 +261,15 @@ public class Translator {
         instructions.add("# end of writing");
     }
 
-    public void addGlobalToStack(int adr){
+    public void addGlobalToStack(int adr, int size){
 //        int adr = table.getAddress(s)*(-1);
         instructions.add("# start of adding global variable to stack");
-        instructions.add("lw $a0, " + adr + "($gp)");
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+        for (int i = 0; i < size; i++) {        
+            instructions.add("lw $a0, " + adr + "($gp)");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+            adr = adr - 4;
+        }
         instructions.add("# end of adding global variable to stack");
     }
 
