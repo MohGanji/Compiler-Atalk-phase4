@@ -102,8 +102,16 @@ public class SymbolTable {
 	public SymbolTable getPreSymbolTable() {
 		return pre;
 	}
+	public void updateLocalStackSize(int stackSize) {
+		_stackSize = stackSize;
+	}
+	public int localStackSize() {
+		return _stackSize;
+	}
 
 	SymbolTable pre;
 	HashMap<String, SymbolTableItem> items;
 	HashMap<Register, Integer> offsets;
+
+	int _stackSize;
 }

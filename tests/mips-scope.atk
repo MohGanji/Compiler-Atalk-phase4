@@ -1,0 +1,15 @@
+actor Program<10>
+	receiver init()
+		begin
+			int k = 2
+			write(k)
+		end
+		int x = 3
+		begin
+			int y = 4
+			write(y)
+			write(x)
+		end
+		write(x)
+	end
+end

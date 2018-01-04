@@ -160,7 +160,9 @@ grammar AtalkPass1;
                 Register.GP,
                 SymbolTable.top.getOffset(Register.GP)
             );
+			SymbolTable.top.updateLocalStackSize(SymbolTable.top.getOffset(Register.SP) - SymbolTable.top.getPreSymbolTable().getOffset(Register.SP));
         }
+
         SymbolTable.pop();
     }
 }

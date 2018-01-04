@@ -114,10 +114,13 @@ public class AtalkPass2Lexer extends Lexer {
 
 	    void beginScope() {
 	        SymbolTable.push();
+			if (SymbolTable.top != null)
+				cerr("---- ---- " + SymbolTable.top.localStackSize());
 	    }
 
 	    void endScope() {
 	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+			mips.popStack(SymbolTable.top.localStackSize());
 	        SymbolTable.pop();
 	    }
 
@@ -260,16 +263,19 @@ public class AtalkPass2Lexer extends Lexer {
 		void p4addVarToStack(String name, boolean left) {
 			SymbolTableItem item = SymbolTable.top.get(name);
 			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+
+			int size = 1;
+			if (var.getVariable().getType() instanceof ArrayType) {
+				size = ((ArrayType) var.getVariable().getType()).len();
+			}
 			
 			if (var.getBaseRegister() == Register.SP){
-				cerr("ok");
-				System.out.println(left);
-				if (left == false) mips.addToStack(name, var.getOffset()*-1);
-				else mips.addAddressToStack(name, var.getOffset()*-1);
+				if (left == false) mips.addVariableToStack(name, var.getOffset()*-1);
+				else mips.addVariableAddressToStack(name, var.getOffset()*-1, size);
 			}
 			else {
 				if (left == false) mips.addGlobalToStack(var.getOffset());
-				else mips.addGlobalAddressToStack(name, var.getOffset());
+				else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 			}
 		}
 

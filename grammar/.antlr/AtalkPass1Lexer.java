@@ -1,4 +1,4 @@
-// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase3/grammar/AtalkPass1.g4 by ANTLR 4.7
+// Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/grammar/AtalkPass1.g4 by ANTLR 4.7
 
 	import java.util.ArrayList ;
 
@@ -245,7 +245,9 @@ public class AtalkPass1Lexer extends Lexer {
 	                Register.GP,
 	                SymbolTable.top.getOffset(Register.GP)
 	            );
+				SymbolTable.top.updateLocalStackSize(SymbolTable.top.getOffset(Register.SP) - SymbolTable.top.getPreSymbolTable().getOffset(Register.SP));
 	        }
+
 	        SymbolTable.pop();
 	    }
 

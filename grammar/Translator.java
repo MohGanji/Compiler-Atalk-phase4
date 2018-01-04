@@ -34,16 +34,22 @@ public class Translator {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    public void addToStack(int x){
-        instructions.add("#### addToStack -- adding a number to stack");
+    public void addStringToStack(String s) {
+        for (int i = s.length()-1; i >= 0; i--) {
+            this.addVariableToStack(s.charAt(i));
+        }
+    }
+
+    public void addVariableToStack(int x){
+        instructions.add("#### addVariableToStack -- adding a number to stack");
         instructions.add("li $a0, " + x);
         instructions.add("sw $a0, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
-        instructions.add("#### addToStack -- end of adding a number to stack");
+        instructions.add("#### addVariableToStack -- end of adding a number to stack");
 
     }
 
-    public void addToStack(String s, int adr){
+    public void addVariableToStack(String s, int adr){
 //        int adr = table.getAddress(s)*(-1);
         instructions.add("# start of adding variable to stack");
         instructions.add("lw $a0, " + adr + "($fp)");
@@ -52,27 +58,39 @@ public class Translator {
         instructions.add("# end of adding variable to stack");
     }
 
-    public void addAddressToStack(String s, int adr) {
+    public void addVariableAddressToStack(String s, int adr, int size) {
 //        int adr = table.getAddress(s)*(-1);
         instructions.add("# start of adding address to stack");
-        instructions.add("addiu $a0, $fp, " + adr);
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+        for (int i = 0; i < size; i++) {
+            instructions.add("addiu $a0, $fp, " + adr);
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+            adr = adr - 4;
+        }
         instructions.add("# end of adding address to stack");
     }
 
-    public void addGlobalAddressToStack(String s, int adr){
+    public void addGlobalVariableAddressToStack(String s, int adr, int size){
 //        int adr = table.getAddress(s)*(-1);
         instructions.add("# start of adding global address to stack");
-        instructions.add("addiu $a0, $gp, " + adr);
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+        for (int i = 0; i < size; i++) {
+            instructions.add("addiu $a0, $gp, " + adr);
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+            adr = adr - 4;
+        }
         instructions.add("# end of adding global address to stack");
     }
 
     public void popStack(){
         instructions.add("# pop stack");
         instructions.add("addiu $sp, $sp, 4");
+        instructions.add("# end of pop stack");
+    }
+
+    public void popStack(int size){
+        instructions.add("# pop stack");
+        instructions.add("addiu $sp, $sp, " + size);
         instructions.add("# end of pop stack");
     }
 
@@ -83,17 +101,21 @@ public class Translator {
         instructions.add("# end syscall");
     }
 
-    public void assignCommand(boolean def){
+    public void assignCommand(boolean def, int size){
         instructions.add("# start of assign");
-        instructions.add("lw $a0, 4($sp)");
-        popStack();
-        instructions.add("lw $a1, 4($sp)");
-        popStack();
-        instructions.add("sw $a0, 0($a1)");
-        instructions.add("sw $a0, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
-        if (!def)
+        for (int i = 0; i < size; i++) {
+            instructions.add("lw $a0, 4($sp)");
             popStack();
+            instructions.add("lw $a1, " + 4*size + "($sp)");
+            //popStack();
+            instructions.add("sw $a0, 0($a1)");
+            instructions.add("sw $a0, " + 4*size + "($sp)");
+        }
+
+        // instructions.add("sw $a0, 0($sp)");
+        // instructions.add("addiu $sp, $sp, -4");
+        if (!def)
+            popStack(size * 4);
         instructions.add("# end of assign");
     }
 
@@ -200,13 +222,31 @@ public class Translator {
         instructions.add("# end of operation " + s);
     }
 
-    public void write(){
-        instructions.add("# writing");
+    public void writeOne(Type type) {
+        instructions.add("# writeone");
         instructions.add("lw $a0, 4($sp)");
-        this.addSystemCall(1);
+        if (type.equals(CharType.getInstance()))
+            this.addSystemCall(11);
+        else
+            this.addSystemCall(1);
         popStack();
+        instructions.add("# end writeone");
+    }
+
+    public void write(Type type){
+        instructions.add("# writing");
+
+        if (type.toString().equals("array(char)")) {
+            for (int i = 0; i < ((ArrayType) type).len(); i++) {
+                this.writeOne(CharType.getInstance());
+            }
+        } else {
+            this.writeOne(type);
+        }
+        
         instructions.add("addi $a0, $zero, 10");
         this.addSystemCall(11);
+
         instructions.add("# end of writing");
     }
 
@@ -225,5 +265,13 @@ public class Translator {
         initInstructions.add("li $a0, " + x);
         initInstructions.add("sw $a0, " + adr + "($gp)");
         initInstructions.add("# end of adding a global variable");
+    }
+
+    public void beginScope() {
+        instructions.size();
+    }
+
+    public void endScope() {
+
     }
 }

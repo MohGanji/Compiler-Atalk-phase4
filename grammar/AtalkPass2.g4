@@ -29,10 +29,13 @@ grammar AtalkPass2;
 
     void beginScope() {
         SymbolTable.push();
+		if (SymbolTable.top != null)
+			cerr("---- ---- " + SymbolTable.top.localStackSize());
     }
 
     void endScope() {
         print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+		mips.popStack(SymbolTable.top.localStackSize());
         SymbolTable.pop();
     }
 
@@ -175,16 +178,19 @@ grammar AtalkPass2;
 	void p4addVarToStack(String name, boolean left) {
 		SymbolTableItem item = SymbolTable.top.get(name);
 		SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+
+		int size = 1;
+		if (var.getVariable().getType() instanceof ArrayType) {
+			size = ((ArrayType) var.getVariable().getType()).len();
+		}
 		
 		if (var.getBaseRegister() == Register.SP){
-			cerr("ok");
-			System.out.println(left);
-			if (left == false) mips.addToStack(name, var.getOffset()*-1);
-			else mips.addAddressToStack(name, var.getOffset()*-1);
+			if (left == false) mips.addVariableToStack(name, var.getOffset()*-1);
+			else mips.addVariableAddressToStack(name, var.getOffset()*-1, size);
 		}
 		else {
 			if (left == false) mips.addGlobalToStack(var.getOffset());
-			else mips.addGlobalAddressToStack(name, var.getOffset());
+			else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 		}
 	}
 }
@@ -282,10 +288,12 @@ type returns [Type retType] locals [int size = 1, ArrayList<Integer> dims = new 
 block
 	:
 		'begin' NL
-            { beginScope(); }
+            { beginScope();
+			mips.beginScope(); }
 			statements
 		'end' NL
-            { endScope(); }        
+            { endScope();
+			mips.endScope(); }
 	;
 
 statements returns [boolean callsSender = false, int senderLine]
@@ -311,21 +319,22 @@ statement returns [boolean callsSender = false, int senderLine]
 	|	block
 	;
 
-stm_vardef locals [Type exp2LastType = NoType.getInstance()]
+stm_vardef locals [Type exp2LastType = NoType.getInstance(), int size]
 	:
 		tp=type var=ID {
 			SymbolTable.define();
-			mips.addToStack(0);
-			// SymbolTableItem item = SymbolTable.top.get($var.getText());
-			// SymbolTableVariableItem var = (SymbolTableVariableItem) item;
-			// mips.addAddressToStack($var.getText(), var.getOffset()*-1);
+			mips.addVariableToStack(0);
 		} ('=' {
 			mips.popStack();
 			SymbolTableVariableItem v = (SymbolTableVariableItem) SymbolTable.top.get($var.getText());
-			mips.addAddressToStack($var.getText(), v.getOffset()*-1);
+			$size = 1;
+			if (v.getVariable().getType() instanceof ArrayType) {
+				$size = ((ArrayType) v.getVariable().getType()).len();
+			}
+			mips.addVariableAddressToStack($var.getText(), v.getOffset()*-1, $size);
 		} exp=expr {
 			typeCheck($var.line, $tp.retType, $exp.retType);
-			mips.assignCommand(true);
+			mips.assignCommand(true, $size);
 		})?
 		(',' var2=ID {
 			SymbolTable.define();
@@ -368,7 +377,7 @@ stm_write:
 		'write' '(' exp=expr {
 			checkWrite($exp.line, $exp.retType);
 		} ')' NL {
-			mips.write();
+			mips.write($exp.retType);
 		}
 	;
 
@@ -429,14 +438,20 @@ expr returns [int line, boolean is_lvalue, Type retType]
 		}
 	;
 
-expr_assign returns [int line, boolean is_lvalue, Type retType]
+expr_assign returns [int line, boolean is_lvalue, Type retType] locals [int size]
 	:
 		exp=expr_or [true] '=' exp2=expr_assign {
 			$retType = typeCheck($exp.line, $exp.retType, $exp2.retType);
 			checkLValue($exp.line, $exp.is_lvalue);
 			$is_lvalue = $exp2.is_lvalue;
 			$line = $exp.line;
-			mips.assignCommand(false);
+
+			$size = 1;
+			if ($retType instanceof ArrayType) {
+				$size = ((ArrayType) $retType).len();
+			}
+
+			mips.assignCommand(false, $size);
 		}
 	|	exp=expr_or [false] {
 			$line = $exp.line;
@@ -673,16 +688,18 @@ expr_other [boolean left] returns [int line, boolean is_lvalue, Type retType] lo
 			$is_lvalue = false;
 			$retType = IntType.getInstance();
 			$line = $l.line;
-			mips.addToStack($l.int);
+			mips.addVariableToStack($l.int);
 		}
 	|	l2=CONST_CHAR {
 			$is_lvalue = false;
 			$retType = CharType.getInstance();
 			$line = $l2.line;
+			mips.addVariableToStack($l2.getText().charAt(1));
 		}
 	|	str=CONST_STR {
 			$is_lvalue = false;
-			$retType = new ArrayType(CharType.getInstance(), $str.getText().length()); $line = $str.line;
+			$retType = new ArrayType(CharType.getInstance(), $str.getText().length()-2); $line = $str.line;
+			mips.addStringToStack($str.getText().substring(1, $str.getText().length()-1));
 		}
 	|	var=ID {
 			$retType = checkVariableExistance($var.line, $var.getText());

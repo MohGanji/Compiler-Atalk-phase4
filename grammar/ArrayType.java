@@ -10,6 +10,10 @@ public class ArrayType extends Type {
 		return this._type.size()*this._len;
 	}
 
+	public int len() {
+		return _len;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if(other instanceof ArrayType && ((ArrayType) other).toString().equals(this.toString()))
