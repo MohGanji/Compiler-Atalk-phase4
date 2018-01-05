@@ -1,19 +1,10 @@
 actor Program<10>
 	receiver init()
-	#int[2] r
-		#r[0] = 1
-		#r[1] = 2
-
-
-		char[2] y = "ab"
-
-		#write(y[0])
-		foreach x in y
-			write(y[0])
+		int a
+		char[2] c = "ab"
+		foreach i in c
+			write("g")
 		end
-		#int k = 4
-		#write(k)
-		#write(y[1])
-		#write(y[0])
+		int b
 	end
 end

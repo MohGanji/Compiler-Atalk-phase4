@@ -467,7 +467,10 @@ stm_foreach locals [String startLabel, String endLabel]
 		$startLabel = generateForeachStartLabel();
 		$endLabel = generateForeachEndLabel();
 	}
-		'foreach' var=ID 'in' exp=expr NL
+		'foreach' var=ID {
+				SymbolTable.define();
+			}
+		'in' exp=expr NL
 			{
 				checkForeach($var.line, $exp.retType);
 				beginScope();
@@ -482,7 +485,7 @@ stm_foreach locals [String startLabel, String endLabel]
 				mips.decForeachIndex();
 				mips.jumpLabel($startLabel);
 				mips.putLabel($endLabel);
-				mips.popStack(((ArrayType) $exp.retType).len() + 1); // pop array and index
+				mips.popStack((((ArrayType) $exp.retType).len() + 1) * 4); // pop array and index
 			}
 	;
 

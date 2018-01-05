@@ -88,6 +88,7 @@ public class SymbolTable {
 		if(value == null && pre != null)
 			return pre.get(key);
 
+		// System.out.println(" .. " + SymbolTable.definitionsCount + " - " + value.getDefinitionNumber());
 		if(value != null && value.useMustBeComesAfterDef() &&
 				SymbolTable.definitionsCount <= value.getDefinitionNumber()) {
 			if(pre != null) 
@@ -107,6 +108,10 @@ public class SymbolTable {
 	}
 	public int localStackSize() {
 		return _stackSize;
+	}
+
+	public void printItems() {
+		System.out.println(items);
 	}
 
 	SymbolTable pre;
