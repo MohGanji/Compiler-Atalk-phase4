@@ -115,11 +115,11 @@ public class AtalkPass2Lexer extends Lexer {
 
 	    void beginScope() {
 	        SymbolTable.push();
-			cerr(" --- " + SymbolTable.top.localStackSize());
+			// cerr(" --- " + SymbolTable.top.localStackSize());
 	    }
 
 	    void endScope() {
-	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+	        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
 			mips.popStack(SymbolTable.top.localStackSize());
 	        SymbolTable.pop();
 	    }
@@ -290,17 +290,6 @@ public class AtalkPass2Lexer extends Lexer {
 				mips.addGlobalVariableAddressToStack(name, var.getOffset(), 1);
 			}
 		}
-		Integer gggetSize(String name) {
-			SymbolTableItem item = SymbolTable.top.get(name);
-			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
-			
-			int size = 1;
-			if (var.getVariable().getType() instanceof ArrayType) {
-				size = ((ArrayType) var.getVariable().getType()).len();
-			}
-
-			return size;
-		}
 
 		String generateIfLabel() {
 			String s = "IF_LABEL________________" + labelCounter;
@@ -308,12 +297,12 @@ public class AtalkPass2Lexer extends Lexer {
 			return s;
 		}
 		String generateForeachStartLabel() {
-			String s = "FOREACH_START_________________" + labelCounter;
+			String s = "FOREACH_START___________" + labelCounter;
 			labelCounter += 1;
 			return s;
 		}
 		String generateForeachEndLabel() {
-			String s = "FOREACH_END_________________" + labelCounter;
+			String s = "FOREACH_END_____________" + labelCounter;
 			labelCounter += 1;
 			return s;
 		}

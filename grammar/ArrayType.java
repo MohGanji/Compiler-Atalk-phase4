@@ -10,7 +10,8 @@ public class ArrayType extends Type {
 		return this._type.size()*this._len;
 	}
 
-	public int len() {
+	@Override
+	public Integer len() {
 		return _len;
 	}
 

@@ -129,11 +129,11 @@ public class AtalkPass2Parser extends Parser {
 
 	    void beginScope() {
 	        SymbolTable.push();
-			cerr(" --- " + SymbolTable.top.localStackSize());
+			// cerr(" --- " + SymbolTable.top.localStackSize());
 	    }
 
 	    void endScope() {
-	        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+	        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
 			mips.popStack(SymbolTable.top.localStackSize());
 	        SymbolTable.pop();
 	    }
@@ -304,17 +304,6 @@ public class AtalkPass2Parser extends Parser {
 				mips.addGlobalVariableAddressToStack(name, var.getOffset(), 1);
 			}
 		}
-		Integer gggetSize(String name) {
-			SymbolTableItem item = SymbolTable.top.get(name);
-			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
-			
-			int size = 1;
-			if (var.getVariable().getType() instanceof ArrayType) {
-				size = ((ArrayType) var.getVariable().getType()).len();
-			}
-
-			return size;
-		}
 
 		String generateIfLabel() {
 			String s = "IF_LABEL________________" + labelCounter;
@@ -322,12 +311,12 @@ public class AtalkPass2Parser extends Parser {
 			return s;
 		}
 		String generateForeachStartLabel() {
-			String s = "FOREACH_START_________________" + labelCounter;
+			String s = "FOREACH_START___________" + labelCounter;
 			labelCounter += 1;
 			return s;
 		}
 		String generateForeachEndLabel() {
-			String s = "FOREACH_END_________________" + labelCounter;
+			String s = "FOREACH_END_____________" + labelCounter;
 			labelCounter += 1;
 			return s;
 		}
@@ -2770,14 +2759,12 @@ public class AtalkPass2Parser extends Parser {
 						((Expr_memContext)_localctx).retType =  ((Expr_memContext)_localctx).exp.retType;
 						((Expr_memContext)_localctx).line =  ((Expr_memContext)_localctx).exp.line;
 
-						if (!((Expr_memContext)_localctx).exp.varName.equals(""))
-							((Expr_memContext)_localctx).size =  gggetSize(((Expr_memContext)_localctx).exp.varName);
 					
 			setState(407);
-			((Expr_memContext)_localctx).expmt = expr_mem_tmp(_localctx.left, true, _localctx.size);
+			((Expr_memContext)_localctx).expmt = expr_mem_tmp(_localctx.left, true, _localctx.retType.len());
 
 						((Expr_memContext)_localctx).retType =  checkArrayDim(_localctx.line, _localctx.retType, ((Expr_memContext)_localctx).expmt.dim);
-						if (((Expr_memContext)_localctx).expmt.dim != 0) {
+						if (((Expr_memContext)_localctx).expmt.dim != 0 && !((Expr_memContext)_localctx).exp.varName.equals("")) {
 							addArrayAddress(((Expr_memContext)_localctx).exp.varName);
 							mips.accessArray();
 						}

@@ -1,0 +1,12 @@
+actor Program<10>
+	receiver init()
+		int a
+		char[2] c = "ab"
+		foreach i in c
+			foreach j in c
+				write(c[1])
+			end
+		end
+		int b
+	end
+end

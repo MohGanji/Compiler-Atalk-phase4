@@ -1,10 +1,5 @@
 actor Program<10>
 	receiver init()
-		int a
-		char[2] c = "ab"
-		foreach i in c
-			write("g")
-		end
-		int b
+		write(read(2)[1])
 	end
 end

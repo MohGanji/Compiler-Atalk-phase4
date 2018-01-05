@@ -30,11 +30,11 @@ grammar AtalkPass2;
 
     void beginScope() {
         SymbolTable.push();
-		cerr(" --- " + SymbolTable.top.localStackSize());
+		// cerr(" --- " + SymbolTable.top.localStackSize());
     }
 
     void endScope() {
-        print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
+        // print("Stack offset: " + SymbolTable.top.getOffset(Register.SP) + ", Global offset: " + SymbolTable.top.getOffset(Register.GP));
 		mips.popStack(SymbolTable.top.localStackSize());
         SymbolTable.pop();
     }
@@ -205,17 +205,6 @@ grammar AtalkPass2;
 			mips.addGlobalVariableAddressToStack(name, var.getOffset(), 1);
 		}
 	}
-	Integer gggetSize(String name) {
-		SymbolTableItem item = SymbolTable.top.get(name);
-		SymbolTableVariableItem var = (SymbolTableVariableItem) item;
-		
-		int size = 1;
-		if (var.getVariable().getType() instanceof ArrayType) {
-			size = ((ArrayType) var.getVariable().getType()).len();
-		}
-
-		return size;
-	}
 
 	String generateIfLabel() {
 		String s = "IF_LABEL________________" + labelCounter;
@@ -223,12 +212,12 @@ grammar AtalkPass2;
 		return s;
 	}
 	String generateForeachStartLabel() {
-		String s = "FOREACH_START_________________" + labelCounter;
+		String s = "FOREACH_START___________" + labelCounter;
 		labelCounter += 1;
 		return s;
 	}
 	String generateForeachEndLabel() {
-		String s = "FOREACH_END_________________" + labelCounter;
+		String s = "FOREACH_END_____________" + labelCounter;
 		labelCounter += 1;
 		return s;
 	}
@@ -741,11 +730,9 @@ expr_mem [boolean left] returns [int line, boolean is_lvalue, Type retType] loca
 			$retType = $exp.retType;
 			$line = $exp.line;
 
-			if (!$exp.varName.equals(""))
-				$size = gggetSize($exp.varName);
-		} expmt=expr_mem_tmp [$left, true, $size] {
+		} expmt=expr_mem_tmp [$left, true, $retType.len()] {
 			$retType = checkArrayDim($line, $retType, $expmt.dim);
-			if ($expmt.dim != 0) {
+			if ($expmt.dim != 0 && !$exp.varName.equals("")) {
 				addArrayAddress($exp.varName);
 				mips.accessArray();
 			}
