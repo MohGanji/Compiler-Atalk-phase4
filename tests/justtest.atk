@@ -1,5 +1,5 @@
 actor Program<10>
 	receiver init()
-		write(read(2)[1])
+		
 	end
 end

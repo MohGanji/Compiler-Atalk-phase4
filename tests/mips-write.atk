@@ -7,8 +7,11 @@ actor Program<10>
 
 		int h
 
-		char[5] y = "a b c"
-		write("ab	43@#$%&c")
+		char[6] y = "farhat"
+		write("fereydoon akharti")
 		write(y)
+		write(y[5])
+		int[2] a = {1,2}
+		write(a[0])
 	end
 end
