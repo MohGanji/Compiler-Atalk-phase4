@@ -115,6 +115,7 @@ public class AtalkPass2Lexer extends Lexer {
 
 	    void beginScope() {
 	        SymbolTable.push();
+			cerr(" --- " + SymbolTable.top.localStackSize());
 	    }
 
 	    void endScope() {
@@ -278,14 +279,44 @@ public class AtalkPass2Lexer extends Lexer {
 			}
 		}
 
-		String generateLabel() {
-			String s = "ATALKLABEL" + labelCounter;
+		void addArrayAddress(String name) {
+			SymbolTableItem item = SymbolTable.top.get(name);
+			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+
+			if (var.getBaseRegister() == Register.SP){
+				mips.addVariableAddressToStack(name, var.getOffset()*-1, 1);
+			}
+			else {
+				mips.addGlobalVariableAddressToStack(name, var.getOffset(), 1);
+			}
+		}
+		Integer gggetSize(String name) {
+			SymbolTableItem item = SymbolTable.top.get(name);
+			SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+			
+			int size = 1;
+			if (var.getVariable().getType() instanceof ArrayType) {
+				size = ((ArrayType) var.getVariable().getType()).len();
+			}
+
+			return size;
+		}
+
+		String generateIfLabel() {
+			String s = "IF_LABEL________________" + labelCounter;
 			labelCounter += 1;
 			return s;
 		}
-		String lastLabel() {
-	        return "ATALKLABEL" + (labelCounter - 1);
-	    }
+		String generateForeachStartLabel() {
+			String s = "FOREACH_START_________________" + labelCounter;
+			labelCounter += 1;
+			return s;
+		}
+		String generateForeachEndLabel() {
+			String s = "FOREACH_END_________________" + labelCounter;
+			labelCounter += 1;
+			return s;
+		}
 
 
 	public AtalkPass2Lexer(CharStream input) {

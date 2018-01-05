@@ -30,6 +30,7 @@ grammar AtalkPass2;
 
     void beginScope() {
         SymbolTable.push();
+		cerr(" --- " + SymbolTable.top.localStackSize());
     }
 
     void endScope() {
@@ -193,14 +194,44 @@ grammar AtalkPass2;
 		}
 	}
 
-	String generateLabel() {
-		String s = "ATALKLABEL" + labelCounter;
+	void addArrayAddress(String name) {
+		SymbolTableItem item = SymbolTable.top.get(name);
+		SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+
+		if (var.getBaseRegister() == Register.SP){
+			mips.addVariableAddressToStack(name, var.getOffset()*-1, 1);
+		}
+		else {
+			mips.addGlobalVariableAddressToStack(name, var.getOffset(), 1);
+		}
+	}
+	Integer gggetSize(String name) {
+		SymbolTableItem item = SymbolTable.top.get(name);
+		SymbolTableVariableItem var = (SymbolTableVariableItem) item;
+		
+		int size = 1;
+		if (var.getVariable().getType() instanceof ArrayType) {
+			size = ((ArrayType) var.getVariable().getType()).len();
+		}
+
+		return size;
+	}
+
+	String generateIfLabel() {
+		String s = "IF_LABEL________________" + labelCounter;
 		labelCounter += 1;
 		return s;
 	}
-	String lastLabel() {
-        return "ATALKLABEL" + (labelCounter - 1);
-    }
+	String generateForeachStartLabel() {
+		String s = "FOREACH_START_________________" + labelCounter;
+		labelCounter += 1;
+		return s;
+	}
+	String generateForeachEndLabel() {
+		String s = "FOREACH_END_________________" + labelCounter;
+		labelCounter += 1;
+		return s;
+	}
 }
 
 
@@ -391,7 +422,7 @@ stm_write:
 
 stm_if_elseif_else locals [String ifLabel]
 	: {
-		$ifLabel = generateLabel();
+		$ifLabel = generateIfLabel();
 	}
 		'if' {
 				beginScope();
@@ -431,15 +462,28 @@ stm_if_elseif_else locals [String ifLabel]
 			}
 	;
 
-stm_foreach:
+stm_foreach locals [String startLabel, String endLabel]
+	: {
+		$startLabel = generateForeachStartLabel();
+		$endLabel = generateForeachEndLabel();
+	}
 		'foreach' var=ID 'in' exp=expr NL
 			{
 				checkForeach($var.line, $exp.retType);
 				beginScope();
+				mips.addVariableToStack(((ArrayType) $exp.retType).len(), 1);
+				mips.foreachStatement($startLabel, $endLabel);
 			}
 		statements
 		'end' NL
-			{ endScope(); }
+			{
+				endScope();
+				mips.popStack(); // pop element because it's noType
+				mips.decForeachIndex();
+				mips.jumpLabel($startLabel);
+				mips.putLabel($endLabel);
+				mips.popStack(((ArrayType) $exp.retType).len() + 1); // pop array and index
+			}
 	;
 
 stm_quit:
@@ -687,20 +731,32 @@ expr_un [boolean left] returns [int line, boolean is_lvalue, Type retType]
 		}
 	;
 
-expr_mem [boolean left] returns [int line, boolean is_lvalue, Type retType]
+expr_mem [boolean left] returns [int line, boolean is_lvalue, Type retType] locals [int size]
 	:
 		exp=expr_other [$left] {
 			$is_lvalue = $exp.is_lvalue;
 			$retType = $exp.retType;
 			$line = $exp.line;
-		} expmt=expr_mem_tmp [$left] {
+
+			if (!$exp.varName.equals(""))
+				$size = gggetSize($exp.varName);
+		} expmt=expr_mem_tmp [$left, true, $size] {
 			$retType = checkArrayDim($line, $retType, $expmt.dim);
+			if ($expmt.dim != 0) {
+				addArrayAddress($exp.varName);
+				mips.accessArray();
+			}
 		}
 	;
 
-expr_mem_tmp [boolean left] returns [int dim]
+expr_mem_tmp [boolean left, boolean first, int size] returns [int dim]
 	:
-		'[' expr ']' expmt=expr_mem_tmp [$left] {
+		'[' {
+				if ($first) {
+					mips.popStack($size * 4);
+				}
+			}
+		expr ']' expmt=expr_mem_tmp [$left, false, 0] {
 			$dim = $expmt.dim + 1;
 		}
 	| {
@@ -708,7 +764,7 @@ expr_mem_tmp [boolean left] returns [int dim]
 		}
 	;
 
-expr_other [boolean left] returns [int line, boolean is_lvalue, Type retType] locals [int arrayLength = 0, boolean exists]
+expr_other [boolean left] returns [int line, boolean is_lvalue, Type retType, String varName=""] locals [int arrayLength = 0, boolean exists]
 	:
 		l=CONST_NUM {
 			$is_lvalue = false;
@@ -733,6 +789,7 @@ expr_other [boolean left] returns [int line, boolean is_lvalue, Type retType] lo
 			$line = $var.line;
 			
 			p4addVarToStack($var.getText(), $left);
+			$varName = $var.getText();
 		}
 	|	'{' exp=expr {
 			$arrayLength = 1;

@@ -333,4 +333,43 @@ public class Translator {
     private String lastLabel() {
         return "LABEL____________________" + this.labels.pop();
     }
+
+    public void accessArray() {
+        instructions.add("# access array");
+        instructions.add("lw $a0, 4($sp)");
+        popStack();
+        instructions.add("lw $a1, 4($sp)");
+        popStack();
+        instructions.add("li $t0, 4");
+        instructions.add("mul $a1, $a1, $t0");
+        instructions.add("sub $a0, $a0, $a1");
+        instructions.add("lw $a0, 0($a0)");
+        instructions.add("sw $a0, 0($sp)");
+        instructions.add("addiu $sp, $sp, -4");
+        instructions.add("# end access array");
+    }
+    public void foreachStatement(String startLabel, String endLabel) {
+        instructions.add("# foreach");
+        putLabel(startLabel);
+        instructions.add("lw $a3, 4($sp)"); // a0 = len - index
+        // condition
+        instructions.add("beqz $a3, " + endLabel);
+
+        // push element
+        instructions.add("li $a2, 4");
+        instructions.add("mul $a3, $a3, $a2");
+        instructions.add("addu $a3, $a3, $sp");
+        instructions.add("lw $a3, 4($a3)");
+        instructions.add("sw $a3, 0($sp)");
+        instructions.add("addiu $sp, $sp, -4");
+
+        instructions.add("# end foreach");
+    }
+    public void decForeachIndex() {
+        instructions.add("lw $a3, 4($sp)"); // a0 = len - index
+        instructions.add("addiu $a3, $a3, -1");
+        popStack();
+        instructions.add("sw $a3, 0($sp)");
+        instructions.add("addiu $sp, $sp, -4");
+    }
 }

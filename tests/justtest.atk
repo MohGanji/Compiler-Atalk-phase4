@@ -1,28 +1,19 @@
 actor Program<10>
 	receiver init()
-		if (1)
-			write(1)
-			if (0)
-				write(5)
-			else
-				if (1)
-					write(4)
-				else
-					write("ammam")
-				end
-				write(6)
-				if (1)
-					write(7)
-					if (1)
-						write(8)
-					end
-				end
-			end
-		elseif (0)
-			write(2)
-		else
-			write(3)
+	#int[2] r
+		#r[0] = 1
+		#r[1] = 2
+
+
+		char[2] y = "ab"
+
+		#write(y[0])
+		foreach x in y
+			write(y[0])
 		end
-		write("finish")
+		#int k = 4
+		#write(k)
+		#write(y[1])
+		#write(y[0])
 	end
 end
