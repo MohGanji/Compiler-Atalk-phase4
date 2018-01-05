@@ -6,10 +6,14 @@ public class Translator {
     private File output;
     private ArrayList <String> instructions;
     private ArrayList <String> initInstructions;
+    private int labelCounter;
+    private Stack <Integer> labels;
 
     public Translator(){
         instructions = new ArrayList<String>();
         initInstructions = new ArrayList<String>();
+        labels = new Stack<Integer>();
+        labelCounter = 0;
         output = new File("out.asm");
         try {
             output.createNewFile();
@@ -171,6 +175,13 @@ public class Translator {
             instructions.add("sw $a0, 0($sp)");
             instructions.add("addiu $sp, $sp, -4");
         }
+        else if (s.equals("neg")){
+            instructions.add("lw $a0, 4($sp)");
+            popStack();
+            instructions.add("neg $a0, $a0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
         else if (s.equals("<")){
             instructions.add("lw $a0, 4($sp)");
             popStack();
@@ -254,11 +265,15 @@ public class Translator {
         }
 
         popStack(size * 4);
-        
-        instructions.add("addi $a0, $zero, 10");
-        this.addSystemCall(11);
+
+        lineBreak();
 
         instructions.add("# end of writing");
+    }
+
+    private void lineBreak() {
+        instructions.add("addi $a0, $zero, 10");
+        this.addSystemCall(11);
     }
 
     public void addGlobalToStack(int adr, int size){
@@ -281,11 +296,41 @@ public class Translator {
         initInstructions.add("# end of adding a global variable");
     }
 
-    public void beginScope() {
-        instructions.size();
+    public void read(int size) {
+        for (int i = 0; i < size; i++) {
+            addSystemCall(12);
+            instructions.add("addiu $a0, $v0, 0");
+            instructions.add("sw $a0, 0($sp)");
+            instructions.add("addiu $sp, $sp, -4");
+        }
+        lineBreak();
     }
 
-    public void endScope() {
+    public void ifStatement() {
+        instructions.add("lw $a0, 4($sp)");
+        popStack();
+        instructions.add("beqz $a0, " + generateLabel());
+    }
+    public void elseStatement() {
+        instructions.add("j " + generateLabel());
+    }
+    public void putLabel() {
+        instructions.add(lastLabel() + ":");
+    }
+    public void putLabel(String label) {
+        instructions.add(label + ":");
+    }
+    public void jumpLabel(String label) {
+        instructions.add("j " + label);
+    }
 
+    public String generateLabel() {
+        String s = "LABEL____________________" + this.labelCounter;
+        this.labels.push(this.labelCounter);
+        this.labelCounter += 1;
+        return s;
+    }
+    private String lastLabel() {
+        return "LABEL____________________" + this.labels.pop();
     }
 }

@@ -8,6 +8,7 @@ grammar AtalkPass2;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 	String currentActor;
+	private int labelCounter = 0;
 
 	void cerr(String str) {
 		System.out.println(str);
@@ -29,8 +30,6 @@ grammar AtalkPass2;
 
     void beginScope() {
         SymbolTable.push();
-		if (SymbolTable.top != null)
-			cerr("---- ---- " + SymbolTable.top.localStackSize());
     }
 
     void endScope() {
@@ -193,6 +192,15 @@ grammar AtalkPass2;
 			else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 		}
 	}
+
+	String generateLabel() {
+		String s = "ATALKLABEL" + labelCounter;
+		labelCounter += 1;
+		return s;
+	}
+	String lastLabel() {
+        return "ATALKLABEL" + (labelCounter - 1);
+    }
 }
 
 
@@ -288,12 +296,10 @@ type returns [Type retType] locals [int size = 1, ArrayList<Integer> dims = new 
 block
 	:
 		'begin' NL
-            { beginScope();
-			mips.beginScope(); }
+            { beginScope(); }
 			statements
 		'end' NL
-            { endScope();
-			mips.endScope(); }
+            { endScope(); }
 	;
 
 statements returns [boolean callsSender = false, int senderLine]
@@ -383,28 +389,46 @@ stm_write:
 		}
 	;
 
-stm_if_elseif_else:
-		'if' exp=expr NL
-			{
+stm_if_elseif_else locals [String ifLabel]
+	: {
+		$ifLabel = generateLabel();
+	}
+		'if' {
+				beginScope();
+			}
+			exp=expr {
 				typeCheck($exp.line, IntType.getInstance(), $exp.retType);
-				beginScope();
-			}
+				mips.ifStatement();
+			} NL
 		statements
-		('elseif' exp2=expr NL
-			{
-				typeCheck($exp2.line, IntType.getInstance(), $exp2.retType);
+		('elseif' {
+				mips.jumpLabel($ifLabel);
+				mips.putLabel();
 				endScope();
 				beginScope();
 			}
+			exp2=expr {
+				typeCheck($exp2.line, IntType.getInstance(), $exp2.retType);
+				mips.ifStatement();
+			}
+			NL
 		statements)*
-		('else' NL
-			{
+		('else' {
+				mips.jumpLabel($ifLabel);
+				mips.putLabel();
 				endScope();
 				beginScope();
+			} NL
+			{
+				mips.generateLabel();
 			}
 		statements)?
 		'end' NL
-			{ endScope(); }
+			{
+				endScope();
+				mips.putLabel();
+				mips.putLabel($ifLabel);
+			}
 	;
 
 stm_foreach:
@@ -651,7 +675,7 @@ expr_mult_tmp [boolean left] returns [int line, boolean is_lvalue, Type retType]
 expr_un [boolean left] returns [int line, boolean is_lvalue, Type retType]
 	:
 		op=('not' | '-') exp=expr_un [$left] {
-			mips.operationCommand("not");
+			mips.operationCommand($op.getText().equals("not") ? "not" : "neg");
 			$is_lvalue = false;
 			$retType = $exp.retType;
 			$line = $exp.line;
@@ -723,6 +747,7 @@ expr_other [boolean left] returns [int line, boolean is_lvalue, Type retType] lo
 			$is_lvalue = false;
 			$retType = new ArrayType(CharType.getInstance(), $alen.int);
 			$line = $alen.line;
+			mips.read($alen.int);
 		}
 	|	'(' exp=expr ')' {
 			$is_lvalue = $exp.is_lvalue;

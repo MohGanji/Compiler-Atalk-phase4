@@ -1,0 +1,14 @@
+actor Program<10>
+	receiver init()
+		char k = 'f'
+		write(k)
+		int x = 4
+		write(x)
+
+		int h
+
+		char[5] y = "a b c"
+		write("ab	43@#$%&c")
+		write(y)
+	end
+end

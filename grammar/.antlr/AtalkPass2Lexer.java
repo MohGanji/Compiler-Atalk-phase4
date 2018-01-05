@@ -93,6 +93,7 @@ public class AtalkPass2Lexer extends Lexer {
 		boolean hasErr = false;
 		ArrayList<String> logs = new ArrayList<String>();
 		String currentActor;
+		private int labelCounter = 0;
 
 		void cerr(String str) {
 			System.out.println(str);
@@ -114,8 +115,6 @@ public class AtalkPass2Lexer extends Lexer {
 
 	    void beginScope() {
 	        SymbolTable.push();
-			if (SymbolTable.top != null)
-				cerr("---- ---- " + SymbolTable.top.localStackSize());
 	    }
 
 	    void endScope() {
@@ -278,6 +277,15 @@ public class AtalkPass2Lexer extends Lexer {
 				else mips.addGlobalVariableAddressToStack(name, var.getOffset(), size);
 			}
 		}
+
+		String generateLabel() {
+			String s = "ATALKLABEL" + labelCounter;
+			labelCounter += 1;
+			return s;
+		}
+		String lastLabel() {
+	        return "ATALKLABEL" + (labelCounter - 1);
+	    }
 
 
 	public AtalkPass2Lexer(CharStream input) {

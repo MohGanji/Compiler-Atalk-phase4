@@ -1,0 +1,12 @@
+actor Program<10>
+	receiver init()
+		if (1)
+			write(1)
+		elseif (0)
+			write(2)
+		else
+			write(3)
+		end
+		write("finish")
+	end
+end

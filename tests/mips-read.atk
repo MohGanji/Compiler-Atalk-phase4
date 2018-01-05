@@ -1,0 +1,6 @@
+actor Program<10>
+	receiver init()
+		char[2] k = read(2)
+		write(k)
+	end
+end
