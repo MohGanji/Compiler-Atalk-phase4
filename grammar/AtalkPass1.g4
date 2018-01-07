@@ -24,9 +24,9 @@ grammar AtalkPass1;
 			cerr("------------------------------ Pass 1 finished ------");
 			return;
 		}
-		for (int i = 0; i < logs.size(); i++) {
-			System.out.println(logs.get(i));
-		}
+		// for (int i = 0; i < logs.size(); i++) {
+		// 	System.out.println(logs.get(i));
+		// }
 		cerr("------------------------------ Pass 1 finished ------");
 	}
 
@@ -47,6 +47,7 @@ grammar AtalkPass1;
 
     int putLocalVar(int line, String name, Type type) {
 		int offset = SymbolTable.top.getOffset(Register.SP);
+		cerr("" + offset);
 		boolean f = true;
 		String nm = name;
 		while (f) {
@@ -392,7 +393,7 @@ stm_foreach:
 			{
 				beginForeach();
 				beginScope();
-				putLocalVar($var.getLine(), $var.getText(), NoType.getInstance());
+				putLocalVar($var.getLine(), $var.getText(), IntType.getInstance());
 			}
 		statements
 		'end' NL

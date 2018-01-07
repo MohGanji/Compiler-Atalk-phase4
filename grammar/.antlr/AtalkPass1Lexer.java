@@ -109,9 +109,9 @@ public class AtalkPass1Lexer extends Lexer {
 				cerr("------------------------------ Pass 1 finished ------");
 				return;
 			}
-			for (int i = 0; i < logs.size(); i++) {
-				System.out.println(logs.get(i));
-			}
+			// for (int i = 0; i < logs.size(); i++) {
+			// 	System.out.println(logs.get(i));
+			// }
 			cerr("------------------------------ Pass 1 finished ------");
 		}
 
@@ -132,6 +132,7 @@ public class AtalkPass1Lexer extends Lexer {
 
 	    int putLocalVar(int line, String name, Type type) {
 			int offset = SymbolTable.top.getOffset(Register.SP);
+			cerr("" + offset);
 			boolean f = true;
 			String nm = name;
 			while (f) {

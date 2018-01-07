@@ -8,7 +8,9 @@ grammar AtalkPass2;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 	String currentActor;
-	private int labelCounter = 0;
+	int labelCounter = 0;
+	int actorLabelCounter = 0;
+	int receiverLabelCounter = 0;
 
 	void cerr(String str) {
 		System.out.println(str);
@@ -221,6 +223,16 @@ grammar AtalkPass2;
 		labelCounter += 1;
 		return s;
 	}
+	String generateReceiverLabel(String actorLabel) {
+		String s = actorLabel + "__RECEIVER_" + receiverLabelCounter + "____";
+		receiverLabelCounter += 1;
+		return s;
+	}
+	String generateActorLabel() {
+		String s = "__________ACTOR" + actorLabelCounter;
+		actorLabelCounter += 1;
+		return s;
+	}
 }
 
 
@@ -236,10 +248,14 @@ program
 		mips.makeOutput();
 	}
     ;
-actor
-    : 'actor' act=ID {currentActor = $act.getText();} '<' CONST_NUM '>' NL
+actor locals [String actorLabel]
+    : {
+		$actorLabel = generateActorLabel();
+		mips.actorStart($actorLabel);
+	}
+		'actor' act=ID {currentActor = $act.getText();} '<' CONST_NUM '>' NL
             { beginScope(); }
-        (state | receiver | NL)*
+        (state | receiver [$actorLabel] | NL)*
         'end'
             { endScope(); }
         (NL | EOF)
@@ -250,8 +266,10 @@ state
 		type ID (',' ID)* NL
 	;
 
-receiver locals [boolean hasInit = false]
-	: 
+receiver [String actorLabel] locals [boolean hasInit = false]
+	: {
+		mips.receiverStart(generateReceiverLabel(actorLabel));
+	}
 		'receiver' rec=ID '(' (type arg1=ID {SymbolTable.define();}
 		(',' type arg2=ID {SymbolTable.define();}
 		)*)? ')' NL { 
@@ -458,23 +476,25 @@ stm_foreach locals [String startLabel, String endLabel]
 	}
 		'foreach' var=ID {
 				SymbolTable.define();
+				mips.addVariableToStack(0, 1); // element
 			}
 		'in' exp=expr NL
 			{
 				checkForeach($var.line, $exp.retType);
 				beginScope();
-				mips.addVariableToStack(((ArrayType) $exp.retType).len(), 1);
-				mips.foreachStatement($startLabel, $endLabel);
+				mips.addVariableToStack(((ArrayType) $exp.retType).len(), 1); // len
+				mips.foreachStatement($startLabel, $endLabel, ((ArrayType) $exp.retType).len());
+				mips.addVariableToStack(0, 1); // array index :\
 			}
 		statements
 		'end' NL
 			{
 				endScope();
-				mips.popStack(); // pop element because it's noType
 				mips.decForeachIndex();
 				mips.jumpLabel($startLabel);
 				mips.putLabel($endLabel);
 				mips.popStack((((ArrayType) $exp.retType).len() + 1) * 4); // pop array and index
+				mips.popStack(); // pop element
 			}
 	;
 

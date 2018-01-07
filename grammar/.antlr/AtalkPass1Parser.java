@@ -123,9 +123,9 @@ public class AtalkPass1Parser extends Parser {
 				cerr("------------------------------ Pass 1 finished ------");
 				return;
 			}
-			for (int i = 0; i < logs.size(); i++) {
-				System.out.println(logs.get(i));
-			}
+			// for (int i = 0; i < logs.size(); i++) {
+			// 	System.out.println(logs.get(i));
+			// }
 			cerr("------------------------------ Pass 1 finished ------");
 		}
 
@@ -146,6 +146,7 @@ public class AtalkPass1Parser extends Parser {
 
 	    int putLocalVar(int line, String name, Type type) {
 			int offset = SymbolTable.top.getOffset(Register.SP);
+			cerr("" + offset);
 			boolean f = true;
 			String nm = name;
 			while (f) {
@@ -1417,7 +1418,7 @@ public class AtalkPass1Parser extends Parser {
 
 							beginForeach();
 							beginScope();
-							putLocalVar(((Stm_foreachContext)_localctx).var.getLine(), ((Stm_foreachContext)_localctx).var.getText(), NoType.getInstance());
+							putLocalVar(((Stm_foreachContext)_localctx).var.getLine(), ((Stm_foreachContext)_localctx).var.getText(), IntType.getInstance());
 						
 			setState(270);
 			statements();

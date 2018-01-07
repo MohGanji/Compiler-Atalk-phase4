@@ -253,10 +253,9 @@ public class Translator {
 
     public void write(Type type){
         instructions.add("# writing");
-        int size = 1;
+        int size = type.len();
 
         if (type.toString().equals("array(char)")) {
-            size = ((ArrayType) type).len();
             for (int i = 0; i < size; i++) {
                 this.writeOne(CharType.getInstance(), size - i);
             }
@@ -348,10 +347,10 @@ public class Translator {
         instructions.add("addiu $sp, $sp, -4");
         instructions.add("# end access array");
     }
-    public void foreachStatement(String startLabel, String endLabel) {
+    public void foreachStatement(String startLabel, String endLabel, int size) {
         instructions.add("# foreach");
         putLabel(startLabel);
-        instructions.add("lw $a3, 4($sp)"); // a0 = len - index
+        instructions.add("lw $a3, 4($sp)"); // a3 = len - index
         // condition
         instructions.add("beqz $a3, " + endLabel);
 
@@ -360,8 +359,8 @@ public class Translator {
         instructions.add("mul $a3, $a3, $a2");
         instructions.add("addu $a3, $a3, $sp");
         instructions.add("lw $a3, 4($a3)");
-        instructions.add("sw $a3, 0($sp)");
-        instructions.add("addiu $sp, $sp, -4");
+        instructions.add("sw $a3, " + (size + 2) * 4 + "($sp)");
+        // instructions.add("addiu $sp, $sp, -4");
 
         instructions.add("# end foreach");
     }
@@ -371,5 +370,11 @@ public class Translator {
         popStack();
         instructions.add("sw $a3, 0($sp)");
         instructions.add("addiu $sp, $sp, -4");
+    }
+    public void actorStart(String label) {
+        putLabel(label);
+    }
+    public void receiverStart(String label) {
+        putLabel(label);
     }
 }
