@@ -102,47 +102,44 @@ sw $a0, 0($sp)
 addiu $sp, $sp, -4
 #### addVariableToStack -- end of adding a number to stack
 #### addVariableToStack -- adding a number to stack
-li $a0, 0
+li $a0, 101
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
 #### addVariableToStack -- end of adding a number to stack
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-# start of adding address to stack
-addiu $a0, $fp, -16
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding address to stack
 #### addVariableToStack -- adding a number to stack
-li $a0, 2
+li $a0, 119
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
 #### addVariableToStack -- end of adding a number to stack
-# start of assign
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 4($sp)
-sw $a0, 0($a1)
-sw $a0, 4($sp)
-# end of assign
-# start of adding variable to stack
-lw $a0, -16($fp)
+#### addVariableToStack -- adding a number to stack
+li $a0, 102
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
-# end of adding variable to stack
+#### addVariableToStack -- end of adding a number to stack
 # writing
 # writeone
+lw $a0, 12($sp)
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end writeone
+# writeone
+lw $a0, 8($sp)
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end writeone
+# writeone
 lw $a0, 4($sp)
-# start syscall 1
-li $v0, 1
+# start syscall 11
+li $v0, 11
 syscall
 # end syscall
 # end writeone
 # pop stack
-addiu $sp, $sp, 4
+addiu $sp, $sp, 12
 # end of pop stack
 addi $a0, $zero, 10
 # start syscall 11
@@ -150,71 +147,51 @@ li $v0, 11
 syscall
 # end syscall
 # end of writing
-#### addVariableToStack -- adding a number to stack
-li $a0, 0
+j FOREACH_END_____________1
+# start of adding variable to stack
+lw $a0, 0($fp)
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
-li $a0, 0
+lw $a0, -4($fp)
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
-li $a0, 0
+lw $a0, -8($fp)
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
+# end of adding variable to stack
+# writing
+# writeone
+lw $a0, 12($sp)
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end writeone
+# writeone
+lw $a0, 8($sp)
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end writeone
+# writeone
+lw $a0, 4($sp)
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end writeone
 # pop stack
 addiu $sp, $sp, 12
 # end of pop stack
-# start of adding address to stack
-addiu $a0, $fp, -20
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-addiu $a0, $fp, -24
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-addiu $a0, $fp, -28
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding address to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 65
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 66
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 67
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-# start of assign
-lw $a0, 4($sp)
+addi $a0, $zero, 10
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end of writing
 # pop stack
 addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 12($sp)
-sw $a0, 0($a1)
-sw $a0, 12($sp)
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 12($sp)
-sw $a0, 0($a1)
-sw $a0, 12($sp)
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 12($sp)
-sw $a0, 0($a1)
-sw $a0, 12($sp)
-# end of assign
-# pop stack
-addiu $sp, $sp, 20
 # end of pop stack
 lw $a3, 4($sp)
 addiu $a3, $a3, -1
@@ -231,57 +208,8 @@ addiu $sp, $sp, 16
 # pop stack
 addiu $sp, $sp, 4
 # end of pop stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
 # pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-# start of adding address to stack
-addiu $a0, $fp, -12
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding address to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 4
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-# start of assign
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 4($sp)
-sw $a0, 0($a1)
-sw $a0, 4($sp)
-# end of assign
-# start of adding variable to stack
-lw $a0, -12($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding variable to stack
-# writing
-# writeone
-lw $a0, 4($sp)
-# start syscall 1
-li $v0, 1
-syscall
-# end syscall
-# end writeone
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-addi $a0, $zero, 10
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end of writing
-# pop stack
-addiu $sp, $sp, 16
+addiu $sp, $sp, 12
 # end of pop stack
 # pop stack
 addiu $sp, $sp, 0

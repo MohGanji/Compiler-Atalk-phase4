@@ -22,4 +22,9 @@ class Stack<E> {
     elements.remove(top + 1);
     return e;
   }
+  public E top() {
+    if (top == -1)
+      return null;
+    return elements.get(top);
+  }
 }

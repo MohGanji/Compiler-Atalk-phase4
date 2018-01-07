@@ -47,7 +47,6 @@ grammar AtalkPass1;
 
     int putLocalVar(int line, String name, Type type) {
 		int offset = SymbolTable.top.getOffset(Register.SP);
-		cerr("" + offset);
 		boolean f = true;
 		String nm = name;
 		while (f) {

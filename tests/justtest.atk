@@ -1,5 +1,10 @@
 actor Program<10>
 	receiver init()
-		
+		char[3] c = "abc"
+		foreach i in c
+			write("ewf")
+			break
+			write(c)
+		end
 	end
 end

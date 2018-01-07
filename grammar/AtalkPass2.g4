@@ -11,6 +11,8 @@ grammar AtalkPass2;
 	int labelCounter = 0;
 	int actorLabelCounter = 0;
 	int receiverLabelCounter = 0;
+	Stack<String> foreachEndLabels = new Stack<String>();;
+
 
 	void cerr(String str) {
 		System.out.println(str);
@@ -220,8 +222,15 @@ grammar AtalkPass2;
 	}
 	String generateForeachEndLabel() {
 		String s = "FOREACH_END_____________" + labelCounter;
+		foreachEndLabels.push(s);
 		labelCounter += 1;
 		return s;
+	}
+	String getLastForeachEndLabel() {
+		return foreachEndLabels.top();
+	}
+	void endForeachLabel() {
+		foreachEndLabels.pop();
 	}
 	String generateReceiverLabel(String actorLabel) {
 		String s = actorLabel + "__RECEIVER_" + receiverLabelCounter + "____";
@@ -495,6 +504,7 @@ stm_foreach locals [String startLabel, String endLabel]
 				mips.putLabel($endLabel);
 				mips.popStack((((ArrayType) $exp.retType).len() + 1) * 4); // pop array and index
 				mips.popStack(); // pop element
+				endForeachLabel();
 			}
 	;
 
@@ -504,7 +514,9 @@ stm_quit:
 
 stm_break
 	:
-		'break' NL
+		'break' NL {
+			mips.jumpLabel(getLastForeachEndLabel());
+		}
 	;
 
 stm_assignment:
