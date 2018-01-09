@@ -9,8 +9,6 @@ grammar AtalkPass2;
 	ArrayList<String> logs = new ArrayList<String>();
 	String currentActor;
 	int labelCounter = 0;
-	int actorLabelCounter = 0;
-	int receiverLabelCounter = 0;
 	Stack<String> foreachEndLabels = new Stack<String>();;
 
 
@@ -95,16 +93,18 @@ grammar AtalkPass2;
 			printErr(line, "ERR: Actor " + name + " doesn't exist.");
 		}
 	}
-	void checkReceiverExistance(int line, String actor, String receiverKey) {
+	SymbolTableReceiverItem checkReceiverExistance(int line, String actor, String receiverKey) {
 		SymbolTableActorItem stai = (SymbolTableActorItem) SymbolTable.top.get(actor);
 		try {
 			if (stai != null && !stai.hasReceiver(receiverKey)) {
 				// stai.printReceivers();
 				throw new UndefinedReceiverException();
 			}
+			return stai.getReceiver(receiverKey);
 		} catch (UndefinedReceiverException ure) {
 			printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 		}
+		return null;
 	}
 	Type typeCheck(int line, Type t1, Type t2) {
 		try {
@@ -169,7 +169,7 @@ grammar AtalkPass2;
 		try{
 			if( !(ret.equals("char") 
 			 || ret.equals("int") 
-			 || ret.equals("array(char)")) 
+			 || ret.equals("array_char_")) 
 			)
 				throw new WriteException();
 		} catch (WriteException we) {
@@ -232,15 +232,11 @@ grammar AtalkPass2;
 	void endForeachLabel() {
 		foreachEndLabels.pop();
 	}
-	String generateReceiverLabel(String actorLabel) {
-		String s = actorLabel + "__RECEIVER_" + receiverLabelCounter + "____";
-		receiverLabelCounter += 1;
-		return s;
+	String generateReceiverLabel(String actorLabel, String receiverKey) {
+		return actorLabel + "__RECEIVER_" + receiverKey + "____";
 	}
-	String generateActorLabel() {
-		String s = "__________ACTOR" + actorLabelCounter;
-		actorLabelCounter += 1;
-		return s;
+	String generateActorLabel(String actorName) {
+		return "___ACTOR_" + actorName;
 	}
 }
 
@@ -272,9 +268,7 @@ actor locals [String actorLabel]
             {
 				mips.actorStart($actorLabel, $qLen.int);
 				beginScope();
-	}
-		'actor' act=ID {currentActor = $act.getText();} '<' CONST_NUM '>' NL
-            { beginScope(); }
+			}
         (state | receiver [$actorLabel] | NL)*
         'end'
             { endScope(); }
@@ -286,19 +280,27 @@ state
 		type ID (',' ID)* NL
 	;
 
-receiver [String actorLabel] locals [boolean hasInit = false]
-	: {
-		mips.receiverStart(generateReceiverLabel(actorLabel));
-	}
-		'receiver' rec=ID '(' (type arg1=ID {SymbolTable.define();}
-		(',' type arg2=ID {SymbolTable.define();}
-		)*)? ')' NL { 
+receiver [String actorLabel] locals [boolean hasInit = false, String receiverLabel, String rcKey]
+	:
+		'receiver' rec=ID
+		{
+			$rcKey = $rec.getText();
+			// System.out.println("****************" + $rec.getText());
+			// System.out.println("****************" + $rec.getText());
+			// System.out.println(stri);
+		}
+		'(' (tp=type arg1=ID {SymbolTable.define();}{$rcKey += "_" + $tp.retType.toString();}
+		(',' tp2=type arg2=ID {SymbolTable.define();}{$rcKey += "_" + $tp2.retType.toString();}
+		)*)? ')' NL {
+				SymbolTableReceiverItem stri = (SymbolTableReceiverItem) SymbolTable.top.get($rcKey);
+				$receiverLabel = generateReceiverLabel(actorLabel, stri.getKey());
 				mips.receiverStart($receiverLabel);
 				if($rec.getText().equals("init") && $arg1 == null){
-					$hasInit = true;	
-					mips.addMessageToActorQueue($actorLabel, $receiverLabel);
+					$hasInit = true;
+					mips.addMessageToActorQueueInit($actorLabel, $receiverLabel);
 				}
-				beginScope(); 
+				beginScope();
+				mips.getParamsFromDataSegment(stri.getTypes());
 			}
 		s=statements {
 			if($hasInit)
@@ -437,10 +439,13 @@ stm_tell returns [boolean callsSender=false, int senderLine] locals [String rcKe
 		'<<' rc=ID {
 			$rcKey = $rc.getText();
 		}
-		'(' (ex=expr {$rcKey += ":" + $ex.retType.toString();}
-		(',' ex2=expr {$rcKey += ":" + $ex2.retType.toString();} )*)? ')' NL 
+		'(' (ex=expr {$rcKey += "_" + $ex.retType.toString();}
+		(',' ex2=expr {$rcKey += "_" + $ex2.retType.toString();} )*)? ')' NL 
 		{
-			checkReceiverExistance($rc.line, $actorName, $rcKey);
+			SymbolTableReceiverItem stri = checkReceiverExistance($rc.line, $actorName, $rcKey);
+			String actorLabel = generateActorLabel($actorName);
+			mips.addMessageToActorQueue(actorLabel, generateReceiverLabel(actorLabel, stri.getKey()));
+			mips.addReceiverParamsToDataSegment(stri.getTypes());
 		}
 	;
 

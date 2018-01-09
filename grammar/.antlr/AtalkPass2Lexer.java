@@ -178,16 +178,18 @@ public class AtalkPass2Lexer extends Lexer {
 				printErr(line, "ERR: Actor " + name + " doesn't exist.");
 			}
 		}
-		void checkReceiverExistance(int line, String actor, String receiverKey) {
+		SymbolTableReceiverItem checkReceiverExistance(int line, String actor, String receiverKey) {
 			SymbolTableActorItem stai = (SymbolTableActorItem) SymbolTable.top.get(actor);
 			try {
 				if (stai != null && !stai.hasReceiver(receiverKey)) {
 					// stai.printReceivers();
 					throw new UndefinedReceiverException();
 				}
+				return stai.getReceiver(receiverKey);
 			} catch (UndefinedReceiverException ure) {
 				printErr(line, "ERR: Receiver " + receiverKey + " doesn't exist in Actor " + actor + ".");
 			}
+			return null;
 		}
 		Type typeCheck(int line, Type t1, Type t2) {
 			try {
@@ -252,7 +254,7 @@ public class AtalkPass2Lexer extends Lexer {
 			try{
 				if( !(ret.equals("char") 
 				 || ret.equals("int") 
-				 || ret.equals("array(char)")) 
+				 || ret.equals("array_char_")) 
 				)
 					throw new WriteException();
 			} catch (WriteException we) {

@@ -26,6 +26,12 @@ public class SymbolTableActorItem extends SymbolTableItem {
         return this._receivers.containsKey(receiverKey);
     }
 
+    public SymbolTableReceiverItem getReceiver(String receiverKey) {
+        if (hasReceiver(receiverKey))
+            return this._receivers.get(receiverKey);
+        return null;
+    }
+
     String _name;
     int _queueLen;
     HashMap<String, SymbolTableReceiverItem> _receivers;

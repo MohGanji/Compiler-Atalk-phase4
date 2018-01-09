@@ -24,7 +24,7 @@ public class ArrayType extends Type {
 
 	@Override
 	public String toString() {
-		return "array(" + this._type.toString() + ")";
+		return "array_" + this._type.toString() + "_";
 	}
 
 	public int dim() {

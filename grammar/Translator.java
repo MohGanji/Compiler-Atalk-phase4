@@ -261,7 +261,7 @@ public class Translator {
 		instructions.add("# writing");
 		int size = type.len();
 		
-		if (type.toString().equals("array(char)")) {
+		if (type.toString().equals("array_char_")) {
 			for (int i = 0; i < size; i++) {
 				this.writeOne(CharType.getInstance(), size - i);
 			}
@@ -405,27 +405,27 @@ public class Translator {
 		initInstructions.add("addi $a2, $a2, 1");
 		initInstructions.add("sw $a2, 0($a1)");
 	}
-	public void addMessageToActorQueue(String actorName, String receiverLabel, SymbolTableReceiverItem receiverItem) {
+	public void addMessageToActorQueue(String actorName, String receiverLabel) {
 		instructions.add("# " + actorName + " << " + receiverLabel);
 		instructions.add("la $a0," + actorName); //a0 = sare PCB
 		instructions.add("la $a1," + receiverLabel); // sare receiver
 		
 		instructions.add("li $a3, 4");
 		instructions.add("lw $a2, 0($a0)"); //a2 = rear
+
+		instructions.add("mul $a3, $a2, $a3");
+		instructions.add("add $a3, $a0, $a3");
 		
-		instructions.add("mul $a2, $a2, $a3");
-		instructions.add("add $a2, $a0, $a2");
+		instructions.add("sw $a1, 8($a3)"); // addresse receivero rikhtim
+		instructions.add("sw $t7, 12($a3)"); // addresse avvale parametera
 		
-		instructions.add("sw $a1, 8($a2)"); // addresse receivero rikhtim
-		
-		instructions.add("sw $t7, 12($a2)"); // addresse avvale parametera
-		
-		instructions.add("addi $a2, $a2, 1");
+		// update rear
+		instructions.add("addi $a2, $a2, 2");
 		instructions.add("sw $a2, 0($a0)");
-		
-		addReceiverParamsToDataSegment(receiverItem.getTypes());
+
+		instructions.add("addi $s0, $s0, 1");
 	}
-	public void addMessageToActorQueue(String actorName, String receiverLabel) {
+	public void addMessageToActorQueueInit(String actorName, String receiverLabel) {
 		initInstructions.add("# " + actorName + " << " + receiverLabel);
 		initInstructions.add("la $a0," + actorName); //a0 = sare PCB
 		initInstructions.add("la $a1," + receiverLabel); // sare receiver
@@ -439,7 +439,7 @@ public class Translator {
 		initInstructions.add("sw $t7, 12($a3)"); // addresse avvale parametera
 		
 		// update rear
-		initInstructions.add("addi $a2, $a2, 1");
+		initInstructions.add("addi $a2, $a2, 2");
 		initInstructions.add("sw $a2, 0($a0)");
 
 		initInstructions.add("addi $s0, $s0, 1");
@@ -461,20 +461,23 @@ public class Translator {
 		initInstructions.add("sw $a2, 0($a0)");
 	} */
 	public void addReceiverParamsToDataSegment(ArrayList<Type> params) {
+		// return;
 		instructions.add("# Adding Receiver params to data segment");
-		int size = 1;
+		int len = 0;
 		for (Type type : params) {
-			size *= type.size();
+			len += type.len();
 		}
-		int offset = size * 4;
-		instructions.add("addi $sp, $sp, " + offset);
-		for (int i = 0; i < size; i++) {
-			instructions.add("lw $a0, 0($sp)");
+		System.out.println("w" +len);
+		// int offset = size * 4;
+		// instructions.add("addi $sp, $sp, " + offset);
+		for (int i = 0; i < len; i++) {
+			instructions.add("lw $a0, 4($sp)");
 			instructions.add("sw $a0, 0($t7)");
 			instructions.add("addi $t7, $t7, -4");
-			instructions.add("addi $sp, $sp, -4");
+			// instructions.add("addi $sp, $sp, 4");
+			popStack();
 		}
-		instructions.add("addi $sp, $sp, " + (offset + 4));
+		// instructions.add("addi $sp, $sp, " + (offset + 4));
 	}
 	
 	public void scheduler() {
@@ -507,7 +510,7 @@ public class Translator {
 		// $t3 = message to run
 
 		// update queue front
-		schedInstructions.add("addi $t1, $t1, 1");
+		schedInstructions.add("addi $t1, $t1, 2");
 		schedInstructions.add("sw, $t1, 4($a3)");
 
 		schedInstructions.add("addi $s0, $s0, -1");
@@ -525,8 +528,13 @@ public class Translator {
 	public void receiverStart(String label) {
 		putLabel(label);
 	}
-	public void getParamsFromDataSegment(int count){
-		for (int i = 0;i < count; i++){
+	public void getParamsFromDataSegment(ArrayList<Type> params){
+		int len = 0;
+		for (Type type : params) {
+			len += type.len();
+		}
+		System.out.println("e" +len);
+		for (int i = 0;i < len; i++){
 			instructions.add("lw $a0, 0($t5)");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addi $sp, $sp, -4");

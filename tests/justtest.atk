@@ -1,14 +1,35 @@
 actor Proegram<10>
 	receiver init()
-		write(2)
+		int x = 2
+		write(x)
+		int weklfjew
 	end
-	receiver vahid()
-		write(4)
+	receiver vahid2(int a)
+		int x = 4
+		write(a)
+	end
+	receiver vahid3()
+		int y = 6
+		int x
+		write(5)
+	end
+	receiver mamad(char[4] h)
+		int u = 5
+		write(h)
 	end
 end
 actor vahid<10>
 	receiver init()
-		write(5)
-		Proegram << vahid()
+		char[4] x = "abcd"
+		write(x)
+		Proegram << vahid2(345)
+		Proegram << vahid3()
+		Proegram << mamad(x)
+		self << mamd2()
+		write("abc")
+	end
+	receiver mamd2()
+		int hg
+		write(123)
 	end
 end
