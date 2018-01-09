@@ -246,7 +246,10 @@ grammar AtalkPass2;
 
 
 program
-    : { beginScope(); }
+    : {
+		beginScope();
+		mips.scheduler();
+	}
     (
         actor
         | NL
@@ -259,8 +262,16 @@ program
     ;
 actor locals [String actorLabel]
     : {
-		$actorLabel = generateActorLabel();
-		mips.actorStart($actorLabel);
+	}
+		'actor' act=ID
+			{
+				currentActor = $act.getText();
+				$actorLabel = generateActorLabel($act.getText());
+			}
+			'<' qLen=CONST_NUM '>' NL
+            {
+				mips.actorStart($actorLabel, $qLen.int);
+				beginScope();
 	}
 		'actor' act=ID {currentActor = $act.getText();} '<' CONST_NUM '>' NL
             { beginScope(); }
@@ -282,8 +293,10 @@ receiver [String actorLabel] locals [boolean hasInit = false]
 		'receiver' rec=ID '(' (type arg1=ID {SymbolTable.define();}
 		(',' type arg2=ID {SymbolTable.define();}
 		)*)? ')' NL { 
+				mips.receiverStart($receiverLabel);
 				if($rec.getText().equals("init") && $arg1 == null){
 					$hasInit = true;	
+					mips.addMessageToActorQueue($actorLabel, $receiverLabel);
 				}
 				beginScope(); 
 			}
@@ -292,7 +305,10 @@ receiver [String actorLabel] locals [boolean hasInit = false]
 				checkInit($s.senderLine, $s.callsSender);
 		}
 		'end' NL
-			{ endScope(); }
+			{
+				endScope();
+				mips.endReceiver();
+			}
 	;
 
 type returns [Type retType] locals [int size = 1, ArrayList<Integer> dims = new ArrayList<Integer>(), Type x]

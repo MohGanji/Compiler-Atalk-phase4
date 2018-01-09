@@ -1,188 +1,109 @@
+.data
+scheduler: .space  200
+___ACTOR_Proegram: .space 88
+___ACTOR_vahid: .space 88
+.text
 main:
 move $fp, $sp
-__________ACTOR0:
-__________ACTOR0__RECEIVER_0____:
-#### addVariableToStack -- adding a number to stack
+move $t7, $fp
+addi $t7, $t7, -32768
+# Init Scheduler
 li $a0, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-li $a0, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-li $a0, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-# pop stack
-addiu $sp, $sp, 12
-# end of pop stack
-# start of adding address to stack
-addiu $a0, $fp, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-addiu $a0, $fp, -4
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-addiu $a0, $fp, -8
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding address to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 97
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 98
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 99
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-# start of assign
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 12($sp)
+la $a1, scheduler
 sw $a0, 0($a1)
-sw $a0, 12($sp)
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 12($sp)
-sw $a0, 0($a1)
-sw $a0, 12($sp)
-lw $a0, 4($sp)
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a1, 12($sp)
-sw $a0, 0($a1)
-sw $a0, 12($sp)
-# end of assign
-#### addVariableToStack -- adding a number to stack
-li $a0, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-# start of adding variable to stack
-lw $a0, 0($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -4($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -8($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding variable to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 3
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-# foreach
-FOREACH_START___________0:
-lw $a3, 4($sp)
-beqz $a3, FOREACH_END_____________1
+li $t6, 0
+li $s0, 0
+#--- PCB: ___ACTOR_Proegram
+la $a0, ___ACTOR_Proegram
+li $a1, 0
+sw $a1, 0($a0)
+sw $a1, 4($a0)
+la $a1, scheduler
+lw $a2 ,0($a1)
+li $a3, 4
+mul $a3, $a2, $a3
+add $a3, $a3, $a1
+sw $a0, 4($a3)
+addi $a2, $a2, 1
+sw $a2, 0($a1)
+# ___ACTOR_Proegram << ___ACTOR_Proegram__RECEIVER0____
+la $a0,___ACTOR_Proegram
+la $a1,___ACTOR_Proegram__RECEIVER0____
+li $a3, 4
+lw $a2, 0($a0)
+mul $a3, $a2, $a3
+add $a3, $a0, $a3
+sw $a1, 8($a3)
+sw $t7, 12($a3)
+addi $a2, $a2, 1
+sw $a2, 0($a0)
+addi $s0, $s0, 1
+#--- PCB: ___ACTOR_vahid
+la $a0, ___ACTOR_vahid
+li $a1, 0
+sw $a1, 0($a0)
+sw $a1, 4($a0)
+la $a1, scheduler
+lw $a2 ,0($a1)
+li $a3, 4
+mul $a3, $a2, $a3
+add $a3, $a3, $a1
+sw $a0, 4($a3)
+addi $a2, $a2, 1
+sw $a2, 0($a1)
+# ___ACTOR_vahid << ___ACTOR_vahid__RECEIVER1____
+la $a0,___ACTOR_vahid
+la $a1,___ACTOR_vahid__RECEIVER1____
+li $a3, 4
+lw $a2, 0($a0)
+mul $a3, $a2, $a3
+add $a3, $a0, $a3
+sw $a1, 8($a3)
+sw $t7, 12($a3)
+addi $a2, $a2, 1
+sw $a2, 0($a0)
+addi $s0, $s0, 1
+# ___SCHEDULER
+schedulerCode: 
+la $a0, scheduler
+lw $a1, 0($a0)
+rem $t6, $t6, $a1
 li $a2, 4
-mul $a3, $a3, $a2
-addu $a3, $a3, $sp
-lw $a3, 4($a3)
-sw $a3, 20($sp)
-# end foreach
+mul $a2, $t6, $a2
+add $a2, $a2, $a0
+lw $a3, 4($a2)
+lw $t0, 0($a3)
+lw $t1, 4($a3)
+beq $t1, $t0, ___ACTOR_HAS_NO_MESSAGE
+li $a2, 4
+mul $a2, $t1, $a2
+add $a2, $a2, $a3
+addi $t1, $t1, 1
+sw, $t1, 4($a3)
+addi $s0, $s0, -1
+lw $t3, 8($a2)
+lw $t5, 12($a2)
+jalr $t3
+___ACTOR_HAS_NO_MESSAGE:
+beqz $s0, HALT
+addi $t6, $t6, 1
+j schedulerCode
+___ACTOR_Proegram__RECEIVER0____:
 #### addVariableToStack -- adding a number to stack
-li $a0, 0
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 101
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 119
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-#### addVariableToStack -- end of adding a number to stack
-#### addVariableToStack -- adding a number to stack
-li $a0, 102
+li $a0, 2
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
 #### addVariableToStack -- end of adding a number to stack
 # writing
 # writeone
-lw $a0, 12($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
-lw $a0, 8($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
 lw $a0, 4($sp)
-# start syscall 11
-li $v0, 11
+# start syscall 1
+li $v0, 1
 syscall
 # end syscall
 # end writeone
 # pop stack
-addiu $sp, $sp, 12
-# end of pop stack
-addi $a0, $zero, 10
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end of writing
-j FOREACH_END_____________1
-# start of adding variable to stack
-lw $a0, 0($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -4($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -8($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding variable to stack
-# writing
-# writeone
-lw $a0, 12($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
-lw $a0, 8($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
-lw $a0, 4($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# pop stack
-addiu $sp, $sp, 12
+addiu $sp, $sp, 4
 # end of pop stack
 addi $a0, $zero, 10
 # start syscall 11
@@ -191,32 +112,46 @@ syscall
 # end syscall
 # end of writing
 # pop stack
-addiu $sp, $sp, 4
+addiu $sp, $sp, 0
 # end of pop stack
-lw $a3, 4($sp)
-addiu $a3, $a3, -1
+jr $ra
 # pop stack
-addiu $sp, $sp, 4
+addiu $sp, $sp, 0
 # end of pop stack
-sw $a3, 0($sp)
+___ACTOR_vahid__RECEIVER1____:
+#### addVariableToStack -- adding a number to stack
+li $a0, 5
+sw $a0, 0($sp)
 addiu $sp, $sp, -4
-j FOREACH_START___________0
-FOREACH_END_____________1:
-# pop stack
-addiu $sp, $sp, 16
-# end of pop stack
+#### addVariableToStack -- end of adding a number to stack
+# writing
+# writeone
+lw $a0, 4($sp)
+# start syscall 1
+li $v0, 1
+syscall
+# end syscall
+# end writeone
 # pop stack
 addiu $sp, $sp, 4
 # end of pop stack
+addi $a0, $zero, 10
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end of writing
 # pop stack
-addiu $sp, $sp, 12
+addiu $sp, $sp, 0
 # end of pop stack
+jr $ra
 # pop stack
 addiu $sp, $sp, 0
 # end of pop stack
 # pop stack
 addiu $sp, $sp, 0
 # end of pop stack
+HALT:
 # start syscall 10
 li $v0, 10
 syscall

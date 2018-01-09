@@ -1,10 +1,14 @@
-actor Program<10>
+actor Proegram<10>
 	receiver init()
-		char[3] c = "abc"
-		foreach i in c
-			write("ewf")
-			break
-			write(c)
-		end
+		write(2)
+	end
+	receiver vahid()
+		write(4)
+	end
+end
+actor vahid<10>
+	receiver init()
+		write(5)
+		Proegram << vahid()
 	end
 end

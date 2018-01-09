@@ -94,8 +94,6 @@ public class AtalkPass2Lexer extends Lexer {
 		ArrayList<String> logs = new ArrayList<String>();
 		String currentActor;
 		int labelCounter = 0;
-		int actorLabelCounter = 0;
-		int receiverLabelCounter = 0;
 		Stack<String> foreachEndLabels = new Stack<String>();;
 
 
@@ -317,15 +315,11 @@ public class AtalkPass2Lexer extends Lexer {
 		void endForeachLabel() {
 			foreachEndLabels.pop();
 		}
-		String generateReceiverLabel(String actorLabel) {
-			String s = actorLabel + "__RECEIVER_" + receiverLabelCounter + "____";
-			receiverLabelCounter += 1;
-			return s;
+		String generateReceiverLabel(String actorLabel, String receiverKey) {
+			return actorLabel + "__RECEIVER_" + receiverKey + "____";
 		}
-		String generateActorLabel() {
-			String s = "__________ACTOR" + actorLabelCounter;
-			actorLabelCounter += 1;
-			return s;
+		String generateActorLabel(String actorName) {
+			return "___ACTOR_" + actorName;
 		}
 
 

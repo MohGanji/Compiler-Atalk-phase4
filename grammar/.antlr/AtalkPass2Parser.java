@@ -108,8 +108,6 @@ public class AtalkPass2Parser extends Parser {
 		ArrayList<String> logs = new ArrayList<String>();
 		String currentActor;
 		int labelCounter = 0;
-		int actorLabelCounter = 0;
-		int receiverLabelCounter = 0;
 		Stack<String> foreachEndLabels = new Stack<String>();;
 
 
@@ -331,15 +329,11 @@ public class AtalkPass2Parser extends Parser {
 		void endForeachLabel() {
 			foreachEndLabels.pop();
 		}
-		String generateReceiverLabel(String actorLabel) {
-			String s = actorLabel + "__RECEIVER_" + receiverLabelCounter + "____";
-			receiverLabelCounter += 1;
-			return s;
+		String generateReceiverLabel(String actorLabel, String receiverKey) {
+			return actorLabel + "__RECEIVER_" + receiverKey + "____";
 		}
-		String generateActorLabel() {
-			String s = "__________ACTOR" + actorLabelCounter;
-			actorLabelCounter += 1;
-			return s;
+		String generateActorLabel(String actorName) {
+			return "___ACTOR_" + actorName;
 		}
 
 	public AtalkPass2Parser(TokenStream input) {
@@ -370,7 +364,10 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			 beginScope(); 
+
+					beginScope();
+					mips.scheduler();
+				
 			setState(73);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -420,12 +417,13 @@ public class AtalkPass2Parser extends Parser {
 	public static class ActorContext extends ParserRuleContext {
 		public String actorLabel;
 		public Token act;
-		public TerminalNode CONST_NUM() { return getToken(AtalkPass2Parser.CONST_NUM, 0); }
+		public Token qLen;
 		public List<TerminalNode> NL() { return getTokens(AtalkPass2Parser.NL); }
 		public TerminalNode NL(int i) {
 			return getToken(AtalkPass2Parser.NL, i);
 		}
 		public TerminalNode ID() { return getToken(AtalkPass2Parser.ID, 0); }
+		public TerminalNode CONST_NUM() { return getToken(AtalkPass2Parser.CONST_NUM, 0); }
 		public TerminalNode EOF() { return getToken(AtalkPass2Parser.EOF, 0); }
 		public List<StateContext> state() {
 			return getRuleContexts(StateContext.class);
@@ -453,23 +451,27 @@ public class AtalkPass2Parser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 
-					((ActorContext)_localctx).actorLabel =  generateActorLabel();
-					mips.actorStart(_localctx.actorLabel);
 				
 			setState(79);
 			match(T__0);
 			setState(80);
 			((ActorContext)_localctx).act = match(ID);
-			currentActor = ((ActorContext)_localctx).act.getText();
+
+							currentActor = ((ActorContext)_localctx).act.getText();
+							((ActorContext)_localctx).actorLabel =  generateActorLabel(((ActorContext)_localctx).act.getText());
+						
 			setState(82);
 			match(T__1);
 			setState(83);
-			match(CONST_NUM);
+			((ActorContext)_localctx).qLen = match(CONST_NUM);
 			setState(84);
 			match(T__2);
 			setState(85);
 			match(NL);
-			 beginScope(); 
+
+							mips.actorStart(_localctx.actorLabel, (((ActorContext)_localctx).qLen!=null?Integer.valueOf(((ActorContext)_localctx).qLen.getText()):0));
+							beginScope();
+						
 			setState(92);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -591,6 +593,8 @@ public class AtalkPass2Parser extends Parser {
 	public static class ReceiverContext extends ParserRuleContext {
 		public String actorLabel;
 		public boolean hasInit = false;
+		public String receiverLabel;
+		public int receiverArgsCount;
 		public Token rec;
 		public Token arg1;
 		public Token arg2;
@@ -627,13 +631,14 @@ public class AtalkPass2Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-
-					mips.receiverStart(generateReceiverLabel(actorLabel));
-				
-			setState(111);
+			setState(110);
 			match(T__5);
-			setState(112);
+			setState(111);
 			((ReceiverContext)_localctx).rec = match(ID);
+
+						SymbolTableReceiverItem stri = (SymbolTableReceiverItem) SymbolTable.top.get(((ReceiverContext)_localctx).rec.getText());
+						((ReceiverContext)_localctx).receiverLabel =  generateReceiverLabel(actorLabel, stri.getKey());
+					
 			setState(113);
 			match(T__6);
 			setState(127);
@@ -673,10 +678,13 @@ public class AtalkPass2Parser extends Parser {
 			setState(130);
 			match(NL);
 			 
+							mips.receiverStart(_localctx.receiverLabel);
 							if(((ReceiverContext)_localctx).rec.getText().equals("init") && ((ReceiverContext)_localctx).arg1 == null){
-								((ReceiverContext)_localctx).hasInit =  true;	
+								((ReceiverContext)_localctx).hasInit =  true;
+								mips.addMessageToActorQueue(_localctx.actorLabel, _localctx.receiverLabel);
 							}
-							beginScope(); 
+							beginScope();
+							// mips.getParamsFromDataSegment(_localctx.receiverArgsCount);
 						
 			setState(132);
 			((ReceiverContext)_localctx).s = statements();
@@ -688,7 +696,10 @@ public class AtalkPass2Parser extends Parser {
 			match(T__3);
 			setState(135);
 			match(NL);
-			 endScope(); 
+
+							endScope();
+							mips.endReceiver();
+						
 			}
 		}
 		catch (RecognitionException re) {
@@ -1329,6 +1340,8 @@ public class AtalkPass2Parser extends Parser {
 			match(NL);
 
 						checkReceiverExistance((((Stm_tellContext)_localctx).rc!=null?((Stm_tellContext)_localctx).rc.getLine():0), _localctx.actorName, _localctx.rcKey);
+						SymbolTableReceiverItem stri = (SymbolTableReceiverItem) SymbolTable.top.get(_localctx.rcKey.getText());
+						mips.addMessageToActorQueue(generateActorLabel(_localctx.actorName), generateReceiverLabel(actorLabel, stri.getKey()), stri);
 					
 			}
 		}
@@ -3139,7 +3152,7 @@ public class AtalkPass2Parser extends Parser {
 		"\\Z\3\2\2\2\\[\3\2\2\2]`\3\2\2\2^\\\3\2\2\2^_\3\2\2\2_a\3\2\2\2`^\3\2"+
 		"\2\2ab\7\6\2\2bc\b\3\1\2cd\t\2\2\2d\5\3\2\2\2ef\5\n\6\2fk\7,\2\2gh\7\7"+
 		"\2\2hj\7,\2\2ig\3\2\2\2jm\3\2\2\2ki\3\2\2\2kl\3\2\2\2ln\3\2\2\2mk\3\2"+
-		"\2\2no\7+\2\2o\7\3\2\2\2pq\b\5\1\2qr\7\b\2\2rs\7,\2\2s\u0081\7\t\2\2t"+
+		"\2\2no\7+\2\2o\7\3\2\2\2pq\7\b\2\2qr\7,\2\2rs\b\5\1\2s\u0081\7\t\2\2t"+
 		"u\5\n\6\2uv\7,\2\2v~\b\5\1\2wx\7\7\2\2xy\5\n\6\2yz\7,\2\2z{\b\5\1\2{}"+
 		"\3\2\2\2|w\3\2\2\2}\u0080\3\2\2\2~|\3\2\2\2~\177\3\2\2\2\177\u0082\3\2"+
 		"\2\2\u0080~\3\2\2\2\u0081t\3\2\2\2\u0081\u0082\3\2\2\2\u0082\u0083\3\2"+
