@@ -2,6 +2,7 @@
 scheduler: .space  200
 ___ACTOR_Proegram: .space 88
 ___ACTOR_vahid: .space 88
+str2: .asciiz    "IndexOutOfBoundError"
 .text
 main:
 move $fp, $sp
@@ -116,16 +117,138 @@ lw $a1, 4($sp)
 sw $a0, 0($a1)
 sw $a0, 4($sp)
 # end of assign
-# start of adding variable to stack
-lw $a0, 0($fp)
+#### addVariableToStack -- adding a number to stack
+li $a0, 0
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
-# end of adding variable to stack
+li $a0, 0
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+li $a0, 0
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+# pop stack
+addiu $sp, $sp, 12
+# end of pop stack
+# start of adding address to stack
+addiu $a0, $fp, -4
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+addiu $a0, $fp, -8
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+addiu $a0, $fp, -12
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding address to stack
+#### addVariableToStack -- adding a number to stack
+li $a0, 101
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+#### addVariableToStack -- adding a number to stack
+li $a0, 114
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+#### addVariableToStack -- adding a number to stack
+li $a0, 103
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+# start of assign
+lw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+lw $a1, 12($sp)
+sw $a0, 0($a1)
+sw $a0, 12($sp)
+lw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+lw $a1, 12($sp)
+sw $a0, 0($a1)
+sw $a0, 12($sp)
+lw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+lw $a1, 12($sp)
+sw $a0, 0($a1)
+sw $a0, 12($sp)
+# end of assign
+#### addVariableToStack -- adding a number to stack
+li $a0, 4
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
 # writing
 # writeone
 lw $a0, 4($sp)
 # start syscall 1
 li $v0, 1
+syscall
+# end syscall
+# end writeone
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+addi $a0, $zero, 10
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end of writing
+# start of adding variable to stack
+lw $a0, -4($fp)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+lw $a0, -8($fp)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+lw $a0, -12($fp)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding variable to stack
+# pop stack
+addiu $sp, $sp, 12
+# end of pop stack
+#### addVariableToStack -- adding a number to stack
+li $a0, 5
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+# start of adding address to stack
+addiu $a0, $fp, -4
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding address to stack
+# access array
+lw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+lw $a1, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+li $a2, 3
+bgt $a1, $a2, INDEXOUTOFBOUNDERROR
+li $t0, 4
+mul $a1, $a1, $t0
+sub $a0, $a0, $a1
+lw $a0, 0($a0)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end access array
+# writing
+# writeone
+lw $a0, 4($sp)
+# start syscall 11
+li $v0, 11
 syscall
 # end syscall
 # end writeone
@@ -144,7 +267,7 @@ sw $a0, 0($sp)
 addiu $sp, $sp, -4
 #### addVariableToStack -- end of adding a number to stack
 # pop stack
-addiu $sp, $sp, 8
+addiu $sp, $sp, 20
 # end of pop stack
 jr $ra
 ___ACTOR_Proegram__RECEIVER_vahid2_int____:
@@ -690,6 +813,12 @@ addiu $sp, $sp, 0
 # pop stack
 addiu $sp, $sp, 0
 # end of pop stack
+INDEXOUTOFBOUNDERROR:
+la $a0, str2
+# start syscall 4
+li $v0, 4
+syscall
+# end syscall
 HALT:
 # start syscall 10
 li $v0, 10

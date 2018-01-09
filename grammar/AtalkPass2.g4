@@ -1,7 +1,7 @@
 grammar AtalkPass2;
 
 @header {
-	import java.util.ArrayList ;
+	import java.util.ArrayList;
 }
 
 @members {
@@ -16,7 +16,7 @@ grammar AtalkPass2;
 		System.out.println(str);
 	}
     void print(String str){
-		// logs.add(str);
+		logs.add(str);
     }
 	void printErr(int line, String str){
 		hasErr = true;
@@ -787,7 +787,7 @@ expr_mem [boolean left] returns [int line, boolean is_lvalue, Type retType] loca
 			$retType = checkArrayDim($line, $retType, $expmt.dim);
 			if ($expmt.dim != 0 && !$exp.varName.equals("")) {
 				addArrayAddress($exp.varName);
-				mips.accessArray();
+				mips.accessArray($exp.retType.len());
 			}
 		}
 	;

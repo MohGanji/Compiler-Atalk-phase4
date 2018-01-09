@@ -1,6 +1,6 @@
 // Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/grammar/AtalkPass2.g4 by ANTLR 4.7
 
-	import java.util.ArrayList ;
+	import java.util.ArrayList;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -101,7 +101,7 @@ public class AtalkPass2Lexer extends Lexer {
 			System.out.println(str);
 		}
 	    void print(String str){
-			// logs.add(str);
+			logs.add(str);
 	    }
 		void printErr(int line, String str){
 			hasErr = true;

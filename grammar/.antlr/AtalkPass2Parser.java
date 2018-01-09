@@ -1,6 +1,6 @@
 // Generated from /home/vmoh/uni_projs/compiler/Compiler-Atalk-phase4/grammar/AtalkPass2.g4 by ANTLR 4.7
 
-	import java.util.ArrayList ;
+	import java.util.ArrayList;
 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -115,7 +115,7 @@ public class AtalkPass2Parser extends Parser {
 			System.out.println(str);
 		}
 	    void print(String str){
-			// logs.add(str);
+			logs.add(str);
 	    }
 		void printErr(int line, String str){
 			hasErr = true;
@@ -2828,7 +2828,7 @@ public class AtalkPass2Parser extends Parser {
 						((Expr_memContext)_localctx).retType =  checkArrayDim(_localctx.line, _localctx.retType, ((Expr_memContext)_localctx).expmt.dim);
 						if (((Expr_memContext)_localctx).expmt.dim != 0 && !((Expr_memContext)_localctx).exp.varName.equals("")) {
 							addArrayAddress(((Expr_memContext)_localctx).exp.varName);
-							mips.accessArray();
+							mips.accessArray(((Expr_memContext)_localctx).exp.retType.len());
 						}
 					
 			}

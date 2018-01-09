@@ -30,6 +30,7 @@ public class Translator {
 		try {
 			PrintWriter writer = new PrintWriter(output);
 			writer.println(".data");
+			dataInstructions.add("str2: .asciiz    \"IndexOutOfBoundError\"");
 			for (int i = 0; i < dataInstructions.size(); i++) {
 				writer.println(dataInstructions.get(i));
 			}
@@ -44,6 +45,9 @@ public class Translator {
 			for (int i = 0; i < schedInstructions.size(); i++) {
 				writer.println(schedInstructions.get(i));
 			}
+			instructions.add("INDEXOUTOFBOUNDERROR:");
+			instructions.add("la $a0, str2");
+			this.addSystemCall(4);
 			instructions.add("HALT:"); // halt
 			this.addSystemCall(10);
 			for (int i = 0; i < instructions.size(); i++) {
@@ -344,12 +348,14 @@ public class Translator {
 		return "LABEL____________________" + this.labels.pop();
 	}
 	
-	public void accessArray() {
+	public void accessArray(int len) {
 		instructions.add("# access array");
 		instructions.add("lw $a0, 4($sp)");
 		popStack();
 		instructions.add("lw $a1, 4($sp)");
 		popStack();
+		instructions.add("li $a2, "+ len);
+		instructions.add("bgt $a1, $a2, INDEXOUTOFBOUNDERROR");
 		instructions.add("li $t0, 4");
 		instructions.add("mul $a1, $a1, $t0");
 		instructions.add("sub $a0, $a0, $a1");
@@ -467,7 +473,7 @@ public class Translator {
 		for (Type type : params) {
 			len += type.len();
 		}
-		System.out.println("w" +len);
+		// System.out.println("w" +len);
 		// int offset = size * 4;
 		// instructions.add("addi $sp, $sp, " + offset);
 		for (int i = 0; i < len; i++) {
@@ -533,7 +539,7 @@ public class Translator {
 		for (Type type : params) {
 			len += type.len();
 		}
-		System.out.println("e" +len);
+		// System.out.println("e" +len);
 		for (int i = 0;i < len; i++){
 			instructions.add("lw $a0, 0($t5)");
 			instructions.add("sw $a0, 0($sp)");

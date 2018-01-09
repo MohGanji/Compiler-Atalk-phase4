@@ -1,7 +1,9 @@
 actor Proegram<10>
 	receiver init()
 		int x = 2
-		write(x)
+		char[3] y = "erg"
+		write(4)
+		write(y[5])
 		int weklfjew
 	end
 	receiver vahid2(int a)
