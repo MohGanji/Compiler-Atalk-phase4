@@ -14,17 +14,25 @@ actor Program<10>
 		write(c)
 		a = 2 and 3
 		write(a)
-		b = 2 or 3
+		b = 2 or 0
 		write(b)
-		d = not 7
+		a = 2 and 0
+		write(a)
+		b = 0 or 0
+		write(b)
+		d = not 0
 		write(d)
-		d = not 1
+		d = - 7
 		write(d)
 		d = not 16
 		write(d)
 		e = 2 <> 3
 		write(e)
 		c = 2 == 3
+		write(c)
+		e = 2 <> 2
+		write(e)
+		c = 2 == 2
 		write(c)
 	end
 end

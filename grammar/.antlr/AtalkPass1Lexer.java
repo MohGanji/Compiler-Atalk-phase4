@@ -109,9 +109,9 @@ public class AtalkPass1Lexer extends Lexer {
 				cerr("------------------------------ Pass 1 finished ------");
 				return;
 			}
-			// for (int i = 0; i < logs.size(); i++) {
-			// 	System.out.println(logs.get(i));
-			// }
+			for (int i = 0; i < logs.size(); i++) {
+				System.out.println(logs.get(i));
+			}
 			cerr("------------------------------ Pass 1 finished ------");
 		}
 

@@ -21,4 +21,4 @@ java -jar /usr/local/lib/antlr-4.7-complete.jar AtalkPass1.g4
 java -jar /usr/local/lib/antlr-4.7-complete.jar AtalkPass2.g4
 javac *.java
 java Atalk $1
-java < $1 > output
+# java < $1 > output

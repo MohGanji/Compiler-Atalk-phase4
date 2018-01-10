@@ -142,10 +142,6 @@ public class Translator {
 			instructions.add("sw $a0, 0($a1)");
 			instructions.add("sw $a0, " + 4 * size + "($sp)");
 		}
-		// writeOne(CharType.getInstance(), 1);
-		
-		// instructions.add("sw $a0, 0($sp)");
-		// instructions.add("addiu $sp, $sp, -4");
 		if (!def)
 		popStack(size * 4);
 		instructions.add("# end of assign");
@@ -188,9 +184,20 @@ public class Translator {
 		} else if (s.equals("not")) {
 			instructions.add("lw $a0, 4($sp)");
 			popStack();
-			instructions.add("not $a0, $a0");
+			String s3 = generateLabel();
+			String s2 = generateLabel();
+			instructions.add("beqz $a0, " + s3);
+			instructions.add("li $a0, 0");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
+			instructions.add("j "+ s2);
+			lastLabel();
+			putLabel(s3);
+			instructions.add("li $a0, 1");
+			instructions.add("sw $a0, 0($sp)");
+			instructions.add("addiu $sp, $sp, -4");
+			lastLabel();
+			putLabel(s2);
 		} else if (s.equals("neg")) {
 			instructions.add("lw $a0, 4($sp)");
 			popStack();
@@ -202,7 +209,7 @@ public class Translator {
 			popStack();
 			instructions.add("lw $a1, 4($sp)");
 			popStack();
-			instructions.add("slt $a0, $a0, $a1");
+			instructions.add("slt $a0, $a1, $a0");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
 		} else if (s.equals(">")) {
@@ -210,7 +217,7 @@ public class Translator {
 			popStack();
 			instructions.add("lw $a1, 4($sp)");
 			popStack();
-			instructions.add("slt $a0, $a1, $a0");
+			instructions.add("slt $a0, $a0, $a1");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
 		} else if (s.equals("<>")) {
@@ -218,34 +225,79 @@ public class Translator {
 			popStack();
 			instructions.add("lw $a1, 4($sp)");
 			popStack();
-			instructions.add("sub $a0, $a1, $a0");
-			instructions.add("not $a0, $a0");
+			String s3 = generateLabel();
+			String s2 = generateLabel();
+			instructions.add("bne $a0, $a1, " + s3);
+			instructions.add("li $a0, 0");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
+			instructions.add("j "+ s2);
+			lastLabel();
+			putLabel(s3);
+			instructions.add("li $a0, 1");
+			instructions.add("sw $a0, 0($sp)");
+			instructions.add("addiu $sp, $sp, -4");
+			lastLabel();
+			putLabel(s2);
 		} else if (s.equals("==")) {
 			instructions.add("lw $a0, 4($sp)");
 			popStack();
 			instructions.add("lw $a1, 4($sp)");
 			popStack();
-			instructions.add("sub $a0, $a1, $a0");
+			String s3 = generateLabel();
+			String s2 = generateLabel();
+			instructions.add("beq $a0, $a1, " + s3);
+			instructions.add("li $a0, 0");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
+			instructions.add("j "+ s2);
+			lastLabel();
+			putLabel(s3);
+			instructions.add("li $a0, 1");
+			instructions.add("sw $a0, 0($sp)");
+			instructions.add("addiu $sp, $sp, -4");
+			lastLabel();
+			putLabel(s2);
 		} else if (s.equals("or")) {
 			instructions.add("lw $a0, 4($sp)");
 			popStack();
 			instructions.add("lw $a1, 4($sp)");
 			popStack();
-			instructions.add("or $a0, $a1, $a0");
+			String s3 = generateLabel();
+			String s2 = generateLabel();
+			instructions.add("bnez $a0, " + s3);
+			instructions.add("bnez $a1, " + s3);
+			instructions.add("li $a0, 0");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
+			instructions.add("j "+ s2);
+			lastLabel();
+			putLabel(s3);
+			instructions.add("li $a0, 1");
+			instructions.add("sw $a0, 0($sp)");
+			instructions.add("addiu $sp, $sp, -4");
+			lastLabel();
+			putLabel(s2);
 		} else if (s.equals("and")) {
 			instructions.add("lw $a0, 4($sp)");
 			popStack();
 			instructions.add("lw $a1, 4($sp)");
 			popStack();
-			instructions.add("and $a0, $a1, $a0");
+			String s3 = generateLabel();
+			String s2 = generateLabel();
+			instructions.add("beqz $a0, " + s3);
+			instructions.add("beqz $a1, " + s3);
+			instructions.add("li $a0, 1");
 			instructions.add("sw $a0, 0($sp)");
 			instructions.add("addiu $sp, $sp, -4");
+			instructions.add("j "+ s2);
+			lastLabel();
+			putLabel(s3);
+			instructions.add("li $a0, 0");
+			instructions.add("sw $a0, 0($sp)");
+			instructions.add("addiu $sp, $sp, -4");
+			lastLabel();
+			putLabel(s2);
 		}
 		instructions.add("# end of operation " + s);
 	}
@@ -355,7 +407,7 @@ public class Translator {
 		instructions.add("lw $a1, 4($sp)");
 		popStack();
 		instructions.add("li $a2, "+ len);
-		instructions.add("bgt $a1, $a2, INDEXOUTOFBOUNDERROR");
+		instructions.add("bge $a1, $a2, INDEXOUTOFBOUNDERROR");
 		instructions.add("li $t0, 4");
 		instructions.add("mul $a1, $a1, $t0");
 		instructions.add("sub $a0, $a0, $a1");
@@ -413,8 +465,8 @@ public class Translator {
 	}
 	public void addMessageToActorQueue(String actorName, String receiverLabel) {
 		instructions.add("# " + actorName + " << " + receiverLabel);
-		instructions.add("la $a0," + actorName); //a0 = sare PCB
-		instructions.add("la $a1," + receiverLabel); // sare receiver
+		instructions.add("la $a0," + actorName); //a0 = PCB
+		instructions.add("la $a1," + receiverLabel); // receiver
 		
 		instructions.add("li $a3, 4");
 		instructions.add("lw $a2, 0($a0)"); //a2 = rear
@@ -422,8 +474,8 @@ public class Translator {
 		instructions.add("mul $a3, $a2, $a3");
 		instructions.add("add $a3, $a0, $a3");
 		
-		instructions.add("sw $a1, 8($a3)"); // addresse receivero rikhtim
-		instructions.add("sw $t7, 12($a3)"); // addresse avvale parametera
+		instructions.add("sw $a1, 8($a3)"); // receiver
+		instructions.add("sw $t7, 12($a3)"); // params
 		
 		// update rear
 		instructions.add("addi $a2, $a2, 2");
@@ -433,16 +485,16 @@ public class Translator {
 	}
 	public void addMessageToActorQueueInit(String actorName, String receiverLabel) {
 		initInstructions.add("# " + actorName + " << " + receiverLabel);
-		initInstructions.add("la $a0," + actorName); //a0 = sare PCB
-		initInstructions.add("la $a1," + receiverLabel); // sare receiver
+		initInstructions.add("la $a0," + actorName); //a0 = PCB
+		initInstructions.add("la $a1," + receiverLabel); // receiver
 		
 		initInstructions.add("li $a3, 4");
 		initInstructions.add("lw $a2, 0($a0)"); //a2 = rear
 		initInstructions.add("mul $a3, $a2, $a3");
 		initInstructions.add("add $a3, $a0, $a3");
 		
-		initInstructions.add("sw $a1, 8($a3)"); // addresse receivero rikhtim
-		initInstructions.add("sw $t7, 12($a3)"); // addresse avvale parametera
+		initInstructions.add("sw $a1, 8($a3)"); // receiver
+		initInstructions.add("sw $t7, 12($a3)"); // params
 		
 		// update rear
 		initInstructions.add("addi $a2, $a2, 2");
@@ -450,40 +502,18 @@ public class Translator {
 
 		initInstructions.add("addi $s0, $s0, 1");
 	}
-	/* public void addInitToActorQueue(String actorName, String receiverLabel) {
-		instructions.add("# " + actorName + " << " + receiverLabel);
-		initInstructions.add("la $a0, " + actorName); //a0 = sare PCB
-		initInstructions.add("la $a1, " + receiverLabel); // sare receiver
-		
-		initInstructions.add("li $a3, 4");
-		initInstructions.add("lw $a2, 0($a0)"); //a2 = queue rare counter
-		initInstructions.add("mul $a3, $a2, $a3");
-		initInstructions.add("add $a3, $a0, $a3");
-		
-		initInstructions.add("sw $a1, 8($a3)"); // addresse receivero rikhtim
-		initInstructions.add("sw $t7, 12($a3)"); // addresse avvale parametera
-		
-		initInstructions.add("addi $a2, $a2, 1");
-		initInstructions.add("sw $a2, 0($a0)");
-	} */
 	public void addReceiverParamsToDataSegment(ArrayList<Type> params) {
-		// return;
 		instructions.add("# Adding Receiver params to data segment");
 		int len = 0;
 		for (Type type : params) {
 			len += type.len();
 		}
-		// System.out.println("w" +len);
-		// int offset = size * 4;
-		// instructions.add("addi $sp, $sp, " + offset);
 		for (int i = 0; i < len; i++) {
 			instructions.add("lw $a0, 4($sp)");
 			instructions.add("sw $a0, 0($t7)");
 			instructions.add("addi $t7, $t7, -4");
-			// instructions.add("addi $sp, $sp, 4");
 			popStack();
 		}
-		// instructions.add("addi $sp, $sp, " + (offset + 4));
 	}
 	
 	public void scheduler() {
@@ -539,7 +569,6 @@ public class Translator {
 		for (Type type : params) {
 			len += type.len();
 		}
-		// System.out.println("e" +len);
 		for (int i = 0;i < len; i++){
 			instructions.add("lw $a0, 0($t5)");
 			instructions.add("sw $a0, 0($sp)");
@@ -547,7 +576,14 @@ public class Translator {
 			instructions.add("addi $t5, $t5, 4");
 		}
 	}
-	public void endReceiver() {
+	private String createReceiverEndLabel(String receiverLabel) {
+		return "__end_" + receiverLabel;
+	}
+	public void endReceiver(String receiverLabel) {
+		putLabel(createReceiverEndLabel(receiverLabel));
 		instructions.add("jr $ra");
+	}
+	public void quitInstruction(String receiverLabel) {
+		instructions.add("j " + createReceiverEndLabel(receiverLabel));
 	}
 }

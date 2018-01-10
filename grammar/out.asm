@@ -89,6 +89,11 @@ ___ACTOR_HAS_NO_MESSAGE:
 beqz $s0, HALT
 addi $t6, $t6, 1
 j schedulerCode
+#### addVariableToStack -- adding a number to stack
+li $a0, 0
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
 ___ACTOR_Proegram__RECEIVER_init____:
 #### addVariableToStack -- adding a number to stack
 li $a0, 0
@@ -117,6 +122,28 @@ lw $a1, 4($sp)
 sw $a0, 0($a1)
 sw $a0, 4($sp)
 # end of assign
+# start of adding global variable to stack
+lw $a0, 0($gp)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding global variable to stack
+# writing
+# writeone
+lw $a0, 4($sp)
+# start syscall 1
+li $v0, 1
+syscall
+# end syscall
+# end writeone
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+addi $a0, $zero, 10
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end of writing
 #### addVariableToStack -- adding a number to stack
 li $a0, 0
 sw $a0, 0($sp)
@@ -202,6 +229,73 @@ li $v0, 11
 syscall
 # end syscall
 # end of writing
+# start of adding global address to stack
+addiu $a0, $gp, 0
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding global address to stack
+#### addVariableToStack -- adding a number to stack
+li $a0, 745
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+# start of assign
+lw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+lw $a1, 4($sp)
+sw $a0, 0($a1)
+sw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+# end of assign
+# start of adding global variable to stack
+lw $a0, 4($gp)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding global variable to stack
+# writing
+# writeone
+lw $a0, 4($sp)
+# start syscall 1
+li $v0, 1
+syscall
+# end syscall
+# end writeone
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+addi $a0, $zero, 10
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end of writing
+# start of adding global address to stack
+addiu $a0, $gp, 4
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding global address to stack
+#### addVariableToStack -- adding a number to stack
+li $a0, 5
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+# start of assign
+lw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+lw $a1, 4($sp)
+sw $a0, 0($a1)
+sw $a0, 4($sp)
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+# end of assign
+j __end____ACTOR_Proegram__RECEIVER_init____
 # start of adding variable to stack
 lw $a0, -4($fp)
 sw $a0, 0($sp)
@@ -217,7 +311,7 @@ addiu $sp, $sp, -4
 addiu $sp, $sp, 12
 # end of pop stack
 #### addVariableToStack -- adding a number to stack
-li $a0, 5
+li $a0, 2
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
 #### addVariableToStack -- end of adding a number to stack
@@ -236,7 +330,7 @@ lw $a1, 4($sp)
 addiu $sp, $sp, 4
 # end of pop stack
 li $a2, 3
-bgt $a1, $a2, INDEXOUTOFBOUNDERROR
+bge $a1, $a2, INDEXOUTOFBOUNDERROR
 li $t0, 4
 mul $a1, $a1, $t0
 sub $a0, $a0, $a1
@@ -269,7 +363,13 @@ addiu $sp, $sp, -4
 # pop stack
 addiu $sp, $sp, 20
 # end of pop stack
+__end____ACTOR_Proegram__RECEIVER_init____:
 jr $ra
+#### addVariableToStack -- adding a number to stack
+li $a0, 0
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
 ___ACTOR_Proegram__RECEIVER_vahid2_int____:
 lw $a0, 0($t5)
 sw $a0, 0($sp)
@@ -324,9 +424,32 @@ li $v0, 11
 syscall
 # end syscall
 # end of writing
+# start of adding global variable to stack
+lw $a0, 4($gp)
+sw $a0, 0($sp)
+addiu $sp, $sp, -4
+# end of adding global variable to stack
+# writing
+# writeone
+lw $a0, 4($sp)
+# start syscall 1
+li $v0, 1
+syscall
+# end syscall
+# end writeone
+# pop stack
+addiu $sp, $sp, 4
+# end of pop stack
+addi $a0, $zero, 10
+# start syscall 11
+li $v0, 11
+syscall
+# end syscall
+# end of writing
 # pop stack
 addiu $sp, $sp, 8
 # end of pop stack
+__end____ACTOR_Proegram__RECEIVER_vahid2_int____:
 jr $ra
 ___ACTOR_Proegram__RECEIVER_vahid3____:
 #### addVariableToStack -- adding a number to stack
@@ -386,24 +509,14 @@ syscall
 # pop stack
 addiu $sp, $sp, 8
 # end of pop stack
+__end____ACTOR_Proegram__RECEIVER_vahid3____:
 jr $ra
-___ACTOR_Proegram__RECEIVER_mamad_array_char_____:
-lw $a0, 0($t5)
+#### addVariableToStack -- adding a number to stack
+li $a0, 0
 sw $a0, 0($sp)
-addi $sp, $sp, -4
-addi $t5, $t5, 4
-lw $a0, 0($t5)
-sw $a0, 0($sp)
-addi $sp, $sp, -4
-addi $t5, $t5, 4
-lw $a0, 0($t5)
-sw $a0, 0($sp)
-addi $sp, $sp, -4
-addi $t5, $t5, 4
-lw $a0, 0($t5)
-sw $a0, 0($sp)
-addi $sp, $sp, -4
-addi $t5, $t5, 4
+addiu $sp, $sp, -4
+#### addVariableToStack -- end of adding a number to stack
+___ACTOR_Proegram__RECEIVER_mamad____:
 #### addVariableToStack -- adding a number to stack
 li $a0, 0
 sw $a0, 0($sp)
@@ -413,7 +526,7 @@ addiu $sp, $sp, -4
 addiu $sp, $sp, 4
 # end of pop stack
 # start of adding address to stack
-addiu $a0, $fp, -16
+addiu $a0, $fp, 0
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
 # end of adding address to stack
@@ -435,47 +548,17 @@ sw $a0, 4($sp)
 lw $a0, 0($fp)
 sw $a0, 0($sp)
 addiu $sp, $sp, -4
-lw $a0, -4($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -8($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -12($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
 # end of adding variable to stack
 # writing
 # writeone
-lw $a0, 16($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
-lw $a0, 12($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
-lw $a0, 8($sp)
-# start syscall 11
-li $v0, 11
-syscall
-# end syscall
-# end writeone
-# writeone
 lw $a0, 4($sp)
-# start syscall 11
-li $v0, 11
+# start syscall 1
+li $v0, 1
 syscall
 # end syscall
 # end writeone
 # pop stack
-addiu $sp, $sp, 16
+addiu $sp, $sp, 4
 # end of pop stack
 addi $a0, $zero, 10
 # start syscall 11
@@ -484,8 +567,9 @@ syscall
 # end syscall
 # end of writing
 # pop stack
-addiu $sp, $sp, 20
+addiu $sp, $sp, 4
 # end of pop stack
+__end____ACTOR_Proegram__RECEIVER_mamad____:
 jr $ra
 # pop stack
 addiu $sp, $sp, 0
@@ -661,23 +745,9 @@ addi $a2, $a2, 2
 sw $a2, 0($a0)
 addi $s0, $s0, 1
 # Adding Receiver params to data segment
-# start of adding variable to stack
-lw $a0, 0($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -4($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -8($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-lw $a0, -12($fp)
-sw $a0, 0($sp)
-addiu $sp, $sp, -4
-# end of adding variable to stack
-# ___ACTOR_Proegram << ___ACTOR_Proegram__RECEIVER_mamad_array_char_____
+# ___ACTOR_Proegram << ___ACTOR_Proegram__RECEIVER_mamad____
 la $a0,___ACTOR_Proegram
-la $a1,___ACTOR_Proegram__RECEIVER_mamad_array_char_____
+la $a1,___ACTOR_Proegram__RECEIVER_mamad____
 li $a3, 4
 lw $a2, 0($a0)
 mul $a3, $a2, $a3
@@ -688,30 +758,6 @@ addi $a2, $a2, 2
 sw $a2, 0($a0)
 addi $s0, $s0, 1
 # Adding Receiver params to data segment
-lw $a0, 4($sp)
-sw $a0, 0($t7)
-addi $t7, $t7, -4
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a0, 4($sp)
-sw $a0, 0($t7)
-addi $t7, $t7, -4
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a0, 4($sp)
-sw $a0, 0($t7)
-addi $t7, $t7, -4
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
-lw $a0, 4($sp)
-sw $a0, 0($t7)
-addi $t7, $t7, -4
-# pop stack
-addiu $sp, $sp, 4
-# end of pop stack
 # ___ACTOR_vahid << ___ACTOR_vahid__RECEIVER_mamd2____
 la $a0,___ACTOR_vahid
 la $a1,___ACTOR_vahid__RECEIVER_mamd2____
@@ -774,6 +820,7 @@ syscall
 # pop stack
 addiu $sp, $sp, 16
 # end of pop stack
+__end____ACTOR_vahid__RECEIVER_init____:
 jr $ra
 ___ACTOR_vahid__RECEIVER_mamd2____:
 #### addVariableToStack -- adding a number to stack
@@ -806,6 +853,7 @@ syscall
 # pop stack
 addiu $sp, $sp, 4
 # end of pop stack
+__end____ACTOR_vahid__RECEIVER_mamd2____:
 jr $ra
 # pop stack
 addiu $sp, $sp, 0

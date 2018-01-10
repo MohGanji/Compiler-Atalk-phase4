@@ -8,6 +8,7 @@ grammar AtalkPass2;
 	boolean hasErr = false;
 	ArrayList<String> logs = new ArrayList<String>();
 	String currentActor;
+	String currentReceiver;
 	int labelCounter = 0;
 	Stack<String> foreachEndLabels = new Stack<String>();;
 
@@ -275,9 +276,29 @@ actor locals [String actorLabel]
         (NL | EOF)
     ;
 
-state
+state locals [int size]
 	:
-		type ID (',' ID)* NL
+		tp=type var=ID {
+			// SymbolTable.define();
+
+			SymbolTableVariableItem v = (SymbolTableVariableItem) SymbolTable.top.get($var.getText());
+			$size = 1;
+			if (v.getVariable().getType() instanceof ArrayType) {
+				$size = ((ArrayType) v.getVariable().getType()).len();
+			}
+
+			mips.addVariableToStack(0, $size);
+		} (',' var2=ID {
+			// SymbolTable.define();
+
+			v = (SymbolTableVariableItem) SymbolTable.top.get($var2.getText());
+			$size = 1;
+			if (v.getVariable().getType() instanceof ArrayType) {
+				$size = ((ArrayType) v.getVariable().getType()).len();
+			}
+
+			mips.addVariableToStack(0, $size);
+		})* NL
 	;
 
 receiver [String actorLabel] locals [boolean hasInit = false, String receiverLabel, String rcKey]
@@ -292,8 +313,10 @@ receiver [String actorLabel] locals [boolean hasInit = false, String receiverLab
 		'(' (tp=type arg1=ID {SymbolTable.define();}{$rcKey += "_" + $tp.retType.toString();}
 		(',' tp2=type arg2=ID {SymbolTable.define();}{$rcKey += "_" + $tp2.retType.toString();}
 		)*)? ')' NL {
+
 				SymbolTableReceiverItem stri = (SymbolTableReceiverItem) SymbolTable.top.get($rcKey);
 				$receiverLabel = generateReceiverLabel(actorLabel, stri.getKey());
+				currentReceiver = $receiverLabel;
 				mips.receiverStart($receiverLabel);
 				if($rec.getText().equals("init") && $arg1 == null){
 					$hasInit = true;
@@ -309,7 +332,7 @@ receiver [String actorLabel] locals [boolean hasInit = false, String receiverLab
 		'end' NL
 			{
 				endScope();
-				mips.endReceiver();
+				mips.endReceiver($receiverLabel);
 			}
 	;
 
@@ -411,7 +434,18 @@ stm_vardef locals [Type exp2LastType = NoType.getInstance(), int size]
 		})?
 		(',' var2=ID {
 			SymbolTable.define();
-		} ('=' exp2=expr {
+
+			v = (SymbolTableVariableItem) SymbolTable.top.get($var2.getText());
+			$size = 1;
+			if (v.getVariable().getType() instanceof ArrayType) {
+				$size = ((ArrayType) v.getVariable().getType()).len();
+			}
+
+			mips.addVariableToStack(0, $size);
+		} ('=' {
+			mips.popStack($size * 4);
+			mips.addVariableAddressToStack($var2.getText(), v.getOffset()*-1, $size);
+		} exp2=expr {
 			/* if ($exp2LastType.equals(NoType.getInstance())) {
 				checkLValue($var.line, $exp.is_lvalue);
 			} else {
@@ -419,6 +453,7 @@ stm_vardef locals [Type exp2LastType = NoType.getInstance(), int size]
 			} */
 			$exp2LastType = $exp2.retType;
 			typeCheck($var.line, $tp.retType, $exp2.retType);
+			mips.assignCommand(true, $size);
 		})?)*
 		NL
 	;
@@ -530,7 +565,9 @@ stm_foreach locals [String startLabel, String endLabel]
 	;
 
 stm_quit:
-		'quit' NL
+		'quit' NL {
+			mips.quitInstruction(currentReceiver);
+		}
 	;
 
 stm_break

@@ -93,6 +93,7 @@ public class AtalkPass2Lexer extends Lexer {
 		boolean hasErr = false;
 		ArrayList<String> logs = new ArrayList<String>();
 		String currentActor;
+		String currentReceiver;
 		int labelCounter = 0;
 		Stack<String> foreachEndLabels = new Stack<String>();;
 
